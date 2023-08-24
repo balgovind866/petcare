@@ -16,6 +16,7 @@ import 'package:petcare/screen/NotificationList.dart';
 import 'package:petcare/screen/ShippingAddressPage.dart';
 import 'package:petcare/screen/WriteReviewPage.dart';
 import 'package:petcare/tab/TabOrder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TabProfile extends StatefulWidget {
   // final ValueChanged<bool> onChanged;
@@ -249,7 +250,7 @@ class _TabProfile extends State<TabProfile> {
                       // Provider.of(context).toggleTheme();
 
                       // PrefData().setDarkMode(value);
-                      setState(() {
+                      setState(() async {
                         int setval = 0;
                         if (value == true) {
                           // ThemeNotifier().setDarkMode();
@@ -259,8 +260,14 @@ class _TabProfile extends State<TabProfile> {
                         }
                         PrefData().setDarkModes(setval);
                         // _isSwitched = value;
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => MyApp()));
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyApp(
+                                      sharedPreferences: prefs,
+                                    )));
 
                         // ConstantDatas.setThemePosition();
                         // _setSwitchData();

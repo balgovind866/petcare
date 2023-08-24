@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -6,20 +9,16 @@ import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/customwidget/StarRating.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
-
-import 'dart:math' as math;
-
-import 'package:petcare/model/SubCategoryModel.dart'; // import this
 import 'package:petcare/model/ReviewModel.dart';
+// import this
 import 'package:petcare/screen/AddToCartPage.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-import '../constants/ConstantColors.dart';
+import '../Model/Section_Model.dart';
 import '../data/PrefData.dart'; // import this
 
 // ignore: must_be_immutable
 class ProductDetail extends StatefulWidget {
-  SubCategoryModel _categoryModel;
+  Product? _categoryModel;
 
   ProductDetail(this._categoryModel);
 
@@ -30,11 +29,10 @@ class ProductDetail extends StatefulWidget {
 class _ProductDetail extends State<ProductDetail>
     with SingleTickerProviderStateMixin {
   double paddingStart = 10;
-  SubCategoryModel? _modelProduct;
+  Product? _modelProduct;
   double addon = 0;
 
   _ProductDetail(this._modelProduct);
-
 
   double heightAdRemove = 50;
   int quantity = 1;
@@ -42,7 +40,7 @@ class _ProductDetail extends State<ProductDetail>
   int selectedIndex = 0;
   double price = 0;
   double orgPrice = 0;
-  Color _theme=cardColor;
+  Color _theme = cardColor;
 
   bool get _isAppBarExpanded {
     return _scrollController.hasClients &&
@@ -54,27 +52,27 @@ class _ProductDetail extends State<ProductDetail>
     PrefData().setSelectedMainCategory(Constants.SHOPPING_ID);
     super.initState();
     _tabController = TabController(vsync: this, length: 2);
-    price = _modelProduct!.price!;
-    orgPrice = _modelProduct!.price!;
+    price = _modelProduct!.minPrice! as double;
+    orgPrice = _modelProduct!.maxPrice! as double;
 
     _scrollController = ScrollController()
-      ..addListener(() => _isAppBarExpanded ?
-        _theme != Colors.transparent ?
-        setState(
-              () {
-            _theme = Colors.transparent;
-            print(
-                'setState is called');
-          },
-        ):{} : _theme != accentColors ?
-        setState((){
-          print(
-              'setState is called');
-          _theme = accentColors;
-        }):{},
-
+      ..addListener(
+        () => _isAppBarExpanded
+            ? _theme != Colors.transparent
+                ? setState(
+                    () {
+                      _theme = Colors.transparent;
+                      print('setState is called');
+                    },
+                  )
+                : {}
+            : _theme != accentColors
+                ? setState(() {
+                    print('setState is called');
+                    _theme = accentColors;
+                  })
+                : {},
       );
-
 
     controller.addListener(() {
       setState(() {
@@ -115,18 +113,18 @@ class _ProductDetail extends State<ProductDetail>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        for (int i = 0; i < _modelProduct!.image.length; i++) dot((page == i)),
+        for (int i = 0; i < _modelProduct!.image!.length; i++) dot((page == i)),
       ],
     );
   }
 
   List<ReviewModel> _reviewModel = DataFile.getReviewList();
-  ScrollController _scrollController=ScrollController();
-  int selectedSliderPos=0;
+  ScrollController _scrollController = ScrollController();
+  int selectedSliderPos = 0;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    double sliderHeight = SizeConfig.safeBlockVertical !* 40;
+    double sliderHeight = SizeConfig.safeBlockVertical! * 40;
     double bottomRemainHeight =
         SizeConfig.safeBlockVertical! * 100 - sliderHeight;
     heightAdRemove = Constants.getPercentSize(bottomRemainHeight, 10);
@@ -139,7 +137,7 @@ class _ProductDetail extends State<ProductDetail>
               color: Colors.transparent,
               width: double.infinity,
               // height: SizeConfig.safeBlockVertical * 15,
-              height: SizeConfig.safeBlockVertical !* 9,
+              height: SizeConfig.safeBlockVertical! * 9,
               child: Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
@@ -164,11 +162,12 @@ class _ProductDetail extends State<ProductDetail>
                             width: double.infinity,
                             height: double.infinity,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                                color: accentColors
-                            ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: accentColors),
                             margin: EdgeInsets.symmetric(
-                                horizontal: SizeConfig.safeBlockHorizontal !* 1.5),
+                                horizontal:
+                                    SizeConfig.safeBlockHorizontal! * 1.5),
                             child: InkWell(
                               // style: ElevatedButton.styleFrom(
                               //   shape: RoundedRectangleBorder(
@@ -178,7 +177,8 @@ class _ProductDetail extends State<ProductDetail>
                               // ),
                               // onPressed: () {
                               onTap: () {
-                                showCustomToast(S.of(context).addedToCart, context);
+                                showCustomToast(
+                                    S.of(context).addedToCart, context);
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -191,7 +191,7 @@ class _ProductDetail extends State<ProductDetail>
                                         SizeConfig.safeBlockVertical! * 9, 38),
                                   ),
                                   getHorizonSpace(
-                                      SizeConfig.safeBlockHorizontal !* 5),
+                                      SizeConfig.safeBlockHorizontal! * 5),
                                   getCustomText(
                                       S.of(context).addToCart,
                                       Colors.white,
@@ -199,7 +199,8 @@ class _ProductDetail extends State<ProductDetail>
                                       TextAlign.center,
                                       FontWeight.w600,
                                       Constants.getPercentSize(
-                                          SizeConfig.safeBlockVertical! * 9, 22))
+                                          SizeConfig.safeBlockVertical! * 9,
+                                          22))
                                 ],
                               ),
                             )),
@@ -207,16 +208,17 @@ class _ProductDetail extends State<ProductDetail>
                       ),
                       Expanded(
                         child: Container(
-                          width: double.infinity,
+                            width: double.infinity,
                             height: double.infinity,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              color: accentColors
-                            ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: accentColors),
                             margin: EdgeInsets.symmetric(
-                                horizontal: SizeConfig.safeBlockHorizontal !* 1.5),
+                                horizontal:
+                                    SizeConfig.safeBlockHorizontal! * 1.5),
                             child: InkWell(
-                            // child: ElevatedButton(
+                              // child: ElevatedButton(
                               // style: ElevatedButton.styleFrom(
                               //   shape: RoundedRectangleBorder(
                               //     borderRadius: BorderRadius.circular(10),
@@ -237,10 +239,10 @@ class _ProductDetail extends State<ProductDetail>
                                     Icons.shopping_bag,
                                     color: Colors.white,
                                     size: Constants.getPercentSize(
-                                        SizeConfig.safeBlockVertical !* 9, 38),
+                                        SizeConfig.safeBlockVertical! * 9, 38),
                                   ),
                                   getHorizonSpace(
-                                      SizeConfig.safeBlockHorizontal !* 5),
+                                      SizeConfig.safeBlockHorizontal! * 5),
                                   getCustomText(
                                       S.of(context).orderNow,
                                       Colors.white,
@@ -248,7 +250,8 @@ class _ProductDetail extends State<ProductDetail>
                                       TextAlign.center,
                                       FontWeight.w600,
                                       Constants.getPercentSize(
-                                          SizeConfig.safeBlockVertical! * 9, 22))
+                                          SizeConfig.safeBlockVertical! * 9,
+                                          22))
                                 ],
                               ),
                             )),
@@ -325,22 +328,21 @@ class _ProductDetail extends State<ProductDetail>
                         flexibleSpace: FlexibleSpaceBar(
                             centerTitle: false,
                             background: Container(
-                              color: Colors.transparent,
+                                color: Colors.transparent,
                                 width: double.infinity,
                                 height: double.infinity,
                                 child: Stack(children: [
                                   PageView.builder(
                                     controller: controller,
-                                    itemCount: _modelProduct!.image.length,
+                                    itemCount: _modelProduct!.image!.length,
                                     onPageChanged: (value) {
-                                      selectedSliderPos=value;
+                                      selectedSliderPos = value;
                                     },
                                     scrollDirection: Axis.horizontal,
-
                                     itemBuilder: (context, index) {
                                       return Image.asset(
                                         Constants.assetsImagePath +
-                                            _modelProduct!.image[index],
+                                            _modelProduct!.image![index],
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         height: double.infinity,
@@ -388,11 +390,11 @@ class _ProductDetail extends State<ProductDetail>
                   body: Stack(
                     children: [
                       Transform(
-
                         alignment: Alignment.center,
                         transform: Matrix4.rotationX(math.pi * -1),
                         child: Image.asset(
-                          Constants.assetsImagePath + _modelProduct!.image[selectedSliderPos],
+                          Constants.assetsImagePath +
+                              _modelProduct!.image![selectedSliderPos],
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: sliderHeight,
@@ -412,7 +414,7 @@ class _ProductDetail extends State<ProductDetail>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               getCustomText(
-                                  _modelProduct!.name??"",
+                                  _modelProduct!.name ?? "",
                                   textColor,
                                   1,
                                   TextAlign.start,
@@ -517,8 +519,7 @@ class _ProductDetail extends State<ProductDetail>
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         text: TextSpan(
-                                            text: _modelProduct!.priceCurrency! +
-                                                price.toString(),
+                                            text: '\$' + price.toString(),
                                             style: TextStyle(
                                                 color: accentColors,
                                                 fontSize:
@@ -703,20 +704,24 @@ class _ProductDetail extends State<ProductDetail>
                                   Visibility(
                                     child: Container(
                                         padding: EdgeInsets.all(7),
-                                        child: getCustomTextWithoutMax(S.of(context).lorem_text,textColor,TextAlign.start,FontWeight.w400,20)
+                                        child: getCustomTextWithoutMax(
+                                            S.of(context).lorem_text,
+                                            textColor,
+                                            TextAlign.start,
+                                            FontWeight.w400,
+                                            20)
 
-
-                                      // child: HtmlWidget(
-                                      //   S.of(context).lorem_text,
-                                      //   textStyle: TextStyle(
-                                      //       color: Colors.grey,
-                                      //       fontFamily: Constants.fontsFamily,
-                                      //       fontSize: Constants.getPercentSize1(
-                                      //           bottomRemainHeight, 3.2),
-                                      //       fontWeight: FontWeight.w500),
-                                      // ),
-                                      //
-                                    ),
+                                        // child: HtmlWidget(
+                                        //   S.of(context).lorem_text,
+                                        //   textStyle: TextStyle(
+                                        //       color: Colors.grey,
+                                        //       fontFamily: Constants.fontsFamily,
+                                        //       fontSize: Constants.getPercentSize1(
+                                        //           bottomRemainHeight, 3.2),
+                                        //       fontWeight: FontWeight.w500),
+                                        // ),
+                                        //
+                                        ),
                                     maintainState: true,
                                     visible: selectedIndex == 0,
                                   ),
@@ -738,7 +743,7 @@ class _ProductDetail extends State<ProductDetail>
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(7)),
-                                                color:ConstantColors.bgColor),
+                                                color: ConstantColors.bgColor),
                                             child: Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
@@ -773,12 +778,12 @@ class _ProductDetail extends State<ProductDetail>
                                           ListView.builder(
                                             primary: false,
                                             itemBuilder: (context, index) {
-                                              double imageSize =
-                                                  SizeConfig.safeBlockVertical !*
-                                                     7;
-                                              double leftMargin =
-                                                  SizeConfig.safeBlockVertical !*
-                                                      1.2;
+                                              double imageSize = SizeConfig
+                                                      .safeBlockVertical! *
+                                                  7;
+                                              double leftMargin = SizeConfig
+                                                      .safeBlockVertical! *
+                                                  1.2;
                                               ReviewModel reViewModel =
                                                   _reviewModel[index];
                                               return Container(
@@ -789,21 +794,20 @@ class _ProductDetail extends State<ProductDetail>
                                                             .safeBlockHorizontal! *
                                                         2,
                                                     right: SizeConfig
-                                                            .safeBlockHorizontal !*
+                                                            .safeBlockHorizontal! *
                                                         2),
                                                 padding: EdgeInsets.all(10),
                                                 decoration: BoxDecoration(
-                                                    color: ConstantColors.bgColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                    // boxShadow: [
-                                                    //   BoxShadow(
-                                                    //     color: Colors
-                                                    //         .grey.shade200,
-                                                    //     blurRadius: 10,
-                                                    //   )
-                                                    // ]
+                                                  color: ConstantColors.bgColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  // boxShadow: [
+                                                  //   BoxShadow(
+                                                  //     color: Colors
+                                                  //         .grey.shade200,
+                                                  //     blurRadius: 10,
+                                                  //   )
+                                                  // ]
                                                 ),
                                                 child: Column(
                                                   children: [
@@ -838,7 +842,9 @@ class _ProductDetail extends State<ProductDetail>
                                                                   left:
                                                                       leftMargin),
                                                           child: getCustomText(
-                                                              reViewModel.name??"",
+                                                              reViewModel
+                                                                      .name ??
+                                                                  "",
                                                               textColor,
                                                               1,
                                                               TextAlign.start,
@@ -903,7 +909,8 @@ class _ProductDetail extends State<ProductDetail>
                                                                     top: 5),
                                                             child: getCustomText(
                                                                 reViewModel
-                                                                    .desc??"",
+                                                                        .desc ??
+                                                                    "",
                                                                 primaryTextColor,
                                                                 2,
                                                                 TextAlign.start,

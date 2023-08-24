@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:petcare/constants/ConstantColors.dart';
-import 'package:petcare/data/PrefData.dart';
-import 'package:petcare/themes/ThemeNotifier.dart';
 import 'package:intl/intl.dart';
+import 'package:petcare/constants/ConstantColors.dart';
 
 class Constants {
   static String assetsImagePath = "assets/images/";
@@ -17,12 +15,15 @@ class Constants {
   static const TREATMENT_ID = 2;
   static const PET_HOTEL_ID = 3;
   static const ADOPTION_ID = 4;
-  static ThemeData themeData=ThemeData();
-  static double bottomTxt=23;
-  static double topTxt=21;
-  static double subContainer=40;
-  static double subContainer2=45;
-  static double discountVal=3;
+  static ThemeData themeData = ThemeData();
+  static double bottomTxt = 23;
+  static double topTxt = 21;
+  static double subContainer = 40;
+  static double subContainer2 = 45;
+  static double discountVal = 3;
+  static const String registerSuccessMsg = "User Registered Successfully";
+  static const String somethingMsg =
+      "Something went wrong. Please try again after some time";
 
   // static Color primaryColor = "#14B4AB".toColor();
 
@@ -30,30 +31,26 @@ class Constants {
     return (total * percent) / 100;
   }
 
-  static stopApp()
-  {
+  static stopApp() {
     Future.delayed(const Duration(milliseconds: 200), () {
       SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     });
-
   }
-  static setThemePosition() async {
-    int posGet = await PrefData().getIsDarkMode();
-    themeData = ThemeNotifier.themesList[posGet];
-    // ConstantDatas.bottomNavColor = ThemeNotifier.themeConstantColors.bgColorsList[getThemePos];
-    // ConstantDatas.primaryColor = ThemeNotifier.themeColorsList[getThemePos];
-    // print("getcolor3=${ConstantDatas.primaryColor}");
-    ConstantColors.bgColor = themeData.backgroundColor;
-    // ConstantColors.bgColor = themeData.backgroundColor;
-    cardColor = themeData.cardColor;
-    shadowColor = Colors.transparent;
-    lightPrimaryColors = themeData.primaryColorLight;
-    ConstantColors.profileBgColor = themeData.canvasColor;
-    textColor = themeData.textSelectionTheme.selectionColor!;
-    primaryTextColor= themeData.textSelectionTheme.selectionHandleColor!;
-  }
-
-
+  // static setThemePosition() async {
+  //   int posGet = await PrefData().getIsDarkMode();
+  //   themeData = ThemeNotifier.themesList[posGet];
+  //   // ConstantDatas.bottomNavColor = ThemeNotifier.themeConstantColors.bgColorsList[getThemePos];
+  //   // ConstantDatas.primaryColor = ThemeNotifier.themeColorsList[getThemePos];
+  //   // print("getcolor3=${ConstantDatas.primaryColor}");
+  //   ConstantColors.bgColor = themeData.colorScheme.background;
+  //   // ConstantColors.bgColor = themeData.backgroundColor;
+  //   cardColor = themeData.cardColor;
+  //   shadowColor = Colors.transparent;
+  //   lightPrimaryColors = themeData.primaryColorLight;
+  //   ConstantColors.profileBgColor = themeData.canvasColor;
+  //   textColor = themeData.textSelectionTheme.selectionColor!;
+  //   primaryTextColor= themeData.textSelectionTheme.selectionHandleColor!;
+  // }
 
   static double getPercentSize1(double total, double percent) {
     return (total * percent) / 100;

@@ -4,6 +4,7 @@ import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/customwidget/parallax.dart';
 import 'package:petcare/screen/LoginPage.dart';
+
 // import 'package:transformer_page_view/transformer_page_view.dart';
 import '../constants/ConstantColors.dart';
 import '../generated/l10n.dart';
@@ -31,35 +32,35 @@ class _WidgetNotificationConfirmation
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   new ParallaxContainer(
-                    child: getCustomText(S.of(context).app_name, accentColors, 1,
-                        TextAlign.center, FontWeight.bold, 28),
+                    child: getCustomText(S.of(context).app_name, accentColors,
+                        1, TextAlign.center, FontWeight.bold, 28),
                     position: 0,
                   ),
                   // SizedBox(
                   //   height: 45.0,
                   // ),
                   SizedBox(
-                    height: SizeConfig.safeBlockVertical !* 2,
+                    height: SizeConfig.safeBlockVertical! * 2,
                   ),
                   new ParallaxContainer(
                     child: new Image.asset(
                       Constants.assetsImagePath + "img_allow_notification.png",
                       fit: BoxFit.contain,
-                      width: SizeConfig.safeBlockHorizontal !* 70,
-                      height: SizeConfig.safeBlockVertical !* 40,
+                      width: SizeConfig.safeBlockHorizontal! * 70,
+                      height: SizeConfig.safeBlockVertical! * 40,
                     ),
                     translationFactor: 400.0,
                     position: 0,
                   ),
                   SizedBox(
-                    height: SizeConfig.safeBlockVertical !* 2,
+                    height: SizeConfig.safeBlockVertical! * 2,
                   ),
                   // SizedBox(
                   //   height: 45.0,
                   // ),
                   new ParallaxContainer(
-                    child: getCustomText(S.of(context).notifications, textColor, 1,
-                        TextAlign.center, FontWeight.w600, 20),
+                    child: getCustomText(S.of(context).notifications, textColor,
+                        1, TextAlign.center, FontWeight.w600, 20),
                     translationFactor: 400.0,
                     position: 0,
                   ),
@@ -67,7 +68,9 @@ class _WidgetNotificationConfirmation
                     child: Padding(
                       padding: EdgeInsets.all(20),
                       child: getCustomText(
-                          S.of(context).stayNotifiedAboutCourseUpdatesnnewExamToolsAndChangeTonthe,
+                          S
+                              .of(context)
+                              .stayNotifiedAboutCourseUpdatesnnewExamToolsAndChangeTonthe,
                           textColor,
                           3,
                           TextAlign.center,
@@ -78,7 +81,7 @@ class _WidgetNotificationConfirmation
                     position: 0,
                   ),
                   SizedBox(
-                    height: SizeConfig.safeBlockVertical !* 1.5,
+                    height: SizeConfig.safeBlockVertical! * 1.5,
                   ),
 
                   // new ParallaxContainer(
@@ -87,8 +90,9 @@ class _WidgetNotificationConfirmation
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             // primary: Colors.red,
-                            primary: accentColors,
-                            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                            backgroundColor: accentColors,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 10),
                             // onPrimary: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(22.0),
@@ -108,8 +112,8 @@ class _WidgetNotificationConfirmation
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              getCustomText(S.of(context).allow, Colors.white, 1,
-                                  TextAlign.center, FontWeight.w400, 18),
+                              getCustomText(S.of(context).allow, Colors.white,
+                                  1, TextAlign.center, FontWeight.w400, 18),
                             ],
                           )),
                     ),
@@ -120,7 +124,7 @@ class _WidgetNotificationConfirmation
                   ),
                   new ParallaxContainer(
                     child: InkWell(
-                      onTap: (){
+                      onTap: () {
                         Navigator.of(context).push(new MaterialPageRoute(
                           builder: (context) => LoginPage(),
                         ));

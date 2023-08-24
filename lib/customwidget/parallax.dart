@@ -108,8 +108,8 @@ class ParallaxContainer extends StatelessWidget {
   ParallaxContainer(
       {@required this.child,
       @required this.position,
-      this.translationFactor: 100.0,
-      this.opacityFactor: 1.0})
+      this.translationFactor= 100.0,
+      this.opacityFactor= 1.0})
       : assert(position != null),
         assert(translationFactor != null);
 
@@ -129,7 +129,7 @@ class ParallaxImage extends StatelessWidget {
   final Image image;
   final double imageFactor;
 
-  ParallaxImage.asset(String name, {double? position, this.imageFactor: 0.3})
+  ParallaxImage.asset(String name, {double? position, this.imageFactor= 0.3})
       : image = Image.asset(name,
             fit: BoxFit.cover,
             alignment: FractionalOffset(

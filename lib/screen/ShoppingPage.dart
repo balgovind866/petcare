@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:petcare/Model/Section_Model.dart';
+import 'package:petcare/Provider/ProductProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -8,10 +10,8 @@ import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
 import 'package:petcare/model/SubCategoryModel.dart';
 import 'package:petcare/screen/ProductDetail.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
-
-import '../constants/ConstantWidgets.dart';
-import '../constants/SizeConfig.dart';
 
 class ShoppingPage extends StatefulWidget {
   @override
@@ -27,7 +27,7 @@ class _ShoppingPage extends State<ShoppingPage> {
   ];
 
   // List<SubCategoryModel> subList = DataFile.getSubCategoryModel();
-  List<SubCategoryModel> subList = [];
+  List<Product?> subList = [];
   List<String> selectionList = ["All", "Food", "Belt", "Cloths"];
   List<String> selectedFilterList = [];
   List<String> filterList = [
@@ -54,9 +54,10 @@ class _ShoppingPage extends State<ShoppingPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Product?> productList = context.watch<ProductProvider>().productList;
     SizeConfig().init(context);
     subList = [];
-    subList = allCatList[selectedPos];
+    subList = productList;
     double cellMargin2 = 7;
     double cellMargin = 7;
     var bottomDialogTextSize = SizeConfig.safeBlockVertical! * 45;
@@ -224,7 +225,7 @@ class _ShoppingPage extends State<ShoppingPage> {
                         (index) {
                           print(
                               "sizes===$mainCatWidth==$mainCatHeight--$_aspectRatio");
-                          SubCategoryModel _subCatModle = subList[index];
+                          Product? _subCatModle = subList[index];
 
                           return InkWell(
                             onTap: () {
@@ -257,9 +258,9 @@ class _ShoppingPage extends State<ShoppingPage> {
                                     child: ClipRRect(
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(7)),
-                                      child: Image.asset(
-                                        Constants.assetsImagePath +
-                                            _subCatModle.image[0],
+                                      child: Image.network(
+                                        //
+                                        _subCatModle!.image!,
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         height: double.infinity,
@@ -282,8 +283,8 @@ class _ShoppingPage extends State<ShoppingPage> {
                                       getSpace(Constants.getPercentSize1(
                                           mainCatHeight, 1.2)),
                                       getCustomText(
-                                          _subCatModle.priceCurrency! +
-                                              _subCatModle.price.toString(),
+                                          '\$' +
+                                              _subCatModle.minPrice.toString(),
                                           colorOrange,
                                           1,
                                           TextAlign.start,
@@ -291,8 +292,8 @@ class _ShoppingPage extends State<ShoppingPage> {
                                           Constants.getPercentSize1(
                                               mainCatHeight, 8)),
                                       Text(
-                                        _subCatModle.priceCurrency! +
-                                            (_subCatModle.price! -
+                                        '\$' +
+                                            (double.parse("10") -
                                                     Constants.discountVal)
                                                 .toString(),
                                         style: TextStyle(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:petcare/constants/ConstantColors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'StorageManager.dart';
 
@@ -25,7 +25,6 @@ class ThemeNotifier with ChangeNotifier {
     primaryColor: "#14B4AB".toColor(),
     // primaryColor: Colors.black,
     brightness: Brightness.dark,
-    backgroundColor: "#323635".toColor(),
     scaffoldBackgroundColor: "#323635".toColor(),
     cardColor: "#252525".toColor(),
     primaryColorLight: "#252525".toColor(),
@@ -40,7 +39,8 @@ class ThemeNotifier with ChangeNotifier {
     canvasColor: "#252525".toColor(),
     dividerColor: Colors.black12,
     colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey)
-        .copyWith(secondary: Colors.white),
+        .copyWith(secondary: Colors.white)
+        .copyWith(background: "#323635".toColor()),
   );
 
   static ThemeData lightTheme = ThemeData(
@@ -49,7 +49,6 @@ class ThemeNotifier with ChangeNotifier {
     brightness: Brightness.light,
     primaryColorLight: "#ECEDFA".toColor(),
     shadowColor: Colors.grey.shade300,
-    backgroundColor: "#F2F6F9".toColor(),
     scaffoldBackgroundColor: "#F2F6F9".toColor(),
     cardColor: Colors.white,
     canvasColor: "#E4E6ED".toColor(),
@@ -61,7 +60,8 @@ class ThemeNotifier with ChangeNotifier {
     ),
     dividerColor: Colors.white54,
     colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey)
-        .copyWith(secondary: Colors.black),
+        .copyWith(secondary: Colors.black)
+        .copyWith(background: "#F2F6F9".toColor()),
   );
 
   static final themesList = <ThemeData>[lightTheme, darkTheme];

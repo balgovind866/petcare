@@ -25,7 +25,6 @@ const double circularBorderRadius10 = 10;
 const String baseUrl = 'https://ecom.padmavatient.in/app/v1/api/';
 const String jwtKey = '26e4e3a2dc5aa6d37f41459ac52496c9a2b5b2b0';
 
-
 const String BANK_DETAIL = 'Bank Details:\n' +
     'Account No :123XXXXX\n' +
     'IFSC Code: 123XXX \n' +

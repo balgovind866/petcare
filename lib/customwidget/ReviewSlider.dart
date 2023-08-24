@@ -477,6 +477,7 @@ class MyPainter extends CustomPainter {
           ..strokeCap = StrokeCap.round
           ..strokeWidth = 5);
 
+    // ignore: unnecessary_null_comparison
     if (path2 != null) {
       canvas.drawPath(
         path2,

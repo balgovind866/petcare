@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:petcare/HomeScreen.dart';
+import 'package:petcare/Provider/ProductProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -11,36 +13,118 @@ import 'package:petcare/generated/l10n.dart';
 import 'package:petcare/screen/IntroPage.dart';
 import 'package:petcare/screen/LoginPage.dart';
 import 'package:petcare/screen/RegisterPage.dart';
-import 'package:petcare/HomeScreen.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+import 'Provider/SettingProvider.dart';
+import 'Provider/UserProvider.dart';
+import 'helper/Demo_Localization.dart';
+import 'helper/Session.dart';
+
+void main() async {
   // await SharedPreferences.getInstance();
-
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  runApp(MyApp(sharedPreferences: prefs));
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  late SharedPreferences sharedPreferences;
+
+  MyApp({Key? key, required this.sharedPreferences}) : super(key: key);
+
+  static void setLocale(BuildContext context, Locale newLocale) {
+    _MyAppState state = context.findAncestorStateOfType<_MyAppState>()!;
+    state.setLocale(newLocale);
+  }
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale? _locale;
+
+  setLocale(Locale locale) {
+    if (mounted) {
+      setState(
+        () {
+          _locale = locale;
+        },
+      );
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    getLocale().then(
+      (locale) {
+        if (mounted) {
+          setState(
+            () {
+              _locale = locale;
+            },
+          );
+        }
+      },
+    );
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     // SizeConfig().init(context);
-    return MaterialApp(
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        S.delegate
+    return MultiProvider(
+      providers: [
+        Provider<SettingProvider>(
+          create: (context) => SettingProvider(widget.sharedPreferences),
+        ),
+        ChangeNotifierProvider<UserProvider>(
+            create: (context) => UserProvider()),
+        ChangeNotifierProvider<ProductProvider>(
+            create: (context) => ProductProvider()),
       ],
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primaryColor: primaryColor,
-        primaryColorDark: primaryColor,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: accentColors),
+      child: MaterialApp(
+        locale: _locale,
+        supportedLocales: const [
+          Locale('en', 'US'),
+          Locale('zh', 'CN'),
+          Locale('es', 'ES'),
+          Locale('hi', 'IN'),
+          Locale('fr', 'FR'),
+          Locale('ar', 'DZ'),
+          Locale('ru', 'RU'),
+          Locale('ja', 'JP'),
+          Locale('de', 'DE')
+        ],
+        localizationsDelegates: [
+          DemoLocalization.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          S.delegate
+        ],
+        localeResolutionCallback: (locale, supportedLocales) {
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale!.languageCode &&
+                supportedLocale.countryCode == locale.countryCode) {
+              return supportedLocale;
+            }
+          }
+          return supportedLocales.first;
+        },
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primaryColor: primaryColor,
+          primaryColorDark: primaryColor,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          colorScheme:
+              ColorScheme.fromSwatch().copyWith(secondary: accentColors),
+        ),
+        home: MyHomePage(),
       ),
-      home: MyHomePage(),
     );
   }
 }
@@ -161,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     // WidgetsBinding.instance.addObserver(this);
-    Constants.setThemePosition();
+    // Constants.setThemePosition();
 
     signInValue();
     super.initState();

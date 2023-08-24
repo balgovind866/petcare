@@ -9,17 +9,17 @@ import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
-import 'package:petcare/data/PrefData.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Color.dart';
 import 'package:petcare/screen/LoginPage.dart';
 import 'package:petcare/screen/TermsAndConditionPage.dart';
-import 'package:petcare/screen/WidgetMobileVerification.dart';
 import 'package:provider/provider.dart';
-import '../helper/Session.dart';
-import '../helper/Constant.dart';
-import '../helper/String.dart';
+
 import '../Provider/SettingProvider.dart';
 import '../Provider/UserProvider.dart';
+import '../helper/Constant.dart';
+import '../helper/Session.dart';
+import '../helper/String.dart';
 
 class RegisterPage extends StatefulWidget {
   _RegisterPage createState() {
@@ -117,6 +117,10 @@ class _RegisterPage extends State<RegisterPage> {
                     onSaved: (String? value) {
                       email = value;
                     },
+                    onChanged: (String? value) {
+                      print("email : $value");
+                      email = value;
+                    },
                     onFieldSubmitted: (v) {
                       _fieldFocusChange(context, emailFocus!, passFocus);
                     },
@@ -168,7 +172,7 @@ class _RegisterPage extends State<RegisterPage> {
                         val!,
                         getTranslated(context, 'PWD_REQUIRED'),
                         getTranslated(context, 'PWD_LENGTH')),
-                    onSaved: (String? value) {
+                    onChanged: (String? value) {
                       password = value;
                     },
                     onFieldSubmitted: (v) {
@@ -229,7 +233,7 @@ class _RegisterPage extends State<RegisterPage> {
                             color: ConstantColors.bgColor),
                         child: CountryCodePicker(
                           onChanged: (value) {
-                            countryCode = value.dialCode!;
+                            countrycode = value.dialCode!;
                             print("changeval===$countryCode");
                           },
                           // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
@@ -243,7 +247,7 @@ class _RegisterPage extends State<RegisterPage> {
                           comparator: (a, b) => b.name!.compareTo(a.name!),
                           //Get the country information relevant to the initial selection
                           onInit: (code) {
-                            countryCode = code!.dialCode!;
+                            countrycode = code!.dialCode!;
                             print(
                                 "on init ${code.name} ${code.dialCode} ${code.name}");
                           },
@@ -260,7 +264,7 @@ class _RegisterPage extends State<RegisterPage> {
                               color: ConstantColors.bgColor),
                           child: TextFormField(
                             controller: mobileController,
-                            onSaved: (String? value) {
+                            onChanged: (String? value) {
                               mobile = value;
                             },
                             decoration: InputDecoration(
@@ -354,7 +358,7 @@ class _RegisterPage extends State<RegisterPage> {
                         color: primaryTextColor,
                         fontWeight: FontWeight.w400,
                         fontSize: 16),
-                    onSaved: (String? value) {
+                    onChanged: (String? value) {
                       address = value;
                     },
                     decoration: InputDecoration(
@@ -488,11 +492,11 @@ class _RegisterPage extends State<RegisterPage> {
                           ),
                         ),
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => LoginPage()));
-                          getRegisterUser();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
+                          // getRegisterUser();
                         },
                       )
                     ],
@@ -538,22 +542,23 @@ class _RegisterPage extends State<RegisterPage> {
   Future<void> getRegisterUser() async {
     try {
       var data = {
-        MOBILE: "mobile",
-        NAME: "name",
-        EMAIL: "email",
-        PASSWORD: "password",
-        COUNTRY_CODE: "countrycode",
+        MOBILE: mobile,
+        NAME: name,
+        EMAIL: email,
+        PASSWORD: password,
+        COUNTRY_CODE: countrycode,
       };
-
+      print(data);
       Response response =
           await post(getUserSignUpApi, body: data, headers: headers)
               .timeout(Duration(seconds: timeOut));
 
       var getdata = json.decode(response.body);
+      print(getdata);
       bool error = getdata['error'];
       String? msg = getdata['message'];
       if (!error) {
-        setSnackbar(getTranslated(context, 'REGISTER_SUCCESS_MSG')!, context);
+        setSnackbar(getTranslated(context, 'REGISTER_SUCCESS_MSG')!);
         var i = getdata['data'][0];
 
         id = i[ID];
@@ -576,11 +581,11 @@ class _RegisterPage extends State<RegisterPage> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => LoginPage()));
       } else {
-        setSnackbar(msg!, context);
+        setSnackbar(msg!);
       }
       if (mounted) setState(() {});
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+      setSnackbar(Constants.somethingMsg);
     }
   }
 
@@ -588,5 +593,17 @@ class _RegisterPage extends State<RegisterPage> {
       BuildContext context, FocusNode currentFocus, FocusNode? nextFocus) {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
+  }
+
+  setSnackbar(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        msg,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Theme.of(context).colorScheme.fontColor),
+      ),
+      elevation: 1.0,
+      backgroundColor: Theme.of(context).colorScheme.lightWhite,
+    ));
   }
 }

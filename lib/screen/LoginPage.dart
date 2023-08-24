@@ -1,14 +1,24 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
+import 'package:petcare/HomeScreen.dart';
+import 'package:petcare/Provider/SettingProvider.dart';
+import 'package:petcare/Provider/UserProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/data/PrefData.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Constant.dart';
 import 'package:petcare/screen/ForgotPasswordPage.dart';
 import 'package:petcare/screen/RegisterPage.dart';
-import 'package:petcare/HomeScreen.dart';
+import 'package:provider/provider.dart';
+
+import '../helper/Session.dart';
+import '../helper/String.dart';
 
 class LoginPage extends StatefulWidget {
   _LoginPage createState() {
@@ -25,6 +35,23 @@ class _LoginPage extends State<LoginPage> {
     return new Future.value(false);
   }
 
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final mobileController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool _isNetworkAvail = true;
+  String? password,
+      mobile,
+      username,
+      email,
+      id,
+      mobileno,
+      city,
+      area,
+      pincode,
+      address,
+      latitude,
+      longitude,
+      image;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -82,6 +109,11 @@ class _LoginPage extends State<LoginPage> {
                   margin: EdgeInsets.only(bottom: 15),
                   height: MediaQuery.of(context).size.height * 0.07,
                   child: TextField(
+                    keyboardType: TextInputType.phone,
+                    controller: mobileController,
+                    onChanged: (String? value) {
+                      mobile = value;
+                    },
                     maxLines: 1,
                     style: TextStyle(
                         fontFamily: Constants.fontsFamily,
@@ -119,6 +151,10 @@ class _LoginPage extends State<LoginPage> {
                 Container(
                   height: MediaQuery.of(context).size.height * 0.07,
                   child: TextField(
+                    controller: passwordController,
+                    onChanged: (String? value) {
+                      password = value;
+                    },
                     maxLines: 1,
                     style: TextStyle(
                         fontFamily: Constants.fontsFamily,
@@ -184,12 +220,12 @@ class _LoginPage extends State<LoginPage> {
                             )),
                         onTap: () {
                           PrefData.setIsSignIn(true);
-
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(0),
-                              ));
+                          validateAndSubmit();
+                          // Navigator.pushReplacement(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) => HomeScreen(0),
+                          //     ));
                         },
                       ),
                       Align(
@@ -236,5 +272,101 @@ class _LoginPage extends State<LoginPage> {
           )),
       onWillPop: _requestPop,
     );
+  }
+
+  bool validateAndSave() {
+    final form = _formkey.currentState!;
+    form.save();
+    if (form.validate()) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> checkNetwork() async {
+    _isNetworkAvail = await isNetworkAvailable();
+    if (_isNetworkAvail) {
+      getLoginUser();
+    } else {
+      Future.delayed(const Duration(seconds: 2)).then(
+        (_) async {
+          // await buttonController!.reverse();
+          if (mounted) {
+            setState(
+              () {
+                _isNetworkAvail = false;
+              },
+            );
+          }
+        },
+      );
+    }
+  }
+
+  void validateAndSubmit() async {
+    // if (validateAndSave()) {
+    // _playAnimation();
+    checkNetwork();
+    // }
+  }
+
+  Future<void> getLoginUser() async {
+    var data = {MOBILE: mobile, PASSWORD: password};
+    print("parameter : $data");
+    Response response =
+        await post(getUserLoginApi, body: data, headers: headers)
+            .timeout(const Duration(seconds: timeOut));
+    var getdata = json.decode(response.body);
+    print("getdata : $getdata");
+    bool error = getdata['error'];
+    String? msg = getdata['message'];
+    // await buttonController!.reverse();
+    if (!error) {
+      setSnackbar(msg!, context);
+      var i = getdata['data'][0];
+      id = i[ID];
+      username = i[USERNAME];
+      email = i[EMAIL];
+      mobile = i[MOBILE];
+      city = i[CITY];
+      area = i[AREA];
+      address = i[ADDRESS];
+      pincode = i[PINCODE];
+      latitude = i[LATITUDE];
+      longitude = i[LONGITUDE];
+      image = i[IMAGE];
+
+      CUR_USERID = id;
+      // CUR_USERNAME = username;
+
+      UserProvider userProvider =
+          Provider.of<UserProvider>(context, listen: false);
+      userProvider.setName(username ?? '');
+      userProvider.setEmail(email ?? '');
+      userProvider.setProfilePic(image ?? '');
+
+      SettingProvider settingProvider =
+          Provider.of<SettingProvider>(context, listen: false);
+
+      settingProvider.saveUserDetail(
+          id!, email, mobile, address, image, context);
+
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomeScreen(0)));
+
+      // offFavAdd().then((value) {
+      //   db.clearFav();
+      //   context.read<FavoriteProvider>().setFavlist([]);
+      //   offCartAdd().then((value) {
+      //     db.clearCart();
+      //     offSaveAdd().then((value) {
+      //       db.clearSaveForLater();
+      //       Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
+      //     });
+      //   });
+      // });
+    } else {
+      setSnackbar(msg!, context);
+    }
   }
 }

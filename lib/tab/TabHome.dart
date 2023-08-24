@@ -6,16 +6,15 @@ import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/data/PrefData.dart';
-import 'package:petcare/model/DiscModel.dart';
-import 'package:petcare/model/SubCategoryModel.dart';
-import 'package:petcare/model/ModelTopCategory.dart';
-import 'package:petcare/model/ModelBlog.dart';
 import 'package:petcare/generated/l10n.dart';
-import 'package:petcare/screen/BookPetHotel.dart';
-import 'package:petcare/screen/ProductDetail.dart';
-import 'package:petcare/screen/ShoppingPage.dart';
+import 'package:petcare/model/DiscModel.dart';
+import 'package:petcare/model/ModelBlog.dart';
+import 'package:petcare/model/ModelTopCategory.dart';
+import 'package:petcare/model/SubCategoryModel.dart';
 import 'package:petcare/screen/AdoptionList.dart';
+import 'package:petcare/screen/BookPetHotel.dart';
 import 'package:petcare/screen/BookPetTreatment.dart';
+import 'package:petcare/screen/ShoppingPage.dart';
 
 class TabHome extends StatefulWidget {
   @override
@@ -39,7 +38,7 @@ class _TabHome extends State<TabHome> {
 
   Widget getTitles(String str) {
     return getCustomText(str, textColor, 1, TextAlign.start, FontWeight.w500,
-        Constants.getPercentSize1(SizeConfig.safeBlockVertical !* 100, 2));
+        Constants.getPercentSize1(SizeConfig.safeBlockVertical! * 100, 2));
   }
 
   @override
@@ -51,14 +50,14 @@ class _TabHome extends State<TabHome> {
     topCatList = DataFile.getTopCategoryList(context);
     blogLists = DataFile.getBlogList(context);
     screenHeight = SizeConfig.safeBlockVertical! * 100;
-    double screenWidth = SizeConfig.safeBlockHorizontal !* 100;
+    double screenWidth = SizeConfig.safeBlockHorizontal! * 100;
     double padding = Constants.getPercentSize1(screenWidth, 1.6);
     double topListHeight = screenWidth / 4;
     double topListItemHeight = Constants.getPercentSize(topListHeight, 40);
     double sliderHeight = Constants.getPercentSize(screenHeight, 20);
     double slider2Height = Constants.getPercentSize(screenHeight, 27);
-    double sellingItemWidth = SizeConfig.safeBlockHorizontal !* 42;
-    double sellingItemHeight = SizeConfig.safeBlockHorizontal !* 50;
+    double sellingItemWidth = SizeConfig.safeBlockHorizontal! * 42;
+    double sellingItemHeight = SizeConfig.safeBlockHorizontal! * 50;
 
     final List<Widget> imageSliders = discModelList
         .map((item) => Container(
@@ -72,7 +71,7 @@ class _TabHome extends State<TabHome> {
                       children: <Widget>[
                         Container(
                           padding: EdgeInsets.only(
-                              left: SizeConfig.safeBlockHorizontal !* 3),
+                              left: SizeConfig.safeBlockHorizontal! * 3),
                           width: MediaQuery.of(context).size.width * 1,
                           // margin: EdgeInsets.all(
                           //     MediaQuery.of(context).size.width * 0.05),
@@ -104,11 +103,12 @@ class _TabHome extends State<TabHome> {
                               // padding: EdgeInsets.symmetric(
                               //     horizontal: Constants.getPercentSize(
                               //         SizeConfig.safeBlockHorizontal * 40, 2)),
-                              width: SizeConfig.safeBlockHorizontal !* 40,
+                              width: SizeConfig.safeBlockHorizontal! * 40,
                               child: Row(
                                 children: [
                                   getHorizonSpace(Constants.getPercentSize(
-                                      SizeConfig.safeBlockHorizontal !* 40, 24)),
+                                      SizeConfig.safeBlockHorizontal! * 40,
+                                      24)),
                                   Expanded(
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
@@ -133,7 +133,7 @@ class _TabHome extends State<TabHome> {
                                         Padding(
                                           padding: EdgeInsets.all(0),
                                           child: getCustomText(
-                                              item.name??"",
+                                              item.name ?? "",
                                               Colors.white,
                                               1,
                                               TextAlign.start,
@@ -144,7 +144,7 @@ class _TabHome extends State<TabHome> {
                                         Padding(
                                           padding: EdgeInsets.all(0),
                                           child: getCustomText(
-                                              item.offText??"",
+                                              item.offText ?? "",
                                               Colors.white,
                                               1,
                                               TextAlign.start,
@@ -308,7 +308,8 @@ class _TabHome extends State<TabHome> {
                     onTap: () {
                       switch (index) {
                         case 0:
-                          PrefData().setSelectedMainCategory(Constants.SHOPPING_ID);
+                          PrefData()
+                              .setSelectedMainCategory(Constants.SHOPPING_ID);
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ShoppingPage(),
                           ));
@@ -322,7 +323,8 @@ class _TabHome extends State<TabHome> {
 
                           break;
                         case 2:
-                          PrefData().setSelectedMainCategory(Constants.PET_HOTEL_ID);
+                          PrefData()
+                              .setSelectedMainCategory(Constants.PET_HOTEL_ID);
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => BookPetHotel(),
                           ));
@@ -421,9 +423,10 @@ class _TabHome extends State<TabHome> {
                   SubCategoryModel _subCatModle = subList[index];
                   return InkWell(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ProductDetail(_subCatModle),
-                      ));
+                      // TODO: fix this
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //   builder: (context) => ProductDetail(_subCatModle),
+                      // ));
                     },
                     child: Container(
                       width: sellingItemWidth,
@@ -461,7 +464,7 @@ class _TabHome extends State<TabHome> {
                           getSpace(Constants.getPercentSize1(
                               sellingItemHeight, 2.5)),
                           getCustomText(
-                              _subCatModle.name??"",
+                              _subCatModle.name ?? "",
                               textColor,
                               1,
                               TextAlign.start,
@@ -482,7 +485,9 @@ class _TabHome extends State<TabHome> {
                                       sellingItemHeight, 8)),
                               Text(
                                 _subCatModle.priceCurrency! +
-                                    (_subCatModle.price! - Constants.discountVal).toString(),
+                                    (_subCatModle.price! -
+                                            Constants.discountVal)
+                                        .toString(),
                                 style: TextStyle(
                                     color: primaryTextColor,
                                     decoration: TextDecoration.lineThrough,
@@ -524,88 +529,95 @@ class _TabHome extends State<TabHome> {
             //   items: adoptSliders,
             // ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: padding),
+                padding: EdgeInsets.symmetric(horizontal: padding),
                 child: Container(
-              height: sliderHeight,
-              margin: EdgeInsets.all(7),
-              child: InkWell(
-                onTap: () {},
-                child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(7)),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(
-                              left: SizeConfig.safeBlockHorizontal !* 3),
-                          width: MediaQuery.of(context).size.width * 1,
-                          decoration: BoxDecoration(
-                            color: whiteColor,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            image: DecorationImage(
-                              image: AssetImage(Constants.assetsImagePath +
-                                  adoptModelList[0].image!),
-                              fit: BoxFit.cover,
+                  height: sliderHeight,
+                  margin: EdgeInsets.all(7),
+                  child: InkWell(
+                    onTap: () {},
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(7)),
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(
+                                  left: SizeConfig.safeBlockHorizontal! * 3),
+                              width: MediaQuery.of(context).size.width * 1,
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                image: DecorationImage(
+                                  image: AssetImage(Constants.assetsImagePath +
+                                      adoptModelList[0].image!),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        Container(
-                          // padding: EdgeInsets.symmetric(
-                          //     horizontal: SizeConfig.safeBlockHorizontal * 3),
-                          // width: SizeConfig.safeBlockHorizontal * 45,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                            Container(
+                              // padding: EdgeInsets.symmetric(
+                              //     horizontal: SizeConfig.safeBlockHorizontal * 3),
+                              // width: SizeConfig.safeBlockHorizontal * 45,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Expanded(
-                                  //   child:
-                                  Container(
-                                    width: SizeConfig.safeBlockHorizontal !* 45,
-                                    color: Colors.black54,
-                                    padding: EdgeInsets.only(left: 7),
-                                    child: getCustomText(
-                                        adoptModelList[0].name??"",
-                                        Colors.white,
-                                        2,
-                                        TextAlign.start,
-                                        FontWeight.w700,
-                                        Constants.getPercentSize1(
-                                            SizeConfig.safeBlockHorizontal !* 40,
-                                            10)),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // Expanded(
+                                      //   child:
+                                      Container(
+                                        width: SizeConfig.safeBlockHorizontal! *
+                                            45,
+                                        color: Colors.black54,
+                                        padding: EdgeInsets.only(left: 7),
+                                        child: getCustomText(
+                                            adoptModelList[0].name ?? "",
+                                            Colors.white,
+                                            2,
+                                            TextAlign.start,
+                                            FontWeight.w700,
+                                            Constants.getPercentSize1(
+                                                SizeConfig
+                                                        .safeBlockHorizontal! *
+                                                    40,
+                                                10)),
+                                      ),
+                                      // , flex: 1,),
+                                      Container(
+                                        padding: EdgeInsets.only(right: 3),
+                                        width: SizeConfig.safeBlockHorizontal! *
+                                            25,
+                                        // width: SizeConfig.safeBlockHorizontal * 30,
+                                        child: getButtonWithColorWithSize(
+                                            S.of(context).adoptNow,
+                                            accentColors,
+                                            Constants.getPercentSize1(
+                                                slider2Height, 2),
+                                            Constants.getPercentSize1(
+                                                SizeConfig
+                                                        .safeBlockHorizontal! *
+                                                    30,
+                                                9),
+                                            // SizeConfig.safeBlockHorizontal * 30, 9),
+                                            () {
+                                          sendToAdopt();
+                                        }),
+                                      ),
+                                      // getHorizonSpace(1)
+                                    ],
                                   ),
-                                  // , flex: 1,),
-                                  Container(
-                                    padding: EdgeInsets.only(right: 3),
-                                    width: SizeConfig.safeBlockHorizontal !* 25,
-                                    // width: SizeConfig.safeBlockHorizontal * 30,
-                                    child: getButtonWithColorWithSize(
-                                        S.of(context).adoptNow,
-                                        accentColors,
-                                        Constants.getPercentSize1(
-                                            slider2Height, 2),
-                                        Constants.getPercentSize1(
-                                            SizeConfig.safeBlockHorizontal! * 30,
-                                            9),
-                                        // SizeConfig.safeBlockHorizontal * 30, 9),
-                                        () {
-                                      sendToAdopt();
-                                    }),
-                                  ),
-                                  // getHorizonSpace(1)
                                 ],
                               ),
-                            ],
-                          ),
-                        )
-                      ],
-                    )),
-              ),
-            )),
+                            )
+                          ],
+                        )),
+                  ),
+                )),
           ],
         ),
       ),

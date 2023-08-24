@@ -2,16 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -76,13 +72,13 @@ errorWidget(double size) {
   );
 }
 
-class MyBehavior extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
-    return child;
-  }
-}
+// class MyBehavior extends ScrollBehavior {
+//   @override
+//   Widget buildOverscrollIndicator(
+//       BuildContext context, Widget child, AxisDirection axisDirection) {
+//     return child;
+//   }
+// }
 
 Widget getDiscountLabel(double discount) => Container(
       decoration: BoxDecoration(
@@ -263,7 +259,7 @@ noIntText(BuildContext context) {
   return Text(getTranslated(context, 'NO_INTERNET')!,
       style: Theme.of(context)
           .textTheme
-          .headline5!
+          .headlineSmall!
           .copyWith(color: colors.primary, fontWeight: FontWeight.normal));
 }
 
@@ -273,7 +269,7 @@ noIntDec(BuildContext context) {
         const EdgeInsetsDirectional.only(top: 30.0, start: 30.0, end: 30.0),
     child: Text(getTranslated(context, 'NO_INTERNET_DISC')!,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headline6!.copyWith(
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
               color: Theme.of(context).colorScheme.lightBlack2,
               fontWeight: FontWeight.normal,
             )),
@@ -698,7 +694,7 @@ void showOverlaySnackBar(
     );
   });
 
-  overlayState!.insert(overlayEntry);
+  overlayState.insert(overlayEntry);
   await Future.delayed(const Duration(seconds: 1));
   overlayEntry.remove();
 }
