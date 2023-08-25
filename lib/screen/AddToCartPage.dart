@@ -56,6 +56,7 @@ class _AddToCartPage extends State<AddToCartPage> {
   @override
   Widget build(BuildContext context) {
     cartModelList = context.watch<CartProvider>().cartList;
+
     SizeConfig().init(context);
     double leftMargin = MediaQuery.of(context).size.width * 0.04;
     double imageSize = SizeConfig.safeBlockVertical! * 8;

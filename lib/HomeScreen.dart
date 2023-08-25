@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:petcare/Model/Section_Model.dart';
 import 'package:petcare/Provider/ProductProvider.dart';
+import 'package:petcare/Provider/SettingProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/generated/l10n.dart';
@@ -76,6 +77,9 @@ class _HomeScreen extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SettingProvider settingProvider = context.watch<SettingProvider>();
+    CUR_USERID = settingProvider.userId;
+    print("Current user: ${settingProvider.email}");
     allDestinations = <Destination>[
       Destination(S.of(context).home, CupertinoIcons.home),
       Destination(S.of(context).shopping, CupertinoIcons.bag_fill),
