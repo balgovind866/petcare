@@ -223,8 +223,6 @@ class _ShoppingPage extends State<ShoppingPage> {
                       children: List.generate(
                         subList.length,
                         (index) {
-                          print(
-                              "sizes===$mainCatWidth==$mainCatHeight--$_aspectRatio");
                           Product? _subCatModle = subList[index];
 
                           return InkWell(
@@ -284,28 +282,30 @@ class _ShoppingPage extends State<ShoppingPage> {
                                           mainCatHeight, 1.2)),
                                       getCustomText(
                                           '\$' +
-                                              _subCatModle.minPrice.toString(),
+                                              _subCatModle
+                                                  .prVarientList![0].price
+                                                  .toString(),
                                           colorOrange,
                                           1,
                                           TextAlign.start,
                                           FontWeight.w600,
                                           Constants.getPercentSize1(
                                               mainCatHeight, 8)),
-                                      Text(
-                                        '\$' +
-                                            (double.parse("10") -
-                                                    Constants.discountVal)
-                                                .toString(),
-                                        style: TextStyle(
-                                            color: primaryTextColor,
-                                            decoration:
-                                                TextDecoration.lineThrough,
-                                            fontFamily: Constants.fontsFamily,
-                                            fontSize: Constants.getPercentSize1(
-                                                mainCatHeight, 6),
-                                            fontWeight: FontWeight.w600),
-                                        maxLines: 1,
-                                      )
+                                      // Text(
+                                      //   '\$' +
+                                      //       (double.parse("10") -
+                                      //               Constants.discountVal)
+                                      //           .toString(),
+                                      //   style: TextStyle(
+                                      //       color: primaryTextColor,
+                                      //       decoration:
+                                      //           TextDecoration.lineThrough,
+                                      //       fontFamily: Constants.fontsFamily,
+                                      //       fontSize: Constants.getPercentSize1(
+                                      //           mainCatHeight, 6),
+                                      //       fontWeight: FontWeight.w600),
+                                      //   maxLines: 1,
+                                      // )
                                       // getCustomText(
                                       //     _subCatModle.price,
                                       //     primaryColor,

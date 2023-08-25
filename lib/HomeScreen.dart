@@ -43,6 +43,8 @@ class _HomeScreen extends State<HomeScreen> {
   int total = 0;
   bool _isFirstLoad = true;
   String minPrice = '0', maxPrice = '0';
+  String selId = '';
+  RangeValues? _currentRangeValues;
   var filterList;
   List<String>? tagList = [];
   List<Product>? tempList = [];
@@ -159,7 +161,7 @@ class _HomeScreen extends State<HomeScreen> {
       }
     }
     productList!.addAll(tempList!);
-    print("Product Data: $productList");
+    print("Product Data: ${productList![0].minPrice}");
     context.read<ProductProvider>().setProductList(productList);
   }
 
@@ -169,9 +171,9 @@ class _HomeScreen extends State<HomeScreen> {
       OFFSET: offset.toString(),
       TOP_RETAED: top,
     };
-    // if (selId != '') {
-    //   parameter[ATTRIBUTE_VALUE_ID] = selId;
-    // }
+    if (selId != '') {
+      parameter[ATTRIBUTE_VALUE_ID] = selId;
+    }
     // if (widget.tag!) parameter[TAG] = widget.name!;
     // if (widget.fromSeller!) {
     //   parameter['seller_id'] = widget.id!;
@@ -187,15 +189,15 @@ class _HomeScreen extends State<HomeScreen> {
     //   parameter[ORDER] = orderBy;
     // }
 
-    // if (_currentRangeValues != null &&
-    //     _currentRangeValues!.start.round().toString() != '0') {
-    //   parameter[MINPRICE] = _currentRangeValues!.start.round().toString();
-    // }
+    if (_currentRangeValues != null &&
+        _currentRangeValues!.start.round().toString() != '0') {
+      parameter[MINPRICE] = _currentRangeValues!.start.round().toString();
+    }
 
-    // if (_currentRangeValues != null &&
-    //     _currentRangeValues!.end.round().toString() != '0') {
-    //   parameter[MAXPRICE] = _currentRangeValues!.end.round().toString();
-    // }
+    if (_currentRangeValues != null &&
+        _currentRangeValues!.end.round().toString() != '0') {
+      parameter[MAXPRICE] = _currentRangeValues!.end.round().toString();
+    }
 
     apiBaseHelper.postAPICall(getProductApi, parameter).then((getdata) {
       bool error = getdata['error'];
@@ -216,6 +218,7 @@ class _HomeScreen extends State<HomeScreen> {
           tempList!.clear();
 
           var data = getdata['data'];
+          // print("Data : ${getdata['data']}");
           tempList =
               (data as List).map((data) => Product.fromJson(data)).toList();
 

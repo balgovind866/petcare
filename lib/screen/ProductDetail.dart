@@ -1,7 +1,12 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:html/parser.dart';
+import 'package:petcare/HomeScreen.dart';
+import 'package:petcare/Provider/CartProvider.dart';
+import 'package:petcare/Provider/UserProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -9,26 +14,30 @@ import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/customwidget/StarRating.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
 import 'package:petcare/model/ReviewModel.dart';
 // import this
 import 'package:petcare/screen/AddToCartPage.dart';
+import 'package:provider/provider.dart';
 
 import '../Model/Section_Model.dart';
 import '../data/PrefData.dart'; // import this
 
 // ignore: must_be_immutable
 class ProductDetail extends StatefulWidget {
-  Product? _categoryModel;
+  Product? model;
 
-  ProductDetail(this._categoryModel);
+  ProductDetail(this.model);
 
   @override
-  _ProductDetail createState() => _ProductDetail(_categoryModel);
+  _ProductDetail createState() => _ProductDetail(model);
 }
 
 class _ProductDetail extends State<ProductDetail>
     with SingleTickerProviderStateMixin {
   double paddingStart = 10;
+
   Product? _modelProduct;
   double addon = 0;
 
@@ -41,6 +50,10 @@ class _ProductDetail extends State<ProductDetail>
   double price = 0;
   double orgPrice = 0;
   Color _theme = cardColor;
+  String selectedVarient = '';
+  String attributeName = '';
+  bool _isNetworkAvail = true;
+  int _oldSelVarient = 0;
 
   bool get _isAppBarExpanded {
     return _scrollController.hasClients &&
@@ -52,8 +65,12 @@ class _ProductDetail extends State<ProductDetail>
     PrefData().setSelectedMainCategory(Constants.SHOPPING_ID);
     super.initState();
     _tabController = TabController(vsync: this, length: 2);
-    price = _modelProduct!.minPrice! as double;
-    orgPrice = _modelProduct!.maxPrice! as double;
+    price = double.parse(_modelProduct!.prVarientList![0].price!);
+    // _modelProduct!.minPrice! as double;
+    orgPrice = double.parse(_modelProduct!.prVarientList![0].price!);
+    selectedVarient = _modelProduct!.prVarientList![0].varient_value!;
+    attributeName = _modelProduct!.prVarientList![0].attr_name!;
+    // _modelProduct!.maxPrice! as double;
 
     _scrollController = ScrollController()
       ..addListener(
@@ -177,8 +194,11 @@ class _ProductDetail extends State<ProductDetail>
                               // ),
                               // onPressed: () {
                               onTap: () {
-                                showCustomToast(
-                                    S.of(context).addedToCart, context);
+                                print("object");
+                                addToCart(quantity.toString(), false, true,
+                                    _modelProduct!);
+                                // showCustomToast(
+                                //     S.of(context).addedToCart, context);
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -340,9 +360,8 @@ class _ProductDetail extends State<ProductDetail>
                                     },
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: (context, index) {
-                                      return Image.asset(
-                                        Constants.assetsImagePath +
-                                            _modelProduct!.image![index],
+                                      return Image.network(
+                                        _modelProduct!.image!,
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         height: double.infinity,
@@ -354,7 +373,7 @@ class _ProductDetail extends State<ProductDetail>
                                       child: Padding(
                                         padding: EdgeInsets.all(0),
                                         // padding: EdgeInsets.all(7),
-                                        child: _drawDots(currentPage),
+                                        // child: _drawDots(currentPage),
                                       ))
                                 ]))
                             // DottedSlider(
@@ -422,7 +441,7 @@ class _ProductDetail extends State<ProductDetail>
                                   Constants.getPercentSize(
                                       bottomRemainHeight, 5)),
                               getCustomText(
-                                  S.of(context).lorem_text,
+                                  _modelProduct!.shortDescription ?? "",
                                   Colors.grey,
                                   2,
                                   TextAlign.start,
@@ -519,51 +538,51 @@ class _ProductDetail extends State<ProductDetail>
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         text: TextSpan(
-                                            text: '\$' + price.toString(),
-                                            style: TextStyle(
-                                                color: accentColors,
-                                                fontSize:
-                                                    Constants.getPercentSize(
-                                                        bottomRemainHeight, 4),
-                                                fontFamily:
-                                                    Constants.fontsFamily,
-                                                fontWeight: FontWeight.bold),
-                                            children: [
-                                              WidgetSpan(
-                                                  child: SizedBox(
-                                                width: 5,
-                                              )),
-                                              TextSpan(
-                                                text: "\$15.00",
-                                                style: TextStyle(
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                    color: Colors.grey,
-                                                    fontFamily:
-                                                        Constants.fontsFamily,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: Constants
-                                                        .getPercentSize(
-                                                            bottomRemainHeight,
-                                                            3)),
-                                              ),
-                                              WidgetSpan(
-                                                  child: SizedBox(
-                                                width: 4,
-                                              )),
-                                              TextSpan(
-                                                text: "20% off",
-                                                style: TextStyle(
-                                                    color: Colors.green,
-                                                    fontFamily:
-                                                        Constants.fontsFamily,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: Constants
-                                                        .getPercentSize(
-                                                            bottomRemainHeight,
-                                                            3)),
-                                              )
-                                            ]),
+                                          text: '\$' + price.toString(),
+                                          style: TextStyle(
+                                              color: accentColors,
+                                              fontSize:
+                                                  Constants.getPercentSize(
+                                                      bottomRemainHeight, 4),
+                                              fontFamily: Constants.fontsFamily,
+                                              fontWeight: FontWeight.bold),
+                                          // children: [
+                                          //   WidgetSpan(
+                                          //       child: SizedBox(
+                                          //     width: 5,
+                                          //   )),
+                                          //   TextSpan(
+                                          //     text: "\$15.00",
+                                          //     style: TextStyle(
+                                          //         decoration: TextDecoration
+                                          //             .lineThrough,
+                                          //         color: Colors.grey,
+                                          //         fontFamily:
+                                          //             Constants.fontsFamily,
+                                          //         fontWeight: FontWeight.bold,
+                                          //         fontSize: Constants
+                                          //             .getPercentSize(
+                                          //                 bottomRemainHeight,
+                                          //                 3)),
+                                          //   ),
+                                          //   WidgetSpan(
+                                          //       child: SizedBox(
+                                          //     width: 4,
+                                          //   )),
+                                          //   TextSpan(
+                                          //     text: "20% off",
+                                          //     style: TextStyle(
+                                          //         color: Colors.green,
+                                          //         fontFamily:
+                                          //             Constants.fontsFamily,
+                                          //         fontWeight: FontWeight.bold,
+                                          //         fontSize: Constants
+                                          //             .getPercentSize(
+                                          //                 bottomRemainHeight,
+                                          //                 3)),
+                                          //   )
+                                          // ]
+                                        ),
                                       ),
 
                                       // getCustomText(
@@ -647,6 +666,88 @@ class _ProductDetail extends State<ProductDetail>
                                       ))
                                 ],
                               ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      getCustomText(
+                                          attributeName.toString(),
+                                          textColor,
+                                          1,
+                                          TextAlign.start,
+                                          FontWeight.w400,
+                                          Constants.getPercentSize(
+                                              bottomRemainHeight, 4)),
+                                      RichText(
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        text: TextSpan(
+                                          text: selectedVarient.toString(),
+                                          style: TextStyle(
+                                              color: accentColors,
+                                              fontSize:
+                                                  Constants.getPercentSize(
+                                                      bottomRemainHeight, 4),
+                                              fontFamily: Constants.fontsFamily,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: _modelProduct!.prVarientList!
+                                        .map(
+                                          (e) => Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              width: heightAdRemove,
+                                              height: heightAdRemove,
+                                              decoration: BoxDecoration(
+                                                color: e.varient_value ==
+                                                        selectedVarient
+                                                    ? accentColors
+                                                    : Colors.grey.shade300,
+                                                border: Border.all(
+                                                    width: 1.0,
+                                                    color:
+                                                        Colors.grey.shade300),
+                                                // borderRadius: BorderRadius.only(
+                                                //     topLeft: Radius.circular(5.0),
+                                                //     bottomLeft: Radius.circular(5.0)),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(5.0)),
+                                              ),
+                                              child: InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectedVarient =
+                                                          e.varient_value!;
+                                                      orgPrice = double.parse(
+                                                          e.price!);
+                                                      setPrice();
+                                                    });
+                                                  },
+                                                  child: Center(
+                                                      child: Text(
+                                                    e.varient_value!,
+                                                    style: TextStyle(
+                                                      color: e.varient_value ==
+                                                              selectedVarient
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                    ),
+                                                  ))),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ],
+                              ),
                               // Container(
                               //   height: 500,
                               //   width:double.infinity,
@@ -689,14 +790,14 @@ class _ProductDetail extends State<ProductDetail>
                                       FontWeight.w500,
                                       Constants.getPercentSize(
                                           bottomRemainHeight, 4)),
-                                  getCustomText(
-                                      S.of(context).review,
-                                      accentColors,
-                                      1,
-                                      TextAlign.center,
-                                      FontWeight.w500,
-                                      Constants.getPercentSize(
-                                          bottomRemainHeight, 4)),
+                                  // getCustomText(
+                                  //     S.of(context).review,
+                                  //     accentColors,
+                                  //     1,
+                                  //     TextAlign.center,
+                                  //     FontWeight.w500,
+                                  //     Constants.getPercentSize(
+                                  //         bottomRemainHeight, 4)),
                                 ],
                               ),
                               IndexedStack(
@@ -705,7 +806,8 @@ class _ProductDetail extends State<ProductDetail>
                                     child: Container(
                                         padding: EdgeInsets.all(7),
                                         child: getCustomTextWithoutMax(
-                                            S.of(context).lorem_text,
+                                            _parseHtmlString(
+                                                _modelProduct!.desc!),
                                             textColor,
                                             TextAlign.start,
                                             FontWeight.w400,
@@ -1014,11 +1116,163 @@ class _ProductDetail extends State<ProductDetail>
         });
   }
 
+  Future<void> addToCart(
+      String qty, bool intent, bool from, Product product) async {
+    try {
+      _isNetworkAvail = await isNetworkAvailable();
+      if (_isNetworkAvail) {
+        // setState(() {
+        //   qtyChange = true;
+        // });
+        print("In add to cart");
+        if (CUR_USERID != null) {
+          try {
+            if (mounted) {
+              setState(
+                () {
+                  context.read<CartProvider>().setProgress(true);
+                },
+              );
+            }
+
+            Product model = widget.model!;
+            print("In add to cart2");
+            if (int.parse(qty) < model.minOrderQuntity!) {
+              qty = model.minOrderQuntity.toString();
+              setSnackbar(
+                "${getTranslated(context, 'MIN_MSG')}$qty",
+                context,
+              );
+            }
+            var parameter = {
+              USER_ID: CUR_USERID,
+              PRODUCT_VARIENT_ID: model.prVarientList![_oldSelVarient].id,
+              QTY: qty,
+            };
+            apiBaseHelper.postAPICall(manageCartApi, parameter).then(
+              (getdata) {
+                bool error = getdata['error'];
+                String? msg = getdata['message'];
+                if (!error) {
+                  var data = getdata['data'];
+                  print("Data added to cart $msg");
+                  widget.model!.prVarientList![_oldSelVarient].cartCount =
+                      qty.toString();
+                  if (from) {
+                    context
+                        .read<UserProvider>()
+                        .setCartCount(data['cart_count']);
+                    var cart = getdata['cart'];
+                    List<SectionModel> cartList = [];
+                    cartList = (cart as List)
+                        .map((cart) => SectionModel.fromCart(cart))
+                        .toList();
+                    context.read<CartProvider>().setCartlist(cartList);
+                    // if (intent) {
+                    //   cartTotalClear();
+                    //   Navigator.push(
+                    //     context,
+                    //     CupertinoPageRoute(
+                    //       builder: (context) => const Cart(
+                    //         fromBottom: false,
+                    //       ),
+                    //     ),
+                    //   );
+                    // }
+                  }
+                } else {
+                  setSnackbar(msg!, context);
+                }
+                if (mounted) {
+                  setState(
+                    () {
+                      context.read<CartProvider>().setProgress(false);
+                    },
+                  );
+                }
+
+                if (msg == 'Cart Updated !') {
+                  showCustomToast(S.of(context).addedToCart, context);
+                  setSnackbar(
+                      getTranslated(context, 'Product Added Successfully')!,
+                      context);
+                }
+              },
+              onError: (error) async {
+                if (error.toString() == "Invalid number") {}
+                setSnackbar(error.toString(), context);
+              },
+            );
+          } on TimeoutException catch (_) {
+            setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+            if (mounted) {
+              setState(
+                () {
+                  context.read<CartProvider>().setProgress(false);
+                },
+              );
+            }
+          }
+        } else {
+          List<Product>? prList = [];
+          prList.add(widget.model!);
+          context.read<CartProvider>().addCartItem(
+                SectionModel(
+                  qty: qty,
+                  productList: prList,
+                  varientId: widget.model!.prVarientList![_oldSelVarient].id!,
+                  id: widget.model!.id,
+                ),
+              );
+          // db.insertCart(
+          //   widget.model!.id!,
+          //   widget.model!.prVarientList![_oldSelVarient].id!,
+          //   qty,
+          //   context,
+          // );
+          // Future.delayed(const Duration(milliseconds: 100)).then(
+          //   (_) async {
+          //     if (from && intent) {
+          //       cartTotalClear();
+          //       await Navigator.push(
+          //         context,
+          //         CupertinoPageRoute(
+          //           builder: (context) => const Cart(
+          //             fromBottom: false,
+          //           ),
+          //         ),
+          //       );
+          //     }
+          //   },
+          // );
+        }
+      } else {
+        if (mounted) {
+          setState(
+            () {
+              _isNetworkAvail = false;
+            },
+          );
+        }
+      }
+    } on FormatException catch (e) {
+      setSnackbar(e.message, context);
+    }
+  }
+
   void finish() {
     Navigator.of(context).pop();
   }
 
   void setPrice() {
     price = (orgPrice * quantity) + addon;
+  }
+
+  String _parseHtmlString(String htmlString) {
+    final document = parse(htmlString);
+    final String parsedString =
+        parse(document.body!.text).documentElement!.text;
+
+    return parsedString;
   }
 }

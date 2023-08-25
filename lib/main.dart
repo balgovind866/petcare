@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:petcare/HomeScreen.dart';
+import 'package:petcare/Provider/CartProvider.dart';
 import 'package:petcare/Provider/ProductProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
@@ -83,6 +84,8 @@ class _MyAppState extends State<MyApp> {
             create: (context) => UserProvider()),
         ChangeNotifierProvider<ProductProvider>(
             create: (context) => ProductProvider()),
+        ChangeNotifierProvider<CartProvider>(
+            create: (context) => CartProvider()),
       ],
       child: MaterialApp(
         locale: _locale,

@@ -1,13 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:petcare/HomeScreen.dart';
+import 'package:petcare/Model/Section_Model.dart';
+import 'package:petcare/Provider/CartProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
-import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
-import 'package:petcare/model/SubCategoryModel.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
 import 'package:petcare/screen/CheckOutPage.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 
 class AddToCartPage extends StatefulWidget {
   // final bool isCheckout;
@@ -20,16 +26,24 @@ class AddToCartPage extends StatefulWidget {
   }
 }
 
+double totalPrice = 0, oriPrice = 0, delCharge = 0, taxPer = 0;
+List<Promo> promoList = [];
+
 class _AddToCartPage extends State<AddToCartPage> {
-  List<SubCategoryModel> cartModelList = [];
+  final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
+  bool _isCartLoad = true, _placeOrder = true, _isSaveLoad = true;
+  List<SectionModel> cartModelList = [];
 
   _AddToCartPage();
+  bool _isNetworkAvail = true;
+  final List<TextEditingController> _controller = [];
 
   @override
   void initState() {
     super.initState();
-
-    cartModelList = DataFile.getCartModel();
+    _getCart('0');
+    // cartModelList = DataFile.getCartModel();
 
     setState(() {});
   }
@@ -41,6 +55,7 @@ class _AddToCartPage extends State<AddToCartPage> {
 
   @override
   Widget build(BuildContext context) {
+    cartModelList = context.watch<CartProvider>().cartList;
     SizeConfig().init(context);
     double leftMargin = MediaQuery.of(context).size.width * 0.04;
     double imageSize = SizeConfig.safeBlockVertical! * 8;
@@ -258,33 +273,173 @@ class _AddToCartPage extends State<AddToCartPage> {
         onWillPop: _requestPop);
   }
 
-  void removeItem(SubCategoryModel index) {
+  void removeItem(SectionModel index) {
     cartModelList.remove(index);
     setState(() {});
   }
+
+  Future<void> _getCart(String save) async {
+    _isNetworkAvail = await isNetworkAvailable();
+
+    if (_isNetworkAvail) {
+      try {
+        var parameter = {USER_ID: CUR_USERID, SAVE_LATER: save};
+
+        apiBaseHelper.postAPICall(getCartApi, parameter).then((getdata) {
+          bool error = getdata['error'];
+          String? msg = getdata['message'];
+          if (!error) {
+            var data = getdata['data'];
+
+            oriPrice = double.parse(getdata[SUB_TOTAL]);
+
+            taxPer = double.parse(getdata[TAX_PER]);
+
+            totalPrice = delCharge + oriPrice;
+
+            List<SectionModel> cartList = (data as List)
+                .map((data) => SectionModel.fromCart(data))
+                .toList();
+
+            context.read<CartProvider>().setCartlist(cartList);
+
+            if (getdata.containsKey(PROMO_CODES)) {
+              var promo = getdata[PROMO_CODES];
+              promoList =
+                  (promo as List).map((e) => Promo.fromJson(e)).toList();
+            }
+
+            for (int i = 0; i < cartList.length; i++) {
+              _controller.add(TextEditingController());
+            }
+            setState(() {});
+          } else {
+            if (msg != 'Cart Is Empty !') setSnackbar(msg!, context);
+          }
+          if (mounted) {
+            setState(() {
+              _isCartLoad = false;
+            });
+          }
+          // TODO:fix this
+          // _getAddress();
+        }, onError: (error) {
+          setSnackbar(error.toString(), context);
+        });
+      } on TimeoutException catch (_) {
+        setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          _isNetworkAvail = false;
+        });
+      }
+    }
+  }
+
+  // Future<void> _getAddress() async {
+  //   _isNetworkAvail = await isNetworkAvailable();
+  //   if (_isNetworkAvail) {
+  //     try {
+  //       var parameter = {
+  //         USER_ID: CUR_USERID,
+  //       };
+
+  //       apiBaseHelper.postAPICall(getAddressApi, parameter).then((getdata) {
+  //         bool error = getdata['error'];
+
+  //         if (!error) {
+  //           var data = getdata['data'];
+
+  //           addressList =
+  //               (data as List).map((data) => User.fromAddress(data)).toList();
+
+  //           if (addressList.length == 1) {
+  //             selectedAddress = 0;
+  //             selAddress = addressList[0].id;
+  //             if (!ISFLAT_DEL) {
+  //               if (totalPrice < double.parse(addressList[0].freeAmt!)) {
+  //                 delCharge = double.parse(addressList[0].deliveryCharge!);
+  //               } else {
+  //                 delCharge = 0;
+  //               }
+  //             }
+  //           } else {
+  //             for (int i = 0; i < addressList.length; i++) {
+  //               if (addressList[i].isDefault == '1') {
+  //                 selectedAddress = i;
+  //                 selAddress = addressList[i].id;
+  //                 if (!ISFLAT_DEL) {
+  //                   if (totalPrice < double.parse(addressList[i].freeAmt!)) {
+  //                     delCharge = double.parse(addressList[i].deliveryCharge!);
+  //                   } else {
+  //                     delCharge = 0;
+  //                   }
+  //                 }
+  //               }
+  //             }
+  //           }
+
+  //           if (ISFLAT_DEL) {
+  //             if ((oriPrice) < double.parse(MIN_AMT!)) {
+  //               delCharge = double.parse(CUR_DEL_CHR!);
+  //             } else {
+  //               delCharge = 0;
+  //             }
+  //           }
+  //           totalPrice = totalPrice + delCharge;
+  //         } else {
+  //           if (ISFLAT_DEL) {
+  //             if ((oriPrice) < double.parse(MIN_AMT!)) {
+  //               delCharge = double.parse(CUR_DEL_CHR!);
+  //             } else {
+  //               delCharge = 0;
+  //             }
+  //           }
+  //           totalPrice = totalPrice + delCharge;
+  //         }
+  //         if (mounted) {
+  //           setState(() {
+  //             _isLoading = false;
+  //           });
+  //         }
+
+  //         if (checkoutState != null) checkoutState!(() {});
+  //       }, onError: (error) {
+  //         setSnackbar(error.toString(), context);
+  //       });
+  //     } on TimeoutException catch (_) {}
+  //   } else {
+  //     if (mounted) {
+  //       setState(() {
+  //         _isNetworkAvail = false;
+  //       });
+  //     }
+  //   }
+  // }
 }
 
 class ListItem extends StatefulWidget {
   final double imageSize;
-  final SubCategoryModel subCategoryModel;
+  final SectionModel sectionModel;
 
-  final ValueChanged<SubCategoryModel> onChanged;
+  final ValueChanged<SectionModel> onChanged;
 
-  ListItem(this.imageSize, this.subCategoryModel, this.onChanged);
+  ListItem(this.imageSize, this.sectionModel, this.onChanged);
 
   @override
   RoomEditDeleteItemState createState() => RoomEditDeleteItemState(
-      this.imageSize, this.subCategoryModel, this.onChanged);
+      this.imageSize, this.sectionModel, this.onChanged);
 }
 
 class RoomEditDeleteItemState extends State<ListItem> {
   double imageSize;
-  final ValueChanged<SubCategoryModel> onChanged;
-  SubCategoryModel subCategoryModel;
+  final ValueChanged<SectionModel> onChanged;
+  SectionModel sectionModel;
   double radius = 7;
 
-  RoomEditDeleteItemState(
-      this.imageSize, this.subCategoryModel, this.onChanged);
+  RoomEditDeleteItemState(this.imageSize, this.sectionModel, this.onChanged);
 
   @override
   Widget build(BuildContext context) {
@@ -314,8 +469,8 @@ class RoomEditDeleteItemState extends State<ListItem> {
                           Radius.circular(radius),
                         ),
                         image: DecorationImage(
-                            image: AssetImage(Constants.assetsImagePath +
-                                subCategoryModel.image[0]),
+                            image: NetworkImage(
+                                sectionModel.productList![0].image![0]),
                             fit: BoxFit.cover)),
                     // child: Image.asset(
                     //     Constants.assetsImagePath + subCategoryModel.image,height: double.infinity,width: double.infinity,),
@@ -328,7 +483,7 @@ class RoomEditDeleteItemState extends State<ListItem> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             getCustomText(
-                                subCategoryModel.name ?? "",
+                                sectionModel.productList![0].name ?? "",
                                 textColor,
                                 1,
                                 TextAlign.start,
@@ -342,8 +497,9 @@ class RoomEditDeleteItemState extends State<ListItem> {
                                 children: [
                                   Expanded(
                                     child: getCustomText(
-                                        subCategoryModel.priceCurrency! +
-                                            subCategoryModel.price.toString(),
+                                        '\$' +
+                                            sectionModel.perItemTotal!
+                                                .toString(),
                                         textColor,
                                         1,
                                         TextAlign.start,
@@ -392,22 +548,21 @@ class RoomEditDeleteItemState extends State<ListItem> {
                                                   ),
                                                 ),
                                                 onTap: () {
-                                                  setState(() {
-                                                    if (subCategoryModel
-                                                            .quantity >
-                                                        1) {
-                                                      subCategoryModel
-                                                          .quantity--;
-                                                    }
-                                                  });
+                                                  // setState(() {
+                                                  //   if (sectionModel
+                                                  //           .quantity >
+                                                  //       1) {
+                                                  //     subCategoryModel
+                                                  //         .quantity--;
+                                                  //   }
+                                                  // });
                                                 },
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(
                                                     left: 15, right: 15),
                                                 child: getCustomTextWithoutAlign(
-                                                    subCategoryModel.quantity
-                                                        .toString(),
+                                                    sectionModel.qty.toString(),
                                                     primaryTextColor,
                                                     FontWeight.w400,
                                                     Constants
@@ -437,8 +592,8 @@ class RoomEditDeleteItemState extends State<ListItem> {
                                                   ),
                                                 ),
                                                 onTap: () {
-                                                  subCategoryModel.quantity++;
-                                                  setState(() {});
+                                                  // sectionModel.quantity++;
+                                                  // setState(() {});
                                                 },
                                               )
                                             ],
@@ -483,7 +638,7 @@ class RoomEditDeleteItemState extends State<ListItem> {
               ),
             ),
             onTap: () {
-              widget.onChanged(subCategoryModel);
+              widget.onChanged(sectionModel);
             },
           )
         ],
