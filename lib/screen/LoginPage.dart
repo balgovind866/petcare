@@ -52,6 +52,7 @@ class _LoginPage extends State<LoginPage> {
       latitude,
       longitude,
       image;
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -102,7 +103,7 @@ class _LoginPage extends State<LoginPage> {
                   padding: EdgeInsets.only(top: 20, bottom: 10),
                   child: Align(
                       alignment: Alignment.topLeft,
-                      child: getCustomText(S.of(context).emailAddress,
+                      child: getCustomText(S.of(context).mobileNumberAstrix,
                           textColor, 1, TextAlign.start, FontWeight.bold, 14)),
                 ),
                 Container(
@@ -197,7 +198,7 @@ class _LoginPage extends State<LoginPage> {
                   ),
                 ),
                 Expanded(
-                  child: Stack(
+                  child: Column(
                     children: [
                       InkWell(
                         child: Container(
@@ -228,8 +229,7 @@ class _LoginPage extends State<LoginPage> {
                           //     ));
                         },
                       ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
+                      Expanded(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -349,7 +349,7 @@ class _LoginPage extends State<LoginPage> {
           Provider.of<SettingProvider>(context, listen: false);
 
       settingProvider.saveUserDetail(
-          id!, email, mobile, address, image, context);
+          id!,username, email, mobile, address, image, context);
 
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomeScreen(0)));

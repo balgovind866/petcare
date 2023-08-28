@@ -1059,6 +1059,15 @@ class S {
       args: [],
     );
   }
+  /// `Mobile Number*`
+  String get mobileNumberAstrix {
+    return Intl.message(
+      'Mobile Number*',
+      name: 'mobileNumberAstrix',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Address`
   String get addressTitle {

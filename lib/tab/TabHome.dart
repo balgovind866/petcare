@@ -15,6 +15,9 @@ import 'package:petcare/screen/AdoptionList.dart';
 import 'package:petcare/screen/BookPetHotel.dart';
 import 'package:petcare/screen/BookPetTreatment.dart';
 import 'package:petcare/screen/ShoppingPage.dart';
+import 'package:provider/provider.dart';
+
+import '../Provider/SettingProvider.dart';
 
 class TabHome extends StatefulWidget {
   @override
@@ -252,7 +255,8 @@ class _TabHome extends State<TabHome> {
     //           ),
     //         )))
     //     .toList();
-
+    SettingProvider settingProvider =
+        Provider.of<SettingProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: ConstantColors.bgColor,
       body: Container(
@@ -266,7 +270,7 @@ class _TabHome extends State<TabHome> {
                   EdgeInsets.only(left: padding, right: padding, top: padding),
               child: RichText(
                 text: new TextSpan(
-                  text: "Hello",
+                  text: "Hello ",
                   style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.w600,
@@ -274,7 +278,7 @@ class _TabHome extends State<TabHome> {
                       fontFamily: Constants.fontsFamily),
                   children: <TextSpan>[
                     new TextSpan(
-                        text: " Mike,",
+                        text: settingProvider.userName+",",
                         style: TextStyle(
                             color: accentColors,
                             fontWeight: FontWeight.w600,

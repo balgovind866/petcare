@@ -45,7 +45,7 @@ class _RegisterPage extends State<RegisterPage> {
   final addressController = TextEditingController();
   int count = 1;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  String? email, name = 'hemal', password, mobile, id, countrycode, address;
+  String? email, name, password, mobile, id, countrycode, address;
   FocusNode? nameFocus,
       emailFocus,
       passFocus = FocusNode(),
@@ -93,7 +93,61 @@ class _RegisterPage extends State<RegisterPage> {
                         TextAlign.start,
                         FontWeight.w500,
                         15)),
-
+                Padding(
+                  padding: EdgeInsets.only(top: 20, bottom: 10),
+                  child: Align(
+                      alignment: Alignment.topLeft,
+                      child: getCustomText(S.of(context).fullName, textColor, 1,
+                          TextAlign.start, FontWeight.bold, 14)),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  height: MediaQuery.of(context).size.height * 0.07,
+                  child: TextFormField(
+                    maxLines: 1,
+                    keyboardType: TextInputType.name,
+                    focusNode: nameFocus,
+                    textInputAction: TextInputAction.next,
+                    validator: (val) => validateUserName(
+                        val!,
+                        getTranslated(context, 'USER_REQUIRED'),
+                        getTranslated(context, 'USER_LENGTH')),
+                    onSaved: (String? value) {
+                      name = value;
+                    },
+                    onChanged: (String? value) {
+                      print("name : $value");
+                      name = value;
+                    },
+                    onFieldSubmitted: (v) {
+                      _fieldFocusChange(context, nameFocus!, emailFocus);
+                    },
+                    style: TextStyle(
+                        fontFamily: Constants.fontsFamily,
+                        color: primaryTextColor,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16),
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 3, left: 8),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: textColor, width: 0.3),
+                          borderRadius: const BorderRadius.all(
+                            const Radius.circular(8),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: textColor, width: 0.3),
+                          borderRadius: const BorderRadius.all(
+                            const Radius.circular(15),
+                          ),
+                        ),
+                        hintStyle: TextStyle(
+                            fontFamily: Constants.fontsFamily,
+                            color: textColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16)),
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.only(top: 20, bottom: 10),
                   child: Align(
@@ -205,20 +259,20 @@ class _RegisterPage extends State<RegisterPage> {
                   ),
                 ),
 
-                // Padding(
-                //   padding: EdgeInsets.only(bottom: 10),
-                //   child: Align(
-                //       alignment: Alignment.topLeft,
-                //       child: Text(
-                //         S.of(context).mobileNumber,
-                //         textAlign: TextAlign.start,
-                //         style: TextStyle(
-                //             fontFamily: Constants.fontsFamily,
-                //             fontWeight: FontWeight.bold,
-                //             fontSize: 14,
-                //             color: textColor),
-                //       )),
-                // ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        S.of(context).mobileNumberAstrix,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            fontFamily: Constants.fontsFamily,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: textColor),
+                      )),
+                ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 10),
                   child: Row(
@@ -421,10 +475,6 @@ class _RegisterPage extends State<RegisterPage> {
                   ],
                 ),
 
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                ),
-
                 InkWell(
                   child: Container(
                       margin: EdgeInsets.only(top: 10),
@@ -459,12 +509,8 @@ class _RegisterPage extends State<RegisterPage> {
                     //         builder: (context) => MyHomePage()));
                   },
                 ),
-
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.04,
+                  height: MediaQuery.of(context).size.height * 0.01,
                 ),
 
                 Padding(
@@ -575,7 +621,7 @@ class _RegisterPage extends State<RegisterPage> {
 
         SettingProvider settingProvider = context.read<SettingProvider>();
         settingProvider.saveUserDetail(
-            id!, email, mobile, address, '', context);
+            id!, name, email, mobile, address, '', context);
 
         // Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
         Navigator.push(

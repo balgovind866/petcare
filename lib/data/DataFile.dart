@@ -269,12 +269,12 @@ class DataFile {
 
     introList.add(new ModelTopCategory(
         Constants.SHOPPING_ID, "shopping_bag.png", S.of(context).shopping));
-    introList.add(new ModelTopCategory(
-        Constants.TREATMENT_ID, "pet_treatment.png", S.of(context).treatment));
-    introList.add(new ModelTopCategory(
-        Constants.PET_HOTEL_ID, "pet.png", S.of(context).petHotel));
-    introList.add(new ModelTopCategory(
-        Constants.ADOPTION_ID, "pet_house.png", S.of(context).adoption));
+    // introList.add(new ModelTopCategory(
+    //     Constants.TREATMENT_ID, "pet_treatment.png", S.of(context).treatment));
+    // introList.add(new ModelTopCategory(
+    //     Constants.PET_HOTEL_ID, "pet.png", S.of(context).petHotel));
+    // introList.add(new ModelTopCategory(
+    //     Constants.ADOPTION_ID, "pet_house.png", S.of(context).adoption));
 
     return introList;
   }

@@ -59,7 +59,7 @@ class _HomeScreen extends State<HomeScreen> {
     TabHome(),
     ShoppingPage(),
     // TabOrder(),
-    TabPets(),
+    // TabPets(),
     TabProfile()
   ];
   List<Destination> allDestinations = [];
@@ -83,7 +83,7 @@ class _HomeScreen extends State<HomeScreen> {
     allDestinations = <Destination>[
       Destination(S.of(context).home, CupertinoIcons.home),
       Destination(S.of(context).shopping, CupertinoIcons.bag_fill),
-      Destination(S.of(context).pets, Icons.pets_rounded),
+      // Destination(S.of(context).pets, Icons.pets_rounded),
       Destination(S.of(context).profile, Icons.person),
     ];
     return WillPopScope(

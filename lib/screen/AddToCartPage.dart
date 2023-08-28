@@ -36,6 +36,7 @@ class _AddToCartPage extends State<AddToCartPage> {
   List<SectionModel> cartModelList = [];
 
   _AddToCartPage();
+
   bool _isNetworkAvail = true;
   final List<TextEditingController> _controller = [];
 
@@ -339,86 +340,86 @@ class _AddToCartPage extends State<AddToCartPage> {
     }
   }
 
-  // Future<void> _getAddress() async {
-  //   _isNetworkAvail = await isNetworkAvailable();
-  //   if (_isNetworkAvail) {
-  //     try {
-  //       var parameter = {
-  //         USER_ID: CUR_USERID,
-  //       };
+// Future<void> _getAddress() async {
+//   _isNetworkAvail = await isNetworkAvailable();
+//   if (_isNetworkAvail) {
+//     try {
+//       var parameter = {
+//         USER_ID: CUR_USERID,
+//       };
 
-  //       apiBaseHelper.postAPICall(getAddressApi, parameter).then((getdata) {
-  //         bool error = getdata['error'];
+//       apiBaseHelper.postAPICall(getAddressApi, parameter).then((getdata) {
+//         bool error = getdata['error'];
 
-  //         if (!error) {
-  //           var data = getdata['data'];
+//         if (!error) {
+//           var data = getdata['data'];
 
-  //           addressList =
-  //               (data as List).map((data) => User.fromAddress(data)).toList();
+//           addressList =
+//               (data as List).map((data) => User.fromAddress(data)).toList();
 
-  //           if (addressList.length == 1) {
-  //             selectedAddress = 0;
-  //             selAddress = addressList[0].id;
-  //             if (!ISFLAT_DEL) {
-  //               if (totalPrice < double.parse(addressList[0].freeAmt!)) {
-  //                 delCharge = double.parse(addressList[0].deliveryCharge!);
-  //               } else {
-  //                 delCharge = 0;
-  //               }
-  //             }
-  //           } else {
-  //             for (int i = 0; i < addressList.length; i++) {
-  //               if (addressList[i].isDefault == '1') {
-  //                 selectedAddress = i;
-  //                 selAddress = addressList[i].id;
-  //                 if (!ISFLAT_DEL) {
-  //                   if (totalPrice < double.parse(addressList[i].freeAmt!)) {
-  //                     delCharge = double.parse(addressList[i].deliveryCharge!);
-  //                   } else {
-  //                     delCharge = 0;
-  //                   }
-  //                 }
-  //               }
-  //             }
-  //           }
+//           if (addressList.length == 1) {
+//             selectedAddress = 0;
+//             selAddress = addressList[0].id;
+//             if (!ISFLAT_DEL) {
+//               if (totalPrice < double.parse(addressList[0].freeAmt!)) {
+//                 delCharge = double.parse(addressList[0].deliveryCharge!);
+//               } else {
+//                 delCharge = 0;
+//               }
+//             }
+//           } else {
+//             for (int i = 0; i < addressList.length; i++) {
+//               if (addressList[i].isDefault == '1') {
+//                 selectedAddress = i;
+//                 selAddress = addressList[i].id;
+//                 if (!ISFLAT_DEL) {
+//                   if (totalPrice < double.parse(addressList[i].freeAmt!)) {
+//                     delCharge = double.parse(addressList[i].deliveryCharge!);
+//                   } else {
+//                     delCharge = 0;
+//                   }
+//                 }
+//               }
+//             }
+//           }
 
-  //           if (ISFLAT_DEL) {
-  //             if ((oriPrice) < double.parse(MIN_AMT!)) {
-  //               delCharge = double.parse(CUR_DEL_CHR!);
-  //             } else {
-  //               delCharge = 0;
-  //             }
-  //           }
-  //           totalPrice = totalPrice + delCharge;
-  //         } else {
-  //           if (ISFLAT_DEL) {
-  //             if ((oriPrice) < double.parse(MIN_AMT!)) {
-  //               delCharge = double.parse(CUR_DEL_CHR!);
-  //             } else {
-  //               delCharge = 0;
-  //             }
-  //           }
-  //           totalPrice = totalPrice + delCharge;
-  //         }
-  //         if (mounted) {
-  //           setState(() {
-  //             _isLoading = false;
-  //           });
-  //         }
+//           if (ISFLAT_DEL) {
+//             if ((oriPrice) < double.parse(MIN_AMT!)) {
+//               delCharge = double.parse(CUR_DEL_CHR!);
+//             } else {
+//               delCharge = 0;
+//             }
+//           }
+//           totalPrice = totalPrice + delCharge;
+//         } else {
+//           if (ISFLAT_DEL) {
+//             if ((oriPrice) < double.parse(MIN_AMT!)) {
+//               delCharge = double.parse(CUR_DEL_CHR!);
+//             } else {
+//               delCharge = 0;
+//             }
+//           }
+//           totalPrice = totalPrice + delCharge;
+//         }
+//         if (mounted) {
+//           setState(() {
+//             _isLoading = false;
+//           });
+//         }
 
-  //         if (checkoutState != null) checkoutState!(() {});
-  //       }, onError: (error) {
-  //         setSnackbar(error.toString(), context);
-  //       });
-  //     } on TimeoutException catch (_) {}
-  //   } else {
-  //     if (mounted) {
-  //       setState(() {
-  //         _isNetworkAvail = false;
-  //       });
-  //     }
-  //   }
-  // }
+//         if (checkoutState != null) checkoutState!(() {});
+//       }, onError: (error) {
+//         setSnackbar(error.toString(), context);
+//       });
+//     } on TimeoutException catch (_) {}
+//   } else {
+//     if (mounted) {
+//       setState(() {
+//         _isNetworkAvail = false;
+//       });
+//     }
+//   }
+// }
 }
 
 class ListItem extends StatefulWidget {
@@ -471,7 +472,7 @@ class RoomEditDeleteItemState extends State<ListItem> {
                         ),
                         image: DecorationImage(
                             image: NetworkImage(
-                                sectionModel.productList![0].image![0]),
+                                sectionModel.productList![0].image!),
                             fit: BoxFit.cover)),
                     // child: Image.asset(
                     //     Constants.assetsImagePath + subCategoryModel.image,height: double.infinity,width: double.infinity,),
@@ -549,14 +550,14 @@ class RoomEditDeleteItemState extends State<ListItem> {
                                                   ),
                                                 ),
                                                 onTap: () {
-                                                  // setState(() {
-                                                  //   if (sectionModel
-                                                  //           .quantity >
-                                                  //       1) {
-                                                  //     subCategoryModel
-                                                  //         .quantity--;
-                                                  //   }
-                                                  // });
+                                                //   setState(() {
+                                                //     if (sectionModel
+                                                //             .qty! >
+                                                //         1) {
+                                                //       subCategoryModel
+                                                //           .quantity--;
+                                                //     }
+                                                //   });
                                                 },
                                               ),
                                               Padding(

@@ -71,7 +71,7 @@ class SettingProvider {
 
   Future<void> saveUserDetail(
       String userId,
-      // String? name,
+      String? name,
       String? email,
       String? mobile,
       // String? city,
@@ -84,7 +84,7 @@ class SettingProvider {
       BuildContext context) async {
     final waitList = <Future<void>>[];
     waitList.add(_sharedPreferences.setString(ID, userId));
-    // waitList.add(_sharedPreferences.setString(USERNAME, name ?? ''));
+    waitList.add(_sharedPreferences.setString(USERNAME, name ?? ''));
     waitList.add(_sharedPreferences.setString(EMAIL, email ?? ''));
     waitList.add(_sharedPreferences.setString(MOBILE, mobile ?? ''));
     // waitList.add(_sharedPreferences.setString(CITY, city ?? ''));
@@ -97,7 +97,7 @@ class SettingProvider {
 
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
-    // userProvider.setName(name ?? '');
+    userProvider.setName(name ?? '');
     userProvider.setBalance('');
     userProvider.setCartCount('');
     userProvider.setProfilePic(image ?? '');
