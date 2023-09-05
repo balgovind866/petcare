@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
-import 'package:petcare/model/Message.dart';
 import 'package:petcare/model/User.dart';
-import 'package:intl/intl.dart';
+
+import '../model/Message.dart';
 
 class ChatScreen extends StatefulWidget {
   final User? user;
@@ -15,7 +16,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  List<Message> _chatList = messages;
+  List<Message> _chatList = [];
 
   _buildMessage(Message message, bool isMe) {
     final Container msg = Container(
@@ -134,7 +135,7 @@ class _ChatScreenState extends State<ChatScreen> {
           backgroundColor: ConstantColors.bgColor,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
-            title: getCustomText(widget.user!.name??"", textColor, 1,
+            title: getCustomText(widget.user!.name ?? "", textColor, 1,
                 TextAlign.center, FontWeight.bold, 20),
             centerTitle: true,
             elevation: 0.0,

@@ -349,7 +349,7 @@ class _LoginPage extends State<LoginPage> {
           Provider.of<SettingProvider>(context, listen: false);
 
       settingProvider.saveUserDetail(
-          id!,username, email, mobile, address, image, context);
+          id!, username, email, mobile, address, image, context);
 
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomeScreen(0)));

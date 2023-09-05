@@ -1,7 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-
-
 import 'Constant.dart';
 
 final Uri getSellerApi = Uri.parse('${baseUrl}get_sellers');
@@ -371,6 +369,7 @@ String? CUR_CURRENCY = '';
 String? DECIMAL_POINTS = '2';
 
 String? CUR_USERID;
+String INDIAN_RS_SYM = '\u{20B9}';
 
 String? RETURN_DAYS = '';
 String? MAX_ITEMS = '';

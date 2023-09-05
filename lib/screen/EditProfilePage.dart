@@ -1,14 +1,20 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:petcare/HomeScreen.dart';
+import 'package:petcare/Provider/SettingProvider.dart';
+import 'package:petcare/Provider/UserProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
-import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
-import 'package:petcare/model/AddressModel.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
+import 'package:petcare/model/User.dart';
+import 'package:provider/provider.dart';
+import 'package:random_avatar/random_avatar.dart';
 
 import 'AddNewAddressPage.dart';
 
@@ -20,14 +26,15 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePage extends State<EditProfilePage> {
-  List<AddressModel> addressList = DataFile.getAddressList();
+  List addressList = [];
 
   int _selectedPosition = 0;
 
   @override
   void initState() {
     super.initState();
-    addressList = DataFile.getAddressList();
+
+    getAddress();
     setState(() {});
   }
 
@@ -50,19 +57,26 @@ class _EditProfilePage extends State<EditProfilePage> {
     });
   }
 
+  String? userName, email, mobileNo;
+
   TextEditingController _textEditingControllerName =
-      TextEditingController(text: "Chloe B");
-  TextEditingController _textEditingControllerLastName =
-      TextEditingController(text: "Bird");
+      TextEditingController(text: "");
+  // TextEditingController _textEditingControllerLastName =
+  //     TextEditingController(text: "Bird");
   TextEditingController _textEditingControllerEmail =
-      TextEditingController(text: "chloe_bird@gmail.com");
-  TextEditingController _textEditingControllerGender =
-      TextEditingController(text: "Male");
+      TextEditingController(text: "email");
+  // TextEditingController _textEditingControllerGender =
+  //     TextEditingController(text: "Male");
   TextEditingController _textEditingControllerMobile =
       TextEditingController(text: "8759632256");
 
   @override
   Widget build(BuildContext context) {
+    final userData = context.watch<SettingProvider>();
+    _textEditingControllerName.text = userData.userName;
+    _textEditingControllerEmail.text = userData.email;
+    _textEditingControllerMobile.text = userData.mobile;
+
     SizeConfig().init(context);
     double leftMargin = MediaQuery.of(context).size.width * 0.05;
     double editTextHeight = MediaQuery.of(context).size.height * 0.06;
@@ -123,20 +137,13 @@ class _EditProfilePage extends State<EditProfilePage> {
                                         // borderRadius: BorderRadius.all(Radius.elliptical(20.0, 20.0)),
                                       ),
                                       child: (_image != null)
-                                          ? Image(
-                                              image: FileImage(
-                                                  new File(_image!.path)),
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                              height: double.infinity,
-                                            )
-                                          : Image(
-                                              image: AssetImage(
-                                                  Constants.assetsImagePath +
-                                                      "hugh.png"),
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                              height: double.infinity)),
+                                          ? Image.memory(_image!.readAsBytes()
+                                              as Uint8List)
+                                          : (userData.profileUrl != ""
+                                              ? Image.network(
+                                                  userData.profileUrl)
+                                              : RandomAvatar(
+                                                  userData.userName))),
                                 ),
                                 Positioned(
                                     right: 20,
@@ -191,7 +198,7 @@ class _EditProfilePage extends State<EditProfilePage> {
                                   child: Align(
                                       alignment: Alignment.topLeft,
                                       child: getCustomText(
-                                          S.of(context).firstName,
+                                          S.of(context).userName,
                                           textColor,
                                           1,
                                           TextAlign.start,
@@ -227,50 +234,50 @@ class _EditProfilePage extends State<EditProfilePage> {
                             ),
                             flex: 1,
                           ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 10, left: 8),
-                                  child: Align(
-                                      alignment: Alignment.topLeft,
-                                      child: getCustomText(
-                                          S.of(context).lastName,
-                                          textColor,
-                                          1,
-                                          TextAlign.start,
-                                          FontWeight.bold,
-                                          12)),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(bottom: 10, left: 8),
-                                  height: editTextHeight,
-                                  child: TextField(
-                                    maxLines: 1,
-                                    controller: _textEditingControllerLastName,
-                                    style: TextStyle(
-                                        fontFamily: Constants.fontsFamily,
-                                        color: primaryTextColor,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          EdgeInsets.only(top: 3, left: 8),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: textColor),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: disableIconColor),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            flex: 1,
-                          )
+                          // Expanded(
+                          //   child: Column(
+                          //     children: [
+                          //       Padding(
+                          //         padding: EdgeInsets.only(top: 10, left: 8),
+                          //         child: Align(
+                          //             alignment: Alignment.topLeft,
+                          //             child: getCustomText(
+                          //                 S.of(context).lastName,
+                          //                 textColor,
+                          //                 1,
+                          //                 TextAlign.start,
+                          //                 FontWeight.bold,
+                          //                 12)),
+                          //       ),
+                          //       Container(
+                          //         margin: EdgeInsets.only(bottom: 10, left: 8),
+                          //         height: editTextHeight,
+                          //         child: TextField(
+                          //           maxLines: 1,
+                          //           controller: _textEditingControllerLastName,
+                          //           style: TextStyle(
+                          //               fontFamily: Constants.fontsFamily,
+                          //               color: primaryTextColor,
+                          //               fontWeight: FontWeight.w400,
+                          //               fontSize: 16),
+                          //           decoration: InputDecoration(
+                          //             contentPadding:
+                          //                 EdgeInsets.only(top: 3, left: 8),
+                          //             enabledBorder: UnderlineInputBorder(
+                          //               borderSide:
+                          //                   BorderSide(color: textColor),
+                          //             ),
+                          //             focusedBorder: UnderlineInputBorder(
+                          //               borderSide:
+                          //                   BorderSide(color: disableIconColor),
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          //   flex: 1,
+                          // )
                         ],
                       ),
                       Padding(
@@ -311,52 +318,52 @@ class _EditProfilePage extends State<EditProfilePage> {
                       ),
                       Row(
                         children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: 10,
-                                  ),
-                                  child: Align(
-                                      alignment: Alignment.topLeft,
-                                      child: getCustomText(
-                                          S.of(context).gender,
-                                          textColor,
-                                          1,
-                                          TextAlign.start,
-                                          FontWeight.bold,
-                                          12)),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(bottom: 10),
-                                  height: editTextHeight,
-                                  child: TextField(
-                                    controller: _textEditingControllerGender,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        fontFamily: Constants.fontsFamily,
-                                        color: primaryTextColor,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          EdgeInsets.only(top: 3, left: 8),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: textColor),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: disableIconColor),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            flex: 1,
-                          ),
+                          // Expanded(
+                          //   child: Column(
+                          //     children: [
+                          //       Padding(
+                          //         padding: EdgeInsets.only(
+                          //           top: 10,
+                          //         ),
+                          //         child: Align(
+                          //             alignment: Alignment.topLeft,
+                          //             child: getCustomText(
+                          //                 S.of(context).gender,
+                          //                 textColor,
+                          //                 1,
+                          //                 TextAlign.start,
+                          //                 FontWeight.bold,
+                          //                 12)),
+                          //       ),
+                          //       Container(
+                          //         margin: EdgeInsets.only(bottom: 10),
+                          //         height: editTextHeight,
+                          //         child: TextField(
+                          //           controller: _textEditingControllerGender,
+                          //           maxLines: 1,
+                          //           style: TextStyle(
+                          //               fontFamily: Constants.fontsFamily,
+                          //               color: primaryTextColor,
+                          //               fontWeight: FontWeight.w400,
+                          //               fontSize: 16),
+                          //           decoration: InputDecoration(
+                          //             contentPadding:
+                          //                 EdgeInsets.only(top: 3, left: 8),
+                          //             enabledBorder: UnderlineInputBorder(
+                          //               borderSide:
+                          //                   BorderSide(color: textColor),
+                          //             ),
+                          //             focusedBorder: UnderlineInputBorder(
+                          //               borderSide:
+                          //                   BorderSide(color: disableIconColor),
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          //   flex: 1,
+                          // ),
                           Expanded(
                             child: Column(
                               children: [
@@ -560,7 +567,10 @@ class _EditProfilePage extends State<EditProfilePage> {
                         ),
                       )),
                   onTap: () {
-                    Navigator.of(context).pop(true);
+                    updateUserData().then((value) =>
+                        context.read<UserProvider>().notifyListeners());
+
+                    // Navigator.of(context).pop(true);
                   },
                 ),
               ],
@@ -568,5 +578,73 @@ class _EditProfilePage extends State<EditProfilePage> {
           ),
         ),
         onWillPop: _requestPop);
+  }
+
+  Future<void> updateUserData() async {
+    Map parameter = {
+      USER_ID: CUR_USERID,
+      EMAIL: _textEditingControllerEmail.text.toString(),
+      USERNAME: _textEditingControllerName.text.toString(),
+      MOBILE: _textEditingControllerMobile.text.toString(),
+      IMAGE: _image
+    };
+    print("USER_ID: {CUR_USERID}");
+    apiBaseHelper.postAPICall(getUpdateUserApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var i = getdata['data'][0];
+          print("Updated user data $i");
+          String id = i[ID];
+          String name = i[USERNAME];
+          String email = i[EMAIL];
+          String mobile = i[MOBILE];
+          String address = i[ADDRESS];
+          String image = i[IMAGE];
+          CUR_USERID = id;
+
+          // CUR_USERNAME = name;
+
+          UserProvider userProvider = context.read<UserProvider>();
+          userProvider.setName(name ?? '');
+
+          SettingProvider settingProvider = context.read<SettingProvider>();
+          settingProvider.saveUserDetail(
+              id, name, email, mobile, address, '', context);
+          setSnackbar("Successfully updated user", context);
+        } else {
+          setSnackbar(msg!, context);
+        }
+      },
+      onError: (error) {
+        setSnackbar(error.toString(), context);
+      },
+    );
+  }
+
+  Future<void> getAddress() async {
+    Map parameter = {
+      USER_ID: CUR_USERID,
+    };
+    // print("USER_ID: {CUR_USERID}");
+    apiBaseHelper.postAPICall(getAddressApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data'];
+          addressList =
+              (data as List).map((data) => User.fromAddress(data)).toList();
+          setState(() {});
+          setSnackbar(msg!, context);
+        } else {
+          setSnackbar(msg!, context);
+        }
+      },
+      onError: (error) {
+        setSnackbar(error.toString(), context);
+      },
+    );
   }
 }

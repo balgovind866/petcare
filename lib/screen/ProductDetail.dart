@@ -411,9 +411,9 @@ class _ProductDetail extends State<ProductDetail>
                       Transform(
                         alignment: Alignment.center,
                         transform: Matrix4.rotationX(math.pi * -1),
-                        child: Image.asset(
-                          Constants.assetsImagePath +
-                              _modelProduct!.image![selectedSliderPos],
+                        child: Image.network(
+                          // Constants.assetsImagePath +
+                          _modelProduct!.image!,
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: sliderHeight,
@@ -538,7 +538,8 @@ class _ProductDetail extends State<ProductDetail>
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         text: TextSpan(
-                                          text: '\$' + price.toString(),
+                                          text:
+                                              INDIAN_RS_SYM + price.toString(),
                                           style: TextStyle(
                                               color: accentColors,
                                               fontSize:
@@ -552,7 +553,7 @@ class _ProductDetail extends State<ProductDetail>
                                           //     width: 5,
                                           //   )),
                                           //   TextSpan(
-                                          //     text: "\$15.00",
+                                          //     text: "{INDIAN_RS_SYM}15.00",
                                           //     style: TextStyle(
                                           //         decoration: TextDecoration
                                           //             .lineThrough,
@@ -790,14 +791,14 @@ class _ProductDetail extends State<ProductDetail>
                                       FontWeight.w500,
                                       Constants.getPercentSize(
                                           bottomRemainHeight, 4)),
-                                  // getCustomText(
-                                  //     S.of(context).review,
-                                  //     accentColors,
-                                  //     1,
-                                  //     TextAlign.center,
-                                  //     FontWeight.w500,
-                                  //     Constants.getPercentSize(
-                                  //         bottomRemainHeight, 4)),
+                                  getCustomText(
+                                      S.of(context).review,
+                                      accentColors,
+                                      1,
+                                      TextAlign.center,
+                                      FontWeight.w500,
+                                      Constants.getPercentSize(
+                                          bottomRemainHeight, 4)),
                                 ],
                               ),
                               IndexedStack(

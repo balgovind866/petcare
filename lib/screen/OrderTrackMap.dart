@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -11,7 +12,6 @@ import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/model/Message.dart';
 import 'package:petcare/screen/ChatScreen.dart';
 import 'package:petcare/screen/OrderTrackingPage.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/l10n.dart';
@@ -297,8 +297,7 @@ class _OrderTrackMap extends State<OrderTrackMap> {
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChatScreen(user: chats[0].sender),
+                                  builder: (context) => ChatScreen(user: yui),
                                 ));
                               }),
                           getHorizonSpace(SizeConfig.safeBlockHorizontal! * 4),

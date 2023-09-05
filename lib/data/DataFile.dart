@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/generated/l10n.dart';
-import 'package:petcare/model/IntroModel.dart';
-import 'package:petcare/model/ModelNotification.dart';
-import 'package:petcare/model/ModelTopCategory.dart';
-import 'package:petcare/model/DiscModel.dart';
-import 'package:petcare/model/ProfileModel.dart';
-import 'package:petcare/model/SubCategoryModel.dart';
-import 'package:petcare/model/ModelBlog.dart';
-import 'package:petcare/model/ReviewModel.dart';
 import 'package:petcare/model/AddressModel.dart';
 import 'package:petcare/model/CardModel.dart';
-import 'package:petcare/model/PaymentModel.dart';
-import 'package:petcare/model/ModelCoupon.dart';
+import 'package:petcare/model/DiscModel.dart';
+import 'package:petcare/model/IntroModel.dart';
 import 'package:petcare/model/ModelAdoption.dart';
+import 'package:petcare/model/ModelBlog.dart';
+import 'package:petcare/model/ModelCoupon.dart';
+import 'package:petcare/model/ModelNotification.dart';
+import 'package:petcare/model/ModelTopCategory.dart';
 import 'package:petcare/model/ModelTreatment.dart';
-import 'package:petcare/model/OrderModel.dart';
 import 'package:petcare/model/OrderDescModel.dart';
+import 'package:petcare/model/OrderModel.dart';
+import 'package:petcare/model/PaymentModel.dart';
+import 'package:petcare/model/ProfileModel.dart';
+import 'package:petcare/model/ReviewModel.dart';
+import 'package:petcare/model/SubCategoryModel.dart';
 
 class DataFile {
   static List<ModelCoupon> getAllCouponList() {
@@ -177,7 +177,6 @@ class DataFile {
     return introList;
   }
 
-
   static List<SubCategoryModel> getCartModel() {
     List<SubCategoryModel> subList = [];
 
@@ -187,11 +186,11 @@ class DataFile {
     mainModel.review = 3;
     mainModel.reviewDesc = "(4.8)";
     mainModel.name = "Cooling vests";
-    mainModel.image = ["dog4.jpg","cloth_sub2.jpg","cloth_sub3.jpg"];
+    mainModel.image = ["dog4.jpg", "cloth_sub2.jpg", "cloth_sub3.jpg"];
     mainModel.price = 10.50;
     mainModel.priceCurrency = "€";
     mainModel.desc =
-    "Each box contains 10 individually wrapped edible Sorbos EcoStraws.";
+        "Each box contains 10 individually wrapped edible Sorbos EcoStraws.";
     subList.add(mainModel);
 
     mainModel = new SubCategoryModel();
@@ -200,11 +199,11 @@ class DataFile {
     mainModel.review = 3;
     mainModel.reviewDesc = "(3.0)";
     mainModel.name = "Winter coats or jackets.";
-    mainModel.image = ["cloth2.jpg","dog4.jpg","cloth_sub2.jpg"];
+    mainModel.image = ["cloth2.jpg", "dog4.jpg", "cloth_sub2.jpg"];
     mainModel.price = 5.95;
     mainModel.priceCurrency = "€";
     mainModel.desc =
-    "Each box contains 10 individually wrapped chocolate flavoured Sorbos Straws.";
+        "Each box contains 10 individually wrapped chocolate flavoured Sorbos Straws.";
     subList.add(mainModel);
 
     mainModel = new SubCategoryModel();
@@ -213,12 +212,17 @@ class DataFile {
     mainModel.reviewDesc = "(2.5)";
     mainModel.id = 3;
     mainModel.name = "Warm sweaters";
-    mainModel.image = ["cloth3.jpg","cloth_sub2.jpg","dog4.jpg","cloth_sub3.jpg"];
+    mainModel.image = [
+      "cloth3.jpg",
+      "cloth_sub2.jpg",
+      "dog4.jpg",
+      "cloth_sub3.jpg"
+    ];
     mainModel.price = 20.95;
     mainModel.priceCurrency = "€";
     mainModel.isFav = 1;
     mainModel.desc =
-    "Each box contains 10 individually wrapped strawberry flavoured Sorbos Straws.";
+        "Each box contains 10 individually wrapped strawberry flavoured Sorbos Straws.";
     subList.add(mainModel);
     //
     //
@@ -390,17 +394,17 @@ class DataFile {
   static List<ModelAdoption> getAllAdoptionList() {
     List<ModelAdoption> subList = [];
     subList.add(new ModelAdoption(1, "Cooper", "Labrador Retriver", "3 Months",
-        "Male", ["dog1.jpg","dog1.jpg"], "2.5 kg"));
+        "Male", ["dog1.jpg", "dog1.jpg"], "2.5 kg"));
     subList.add(new ModelAdoption(2, "Sophie", "American Eskimo", "5 Months",
-        "Female", ["dog2.jpg","dog2.jpg"], "2.5 kg"));
-    subList.add(new ModelAdoption(
-        3, "Sophie", "Bichon Fries", "3 Months", "Male", ["dog3.jpg","dog3.jpg"], "3.1 kg"));
-    subList.add(new ModelAdoption(
-        4, "Lucky", "Beagie", "9 Months", "Female", ["dog4.jpg","dog4.jpg"], "4 kg"));
+        "Female", ["dog2.jpg", "dog2.jpg"], "2.5 kg"));
+    subList.add(new ModelAdoption(3, "Sophie", "Bichon Fries", "3 Months",
+        "Male", ["dog3.jpg", "dog3.jpg"], "3.1 kg"));
+    subList.add(new ModelAdoption(4, "Lucky", "Beagie", "9 Months", "Female",
+        ["dog4.jpg", "dog4.jpg"], "4 kg"));
     subList.add(new ModelAdoption(5, "Charlie", "Miniature Pinscher",
-        "3 Months", "Male",["dog5.jpg","dog5.jpg"], "2.1 kg"));
+        "3 Months", "Male", ["dog5.jpg", "dog5.jpg"], "2.1 kg"));
     subList.add(new ModelAdoption(6, "Buddy", "Golder Retriver", "10 Months",
-        "Male", ["dog6.jpg","dog6.jpg"], "3.9 kg"));
+        "Male", ["dog6.jpg", "dog6.jpg"], "3.9 kg"));
 
     return subList;
   }
@@ -436,10 +440,11 @@ class DataFile {
     List<SubCategoryModel> subList = [];
 
     subList.addAll(getSubCategoryModel());
-    subList.insertAll(subList.length-1,getFoodCategoryModel());
-    subList.insertAll(subList.length-1,getBeltModel());
+    subList.insertAll(subList.length - 1, getFoodCategoryModel());
+    subList.insertAll(subList.length - 1, getBeltModel());
     return subList;
   }
+
   static List<SubCategoryModel> getSubCategoryModel() {
     List<SubCategoryModel> subList = [];
 
@@ -449,7 +454,7 @@ class DataFile {
     mainModel.review = 3;
     mainModel.reviewDesc = "(4.8)";
     mainModel.name = "Cooling vests";
-    mainModel.image = ["dog4.jpg","cloth_sub2.jpg","cloth_sub3.jpg"];
+    mainModel.image = ["dog4.jpg", "cloth_sub2.jpg", "cloth_sub3.jpg"];
     mainModel.price = 10.50;
     mainModel.priceCurrency = "€";
     mainModel.desc =
@@ -462,7 +467,7 @@ class DataFile {
     mainModel.review = 3;
     mainModel.reviewDesc = "(3.0)";
     mainModel.name = "Winter coats or jackets.";
-    mainModel.image = ["cloth2.jpg","dog4.jpg","cloth_sub2.jpg"];
+    mainModel.image = ["cloth2.jpg", "dog4.jpg", "cloth_sub2.jpg"];
     mainModel.price = 5.95;
     mainModel.priceCurrency = "€";
     mainModel.desc =
@@ -475,7 +480,12 @@ class DataFile {
     mainModel.reviewDesc = "(2.5)";
     mainModel.id = 3;
     mainModel.name = "Warm sweaters";
-    mainModel.image = ["cloth3.jpg","cloth_sub2.jpg","dog4.jpg","cloth_sub3.jpg"];
+    mainModel.image = [
+      "cloth3.jpg",
+      "cloth_sub2.jpg",
+      "dog4.jpg",
+      "cloth_sub3.jpg"
+    ];
     mainModel.price = 20.95;
     mainModel.priceCurrency = "€";
     mainModel.isFav = 1;
@@ -489,7 +499,12 @@ class DataFile {
     mainModel.reviewDesc = "(4.8)";
     mainModel.id = 4;
     mainModel.name = "jackets";
-    mainModel.image = ["dog_cloths.jpg","dog4.jpg","cloth_sub2.jpg","cloth3.jpg"];
+    mainModel.image = [
+      "dog_cloths.jpg",
+      "dog4.jpg",
+      "cloth_sub2.jpg",
+      "cloth3.jpg"
+    ];
     mainModel.price = 7.20;
     mainModel.priceCurrency = "€";
     mainModel.desc =
@@ -522,7 +537,7 @@ class DataFile {
     mainModel.review = 3;
     mainModel.reviewDesc = "(3.8)";
     mainModel.name = "Classic Adult Chicken";
-    mainModel.image = ["food1.jpg","food3.jpg"];
+    mainModel.image = ["food1.jpg", "food3.jpg"];
     mainModel.price = 7.95;
     mainModel.priceCurrency = "€";
     mainModel.desc =
@@ -535,7 +550,7 @@ class DataFile {
     mainModel.review = 3;
     mainModel.reviewDesc = "(4.2)";
     mainModel.name = "Large Breed Adult";
-    mainModel.image = ["food2.jpg","food1.jpg","food3.jpg"];
+    mainModel.image = ["food2.jpg", "food1.jpg", "food3.jpg"];
     mainModel.price = 10.5;
     mainModel.priceCurrency = "€";
     mainModel.desc =
@@ -548,7 +563,7 @@ class DataFile {
     mainModel.reviewDesc = "(4.8)";
     mainModel.id = 3;
     mainModel.name = "Classic Puppy Milk Flavor";
-    mainModel.image = ["food3.jpg","food2.jpg","food1.jpg"];
+    mainModel.image = ["food3.jpg", "food2.jpg", "food1.jpg"];
     mainModel.price = 5.20;
     mainModel.priceCurrency = "€";
     mainModel.isFav = 1;

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/customwidget/ReviewSlider.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
+import 'package:petcare/model/User.dart';
 
 class AddNewAddressPage extends StatefulWidget {
   @override
@@ -19,7 +23,7 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
   @override
   void initState() {
     super.initState();
-
+    getCityCodes();
     setState(() {});
   }
 
@@ -28,6 +32,23 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
     return new Future.value(true);
   }
 
+  List<User> cityList = [];
+  String name = "",
+      mobile = "",
+      city = "",
+      pincode = "",
+      address = "",
+      type = "";
+  TextEditingController _textEditingControllerName =
+      TextEditingController(text: "");
+  TextEditingController _textEditingControllerMobile =
+      TextEditingController(text: "");
+  TextEditingController _textEditingControllerCity =
+      TextEditingController(text: "");
+  TextEditingController _textEditingControllerPincode =
+      TextEditingController(text: "");
+  TextEditingController _textEditingControllerAddress =
+      TextEditingController(text: "");
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -109,6 +130,7 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
                         height: editTextHeight,
                         child: TextField(
                           maxLines: 1,
+                          controller: _textEditingControllerName,
                           style: TextStyle(
                               fontFamily: Constants.fontsFamily,
                               color: primaryTextColor,
@@ -144,6 +166,7 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
                         height: editTextHeight,
                         child: TextField(
                           maxLines: 1,
+                          controller: _textEditingControllerMobile,
                           keyboardType: TextInputType.number,
                           style: TextStyle(
                               fontFamily: Constants.fontsFamily,
@@ -183,29 +206,23 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
                                       )),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.only(bottom: 10),
-                                  height: editTextHeight,
-                                  child: TextField(
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        fontFamily: Constants.fontsFamily,
-                                        color: primaryTextColor,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          EdgeInsets.only(top: 3, left: 8),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: textColor),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: disableIconColor),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                    margin: EdgeInsets.only(bottom: 10),
+                                    height: editTextHeight,
+                                    //   child: Column(
+                                    //     children: cityList
+                                    //         .map((e) => Text(e.name.toString()))
+                                    //         .toList(),
+                                    //   ),
+                                    // )
+                                    child: DropdownMenu<String?>(
+                                      onSelected: (value) {},
+                                      dropdownMenuEntries: cityList
+                                          .map((e) =>
+                                              DropdownMenuEntry<String?>(
+                                                  value: e.name,
+                                                  label: e.name ?? ""))
+                                          .toList(),
+                                    )),
                               ],
                             ),
                             flex: 1,
@@ -230,6 +247,7 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
                                   height: editTextHeight,
                                   child: TextField(
                                     maxLines: 1,
+                                    controller: _textEditingControllerPincode,
                                     style: TextStyle(
                                         fontFamily: Constants.fontsFamily,
                                         color: primaryTextColor,
@@ -274,6 +292,7 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
                         height: editTextHeight,
                         child: TextField(
                           maxLines: 1,
+                          controller: _textEditingControllerAddress,
                           style: TextStyle(
                               fontFamily: Constants.fontsFamily,
                               color: primaryTextColor,
@@ -318,7 +337,7 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
                         ),
                       )),
                   onTap: () {
-                    Navigator.of(context).pop(true);
+                    addAddressData();
                   },
                 ),
               ],
@@ -357,6 +376,55 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
           }
         }
         setState(() {});
+      },
+    );
+  }
+
+  void getCityCodes() async {
+    apiBaseHelper.postAPICall(getCitiesApi, {}).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data'];
+          cityList = (data as List).map((data) => User.fromJson(data)).toList();
+          print("citylist ${cityList[0].name}");
+          // setState(() {});
+          setState(() {});
+        } else {
+          setSnackbar(msg!, context);
+        }
+      },
+      onError: (error) {
+        setSnackbar(error.toString(), context);
+      },
+    );
+  }
+
+  Future<void> addAddressData() async {
+    Map parameter = {
+      "Id": CUR_USERID,
+      "User Name": _textEditingControllerName.text.toString(),
+      "mobile": _textEditingControllerMobile.text.toString(),
+      "City": _textEditingControllerCity.text.toString(),
+      "Area": _textEditingControllerAddress.text.toString(),
+    };
+    print("USER_ID: {CUR_USERID}");
+    print("parameter2 : $parameter");
+    apiBaseHelper.postAPICall(getAddAddressApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          // var data = getdata
+          setSnackbar("Successfully Added Address", context);
+          Navigator.of(context).pop(true);
+        } else {
+          setSnackbar(msg!, context);
+        }
+      },
+      onError: (error) {
+        setSnackbar(error.toString(), context);
       },
     );
   }

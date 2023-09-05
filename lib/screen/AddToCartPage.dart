@@ -139,7 +139,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                           ),
                           Expanded(
                             child: getCustomText(
-                                "\$88.10",
+                                INDIAN_RS_SYM + "88.10",
                                 primaryTextColor,
                                 1,
                                 TextAlign.end,
@@ -168,7 +168,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                             ),
                             Expanded(
                               child: getCustomText(
-                                  "\$9.90",
+                                  INDIAN_RS_SYM + "9.90",
                                   primaryTextColor,
                                   1,
                                   TextAlign.end,
@@ -195,7 +195,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                           ),
                           Expanded(
                             child: getCustomText(
-                                "\$6.50",
+                                INDIAN_RS_SYM + "6.50",
                                 primaryTextColor,
                                 1,
                                 TextAlign.end,
@@ -228,7 +228,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                           ),
                           Expanded(
                             child: getCustomText(
-                                "\$104.50",
+                                INDIAN_RS_SYM + "104.50",
                                 textColor,
                                 1,
                                 TextAlign.end,
@@ -499,7 +499,7 @@ class RoomEditDeleteItemState extends State<ListItem> {
                                 children: [
                                   Expanded(
                                     child: getCustomText(
-                                        '\$' +
+                                        INDIAN_RS_SYM +
                                             sectionModel.perItemTotal!
                                                 .toString(),
                                         textColor,
@@ -550,14 +550,14 @@ class RoomEditDeleteItemState extends State<ListItem> {
                                                   ),
                                                 ),
                                                 onTap: () {
-                                                //   setState(() {
-                                                //     if (sectionModel
-                                                //             .qty! >
-                                                //         1) {
-                                                //       subCategoryModel
-                                                //           .quantity--;
-                                                //     }
-                                                //   });
+                                                  //   setState(() {
+                                                  //     if (sectionModel
+                                                  //             .qty! >
+                                                  //         1) {
+                                                  //       subCategoryModel
+                                                  //           .quantity--;
+                                                  //     }
+                                                  //   });
                                                 },
                                               ),
                                               Padding(

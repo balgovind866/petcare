@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helper/String.dart';
 import 'UserProvider.dart';
 
-class SettingProvider {
+class SettingProvider extends ChangeNotifier {
   late SharedPreferences _sharedPreferences;
 
   SettingProvider(SharedPreferences sharedPreferences) {
@@ -104,5 +104,6 @@ class SettingProvider {
     userProvider.setMobile(mobile ?? '');
     userProvider.setEmail(email ?? '');
     await Future.wait(waitList);
+    notifyListeners();
   }
 }

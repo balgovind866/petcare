@@ -15,7 +15,7 @@ class UserProvider extends ChangeNotifier {
 
   late SettingProvider settingsProvider;
 
-  String get curUserName => _userName;
+  String get curUserName => settingsProvider.userName ?? _userName;
 
   String get curPincode => _curPincode ?? '';
 
@@ -25,11 +25,11 @@ class UserProvider extends ChangeNotifier {
 
   String get mob => _mob;
 
-  String get profilePic => _profilePic;
+  String get profilePic => settingsProvider.profileUrl ?? _profilePic;
 
-  String? get userId => _userId;
+  String? get userId => settingsProvider.userId ?? _userId;
 
-  String get email => _email;
+  String get email => settingsProvider.email ?? _email;
 
   void setPincode(String pin) {
     _curPincode = pin;

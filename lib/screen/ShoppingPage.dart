@@ -1,17 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/Model/Section_Model.dart';
+import 'package:petcare/Provider/CategoryProvider.dart';
 import 'package:petcare/Provider/ProductProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
-import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Session.dart';
 import 'package:petcare/model/SubCategoryModel.dart';
 import 'package:petcare/screen/ProductDetail.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+
+import '../constants/SizeConfig.dart';
+import '../helper/String.dart';
 
 class ShoppingPage extends StatefulWidget {
   @override
@@ -27,37 +33,51 @@ class _ShoppingPage extends State<ShoppingPage> {
   ];
 
   // List<SubCategoryModel> subList = DataFile.getSubCategoryModel();
-  List<Product?> subList = [];
   List<String> selectionList = ["All", "Food", "Belt", "Cloths"];
   List<String> selectedFilterList = [];
+  List<Product>? catList = [];
+  List<Product>? popularList = [];
+
   List<String> filterList = [
-    "King",
-    "Pedigre",
-    "Barker",
-    "Whiskes",
-    "Chomp",
-    "Pet Toys",
-    "Meowo",
-    "Basche",
-    "Domino"
+    // "King",
+    // "Pedigre",
+    // "Barker",
+    // "Whiskes",
+    // "Chomp",
+    // "Pet Toys",
+    // "Meowo",
+    // "Basche",
+    // "Domino"
   ];
   List<String> selectedSortList = [];
   List<String> sortSelectionList = [
-    "Latest Product",
-    "Best Selling",
+    // "Latest Product",
+    // "Best Selling",
     "Lowest Price",
     "Highest Price"
   ];
-  int selectedPos = 0;
+  int selectedPos = -1;
   double _lowerValue = 10;
   double _upperValue = 200;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCat();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<Product?> productList = context.watch<ProductProvider>().productList;
+    final productCtrl = context.read<ProductProvider>();
+    List<Product?> subList = context.watch<ProductProvider>().productList;
+    List<Product?> catList = context.watch<CategoryProvider>().subList;
+    List<Product?> popularList = context.watch<CategoryProvider>().subList;
+    catList
+        .forEach((e) => filterList.addAll(e!.subList!.map((val) => val.name!)));
+    // print("e :${e!.subList![0].name}"
+
     SizeConfig().init(context);
-    subList = [];
-    subList = productList;
     double cellMargin2 = 7;
     double cellMargin = 7;
     var bottomDialogTextSize = SizeConfig.safeBlockVertical! * 45;
@@ -65,7 +85,7 @@ class _ShoppingPage extends State<ShoppingPage> {
     var _crossAxisSpacing2 = 8.0;
     var _crossAxisSpacing = 8.0;
     var _screenWidth = MediaQuery.of(context).size.width;
-    var _crossAxisCount2 = 3;
+    var _crossAxisCount2 = 6;
     var _crossAxisCount = 2;
     var _width = (_screenWidth - ((_crossAxisCount - 1) * _crossAxisSpacing)) /
         _crossAxisCount;
@@ -125,6 +145,9 @@ class _ShoppingPage extends State<ShoppingPage> {
                                     BorderRadius.all(Radius.circular(5))),
                             child: TextField(
                               maxLines: 1,
+                              onChanged: (val) {
+                                productCtrl.setFilteredProductList(val);
+                              },
                               style: TextStyle(
                                   fontFamily: Constants.fontsFamily,
                                   color: primaryTextColor,
@@ -175,13 +198,21 @@ class _ShoppingPage extends State<ShoppingPage> {
                       primary: false,
                       padding: EdgeInsets.all(
                           Constants.getPercentSize1(topSliderWidth, 5)),
-                      itemCount: selectionList.length,
+                      itemCount: catList.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
                             setState(() {
-                              selectedPos = index;
+                              if (selectedPos == index) {
+                                selectedPos = -1;
+                                productCtrl.setCategoryProductList([]);
+                              } else {
+                                productCtrl.setCategoryProductList([]);
+                                selectedPos = index;
+                                productCtrl.setCategoryProductList(
+                                    catList[index]!.subList!);
+                              }
                             });
                           },
                           child: Container(
@@ -190,14 +221,14 @@ class _ShoppingPage extends State<ShoppingPage> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10)),
                                 color: (selectedPos == index)
-                                    ? accentColors
-                                    : lightPrimaryColors),
+                                    ? lightPrimaryColors
+                                    : whiteColor),
                             margin: EdgeInsets.all(
                                 Constants.getPercentSize1(topSliderWidth, 5)),
                             child: Align(
                               alignment: Alignment.center,
                               child: getCustomText(
-                                  selectionList[index],
+                                  catList[index]!.name!,
                                   (selectedPos == index)
                                       ? Colors.white
                                       : accentColors,
@@ -281,7 +312,7 @@ class _ShoppingPage extends State<ShoppingPage> {
                                       getSpace(Constants.getPercentSize1(
                                           mainCatHeight, 1.2)),
                                       getCustomText(
-                                          '\$' +
+                                          INDIAN_RS_SYM +
                                               _subCatModle
                                                   .prVarientList![0].price
                                                   .toString(),
@@ -292,7 +323,7 @@ class _ShoppingPage extends State<ShoppingPage> {
                                           Constants.getPercentSize1(
                                               mainCatHeight, 8)),
                                       // Text(
-                                      //   '\$' +
+                                      //   '{INDIAN_RS_SYM}' +
                                       //       (double.parse("10") -
                                       //               Constants.discountVal)
                                       //           .toString(),
@@ -442,7 +473,11 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                           sortSelectionList[
                                                               index]);
                                                     }
-                                                    setState(() {});
+                                                    final productCtrl =
+                                                        context.read<
+                                                            ProductProvider>();
+                                                    productCtrl.sort(
+                                                        isDesc: index == 1);
                                                   },
                                                   child: Container(
                                                     margin: EdgeInsets.all(
@@ -542,268 +577,228 @@ class _ShoppingPage extends State<ShoppingPage> {
                                       SizeConfig.safeBlockHorizontal! * 15, 20))
                             ],
                           ),
-                          onTap: () {
-                            showModalBottomSheet(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(
-                                        Constants.getPercentSize1(
-                                            bottomDialogTextSizeFilter, 10)),
-                                    topLeft: Radius.circular(
-                                        Constants.getPercentSize1(
-                                            bottomDialogTextSizeFilter, 10))),
-                              ),
-                              context: context,
-                              builder: (context) {
-                                return StatefulBuilder(
-                                  builder: (context, setState) {
-                                    return Container(
-                                      height: bottomDialogTextSizeFilter,
-                                      padding: EdgeInsets.only(
-                                        top: Constants.getPercentSize1(
-                                            bottomDialogTextSizeFilter, 6),
-                                        left: Constants.getPercentSize1(
-                                            bottomDialogTextSizeFilter, 6),
-                                        right: Constants.getPercentSize1(
-                                            bottomDialogTextSizeFilter, 6),
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(
-                                                Constants.getPercentSize1(
-                                                    bottomDialogTextSizeFilter,
-                                                    10)),
-                                            topLeft: Radius.circular(
-                                                Constants.getPercentSize1(
-                                                    bottomDialogTextSizeFilter,
-                                                    10))),
-                                        color: ConstantColors.bgColor,
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          getDialogDivider(
-                                              SizeConfig.safeBlockHorizontal! *
-                                                  20),
-                                          getCustomText(
-                                              S.of(context).filter,
-                                              textColor,
-                                              1,
-                                              TextAlign.start,
-                                              FontWeight.w500,
-                                              Constants.getPercentSize(
+                          onTap: catList.isEmpty
+                              ? null
+                              : () {
+                                  showModalBottomSheet(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(
+                                              Constants.getPercentSize1(
                                                   bottomDialogTextSizeFilter,
-                                                  6)),
-                                          getCustomText(
-                                              S
-                                                  .of(context)
-                                                  .filterProductsWithMoreSpecificTypes,
-                                              primaryTextColor,
-                                              1,
-                                              TextAlign.start,
-                                              FontWeight.w300,
-                                              Constants.getPercentSize(
+                                                  10)),
+                                          topLeft: Radius.circular(
+                                              Constants.getPercentSize1(
                                                   bottomDialogTextSizeFilter,
-                                                  4)),
-                                          getCustomText(
-                                              S.of(context).priceRange,
-                                              textColor,
-                                              1,
-                                              TextAlign.start,
-                                              FontWeight.w500,
-                                              Constants.getPercentSize(
+                                                  10))),
+                                    ),
+                                    context: context,
+                                    builder: (context) {
+                                      return StatefulBuilder(
+                                        builder: (context, setState) {
+                                          return Container(
+                                            height: bottomDialogTextSizeFilter,
+                                            padding: EdgeInsets.only(
+                                              top: Constants.getPercentSize1(
                                                   bottomDialogTextSizeFilter,
-                                                  3)),
-                                          getSpace(18),
-                                          SfRangeSlider(
-                                            values: SfRangeValues(
-                                                _lowerValue, _upperValue),
-                                            min: 0,
-                                            max: 300,
-                                            onChanged: (value) {
-                                              _lowerValue = value.start;
-                                              _upperValue = value.end;
-                                              setState(() {});
-                                            },
-                                          ),
-                                          // FlutterSlider(
-                                          //   handlerHeight: 10,
-                                          //   values: [_lowerValue, _upperValue],
-                                          //   rangeSlider: true,
-                                          //   max: 300,
-                                          //   min: 0,
-                                          //   step: FlutterSliderStep(step: 1),
-                                          //   jump: false,
-                                          //   trackBar: FlutterSliderTrackBar(
-                                          //       activeTrackBarHeight: 8,
-                                          //       activeTrackBar: BoxDecoration(
-                                          //           borderRadius:
-                                          //               BorderRadius.circular(
-                                          //                   4),
-                                          //           color: primaryColor),
-                                          //       inactiveTrackBarHeight: 8,
-                                          //       inactiveTrackBar: BoxDecoration(
-                                          //           borderRadius:
-                                          //               BorderRadius.circular(
-                                          //                   4),
-                                          //           color: viewColor)),
-                                          //   tooltip: FlutterSliderTooltip(
-                                          //       disableAnimation: true,
-                                          //       alwaysShowTooltip: true,
-                                          //       boxStyle: FlutterSliderTooltipBox(
-                                          //           decoration: BoxDecoration(
-                                          //               color: Colors
-                                          //                   .transparent)),
-                                          //       textStyle: TextStyle(
-                                          //           fontFamily:
-                                          //               Constants.fontsFamily,
-                                          //           fontWeight: FontWeight.w800,
-                                          //           fontSize: 15,
-                                          //           color: textColor),
-                                          //       format: (String value) {
-                                          //         return '\$' + value;
-                                          //       }),
-                                          //   handler: FlutterSliderHandler(
-                                          //     decoration: BoxDecoration(),
-                                          //     child: Container(
-                                          //       padding: EdgeInsets.all(10),
-                                          //     ),
-                                          //   ),
-                                          //   rightHandler: FlutterSliderHandler(
-                                          //     decoration: BoxDecoration(),
-                                          //     child: Container(
-                                          //       padding: EdgeInsets.all(10),
-                                          //     ),
-                                          //   ),
-                                          //   disabled: false,
-                                          //   onDragging: (handlerIndex,
-                                          //       lowerValue, upperValue) {
-                                          //     _lowerValue = lowerValue;
-                                          //     _upperValue = upperValue;
-                                          //     setState(() {});
-                                          //   },
-                                          // ),
-                                          getCustomText(
-                                              S.of(context).brand,
-                                              textColor,
-                                              1,
-                                              TextAlign.start,
-                                              FontWeight.w500,
-                                              Constants.getPercentSize(
+                                                  6),
+                                              left: Constants.getPercentSize1(
                                                   bottomDialogTextSizeFilter,
-                                                  3)),
-                                          GridView.count(
-                                            shrinkWrap: true,
-                                            primary: true,
-                                            mainAxisSpacing: _crossAxisSpacing2,
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: cellMargin2,
-                                                horizontal: cellMargin2 +
-                                                    _crossAxisSpacing2),
-                                            crossAxisCount: _crossAxisCount2,
-                                            crossAxisSpacing:
-                                                _crossAxisSpacing2,
-                                            childAspectRatio: _aspectRatio2,
-                                            children: List.generate(
-                                              filterList.length,
-                                              (index) {
-                                                print(
-                                                    "sizes===$mainCatWidth==$mainCatHeight--$_aspectRatio");
-                                                return InkWell(
-                                                  onTap: () {
-                                                    if (selectedFilterList
-                                                        .contains(filterList[
-                                                            index])) {
-                                                      selectedFilterList.remove(
-                                                          filterList[index]);
-                                                    } else {
-                                                      selectedFilterList.add(
-                                                          filterList[index]);
-                                                    }
+                                                  6),
+                                              right: Constants.getPercentSize1(
+                                                  bottomDialogTextSizeFilter,
+                                                  6),
+                                            ),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                  topRight: Radius.circular(
+                                                      Constants.getPercentSize1(
+                                                          bottomDialogTextSizeFilter,
+                                                          10)),
+                                                  topLeft: Radius.circular(
+                                                      Constants.getPercentSize1(
+                                                          bottomDialogTextSizeFilter,
+                                                          10))),
+                                              color: ConstantColors.bgColor,
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                getDialogDivider(SizeConfig
+                                                        .safeBlockHorizontal! *
+                                                    20),
+                                                getCustomText(
+                                                    S.of(context).filter,
+                                                    textColor,
+                                                    1,
+                                                    TextAlign.start,
+                                                    FontWeight.w500,
+                                                    Constants.getPercentSize(
+                                                        bottomDialogTextSizeFilter,
+                                                        6)),
+                                                getCustomText(
+                                                    S
+                                                        .of(context)
+                                                        .filterProductsWithMoreSpecificTypes,
+                                                    primaryTextColor,
+                                                    1,
+                                                    TextAlign.start,
+                                                    FontWeight.w300,
+                                                    Constants.getPercentSize(
+                                                        bottomDialogTextSizeFilter,
+                                                        4)),
+                                                getCustomText(
+                                                    S.of(context).priceRange,
+                                                    textColor,
+                                                    1,
+                                                    TextAlign.start,
+                                                    FontWeight.w500,
+                                                    Constants.getPercentSize(
+                                                        bottomDialogTextSizeFilter,
+                                                        3)),
+                                                getSpace(18),
+                                                SfRangeSlider(
+                                                  values: SfRangeValues(
+                                                      _lowerValue, _upperValue),
+                                                  min: 0,
+                                                  max: 300,
+                                                  shouldAlwaysShowTooltip: true,
+                                                  showLabels: true,
+                                                  onChanged: (value) {
+                                                    _lowerValue = value.start;
+                                                    _upperValue = value.end;
                                                     setState(() {});
                                                   },
-                                                  child: Container(
-                                                    width: double.infinity,
-                                                    height: cellHeight2,
-                                                    decoration: BoxDecoration(
-                                                        color:
-                                                            lightPrimaryColors,
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    7)),
-                                                        border: Border.all(
-                                                            color: (selectedFilterList
-                                                                    .contains(
-                                                                        filterList[
-                                                                            index]))
-                                                                ? accentColors
-                                                                : Colors
-                                                                    .transparent,
-                                                            width: 1)),
-                                                    child: Center(
-                                                      child: getCustomText(
-                                                          filterList[index],
-                                                          textColor,
-                                                          1,
-                                                          TextAlign.center,
-                                                          FontWeight.w500,
-                                                          Constants
-                                                              .getPercentSize1(
-                                                                  cellHeight2,
-                                                                  25)),
-                                                    ),
+                                                ),
+                                                // FlutterSlider(
+                                                //   handlerHeight: 10,
+                                                //   values: [_lowerValue, _upperValue],
+                                                //   rangeSlider: true,
+                                                //   max: 300,
+                                                //   min: 0,
+                                                //   step: FlutterSliderStep(step: 1),
+                                                //   jump: false,
+                                                //   trackBar: FlutterSliderTrackBar(
+                                                //       activeTrackBarHeight: 8,
+                                                //       activeTrackBar: BoxDecoration(
+                                                //           borderRadius:
+                                                //               BorderRadius.circular(
+                                                //                   4),
+                                                //           color: primaryColor),
+                                                //       inactiveTrackBarHeight: 8,
+                                                //       inactiveTrackBar: BoxDecoration(
+                                                //           borderRadius:
+                                                //               BorderRadius.circular(
+                                                //                   4),
+                                                //           color: viewColor)),
+                                                //   tooltip: FlutterSliderTooltip(
+                                                //       disableAnimation: true,
+                                                //       alwaysShowTooltip: true,
+                                                //       boxStyle: FlutterSliderTooltipBox(
+                                                //           decoration: BoxDecoration(
+                                                //               color: Colors
+                                                //                   .transparent)),
+                                                //       textStyle: TextStyle(
+                                                //           fontFamily:
+                                                //               Constants.fontsFamily,
+                                                //           fontWeight: FontWeight.w800,
+                                                //           fontSize: 15,
+                                                //           color: textColor),
+                                                //       format: (String value) {
+                                                //         return '{INDIAN_RS_SYM}' + value;
+                                                //       }),
+                                                //   handler: FlutterSliderHandler(
+                                                //     decoration: BoxDecoration(),
+                                                //     child: Container(
+                                                //       padding: EdgeInsets.all(10),
+                                                //     ),
+                                                //   ),
+                                                //   rightHandler: FlutterSliderHandler(
+                                                //     decoration: BoxDecoration(),
+                                                //     child: Container(
+                                                //       padding: EdgeInsets.all(10),
+                                                //     ),
+                                                //   ),
+                                                //   disabled: false,
+                                                //   onDragging: (handlerIndex,
+                                                //       lowerValue, upperValue) {
+                                                //     _lowerValue = lowerValue;
+                                                //     _upperValue = upperValue;
+                                                //     setState(() {});
+                                                //   },
+                                                // ),
+                                                getCustomText(
+                                                    S.of(context).brand,
+                                                    textColor,
+                                                    1,
+                                                    TextAlign.start,
+                                                    FontWeight.w500,
+                                                    Constants.getPercentSize(
+                                                        bottomDialogTextSizeFilter,
+                                                        3)),
+
+                                                Container(
+                                                  decoration: BoxDecoration(),
+                                                  child: MultiSelectDialogField(
+                                                    items: filterList
+                                                        .map((e) =>
+                                                            MultiSelectItem(
+                                                                e, e))
+                                                        .toList(),
+                                                    chipDisplay:
+                                                        MultiSelectChipDisplay(),
+                                                    onConfirm:
+                                                        (List<dynamic> list) {},
                                                   ),
-                                                );
-                                              },
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: getButtonWithColorWithSize(
+                                                          S.of(context).reset,
+                                                          accentColors,
+                                                          Constants.getPercentSize1(
+                                                              bottomDialogTextSizeFilter,
+                                                              2.3),
+                                                          Constants.getPercentSize1(
+                                                              bottomDialogTextSizeFilter,
+                                                              4), () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }),
+                                                      flex: 1,
+                                                    ),
+                                                    getHorizonSpace(SizeConfig
+                                                            .safeBlockHorizontal! *
+                                                        2),
+                                                    Expanded(
+                                                      child: getButtonWithColorWithSize(
+                                                          S.of(context).apply,
+                                                          accentColors,
+                                                          Constants.getPercentSize1(
+                                                              bottomDialogTextSizeFilter,
+                                                              2.3),
+                                                          Constants.getPercentSize1(
+                                                              bottomDialogTextSizeFilter,
+                                                              4), () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }),
+                                                      flex: 1,
+                                                    )
+                                                  ],
+                                                )
+                                              ],
                                             ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: getButtonWithColorWithSize(
-                                                    S.of(context).reset,
-                                                    accentColors,
-                                                    Constants.getPercentSize1(
-                                                        bottomDialogTextSizeFilter,
-                                                        2.3),
-                                                    Constants.getPercentSize1(
-                                                        bottomDialogTextSizeFilter,
-                                                        4), () {
-                                                  Navigator.of(context).pop();
-                                                }),
-                                                flex: 1,
-                                              ),
-                                              getHorizonSpace(SizeConfig
-                                                      .safeBlockHorizontal! *
-                                                  2),
-                                              Expanded(
-                                                child: getButtonWithColorWithSize(
-                                                    S.of(context).apply,
-                                                    accentColors,
-                                                    Constants.getPercentSize1(
-                                                        bottomDialogTextSizeFilter,
-                                                        2.3),
-                                                    Constants.getPercentSize1(
-                                                        bottomDialogTextSizeFilter,
-                                                        4), () {
-                                                  Navigator.of(context).pop();
-                                                }),
-                                                flex: 1,
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
                         ),
                         flex: 1,
                       ),
@@ -824,5 +819,46 @@ class _ShoppingPage extends State<ShoppingPage> {
 
   void finish() {
     Navigator.of(context).pop();
+  }
+
+  Future<void> getCat() async {
+    await Future.delayed(Duration.zero);
+    Map parameter = {
+      CAT_FILTER: 'false',
+    };
+
+    apiBaseHelper.postAPICall(getCatApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data'];
+
+          catList =
+              (data as List).map((data) => Product.fromCat(data)).toList();
+          print("catList :$catList");
+          if (getdata.containsKey('popular_categories')) {
+            var data = getdata['popular_categories'];
+            popularList =
+                (data as List).map((data) => Product.fromCat(data)).toList();
+
+            if (popularList!.isNotEmpty) {
+              Product pop =
+                  Product.popular('Popular', '${imagePath}popular.svg');
+              catList!.insert(0, pop);
+              context.read<CategoryProvider>().setSubList(popularList);
+            }
+          }
+        } else {
+          setSnackbar(msg!, context);
+        }
+
+        // context.read<HomeProvider>().setCatLoading(false);
+      },
+      onError: (error) {
+        setSnackbar(error.toString(), context);
+        // context.read<HomeProvider>().setCatLoading(false);
+      },
+    );
   }
 }

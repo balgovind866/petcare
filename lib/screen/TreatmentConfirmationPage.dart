@@ -628,8 +628,13 @@ class _TreatmentConfirmationPage extends State<TreatmentConfirmationPage> {
                           getCustomText(":", primaryTextColor, 1,
                               TextAlign.start, FontWeight.w800, 10),
                           Expanded(
-                            child: getCustomText("\$88.10", textColor, 1,
-                                TextAlign.end, FontWeight.w800, 10),
+                            child: getCustomText(
+                                "{INDIAN_RS_SYM}88.10",
+                                textColor,
+                                1,
+                                TextAlign.end,
+                                FontWeight.w800,
+                                10),
                             flex: 1,
                           )
                         ],
@@ -653,8 +658,13 @@ class _TreatmentConfirmationPage extends State<TreatmentConfirmationPage> {
                             getCustomText(":", primaryTextColor, 1,
                                 TextAlign.start, FontWeight.w800, 10),
                             Expanded(
-                              child: getCustomText("\$9.90", textColor, 1,
-                                  TextAlign.end, FontWeight.w800, 10),
+                              child: getCustomText(
+                                  "{INDIAN_RS_SYM}9.90",
+                                  textColor,
+                                  1,
+                                  TextAlign.end,
+                                  FontWeight.w800,
+                                  10),
                               flex: 1,
                             )
                           ],
@@ -677,8 +687,13 @@ class _TreatmentConfirmationPage extends State<TreatmentConfirmationPage> {
                           getCustomText(":", primaryTextColor, 1,
                               TextAlign.start, FontWeight.w800, 10),
                           Expanded(
-                            child: getCustomText("\$6.50", textColor, 1,
-                                TextAlign.end, FontWeight.w800, 10),
+                            child: getCustomText(
+                                "{INDIAN_RS_SYM}6.50",
+                                textColor,
+                                1,
+                                TextAlign.end,
+                                FontWeight.w800,
+                                10),
                             flex: 1,
                           )
                         ],
@@ -705,8 +720,13 @@ class _TreatmentConfirmationPage extends State<TreatmentConfirmationPage> {
                           getCustomText(":", primaryTextColor, 1,
                               TextAlign.start, FontWeight.w800, 12),
                           Expanded(
-                            child: getCustomText("\$104.50", textColor, 1,
-                                TextAlign.end, FontWeight.w800, 10),
+                            child: getCustomText(
+                                "{INDIAN_RS_SYM}104.50",
+                                textColor,
+                                1,
+                                TextAlign.end,
+                                FontWeight.w800,
+                                10),
                             flex: 1,
                           )
                         ],

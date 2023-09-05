@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/Provider/CartProvider.dart';
+import 'package:petcare/Provider/CategoryProvider.dart';
 import 'package:petcare/Provider/ProductProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
@@ -77,7 +78,7 @@ class _MyAppState extends State<MyApp> {
     // SizeConfig().init(context);
     return MultiProvider(
       providers: [
-        Provider<SettingProvider>(
+        ChangeNotifierProvider<SettingProvider>(
           create: (context) => SettingProvider(widget.sharedPreferences),
         ),
         ChangeNotifierProvider<UserProvider>(
@@ -86,6 +87,8 @@ class _MyAppState extends State<MyApp> {
             create: (context) => ProductProvider()),
         ChangeNotifierProvider<CartProvider>(
             create: (context) => CartProvider()),
+        ChangeNotifierProvider<CategoryProvider>(
+            create: (context) => CategoryProvider()),
       ],
       child: MaterialApp(
         locale: _locale,
@@ -118,14 +121,14 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primaryColor: primaryColor,
-          primaryColorDark: primaryColor,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          colorScheme:
-              ColorScheme.fromSwatch().copyWith(secondary: accentColors),
-        ),
+            primaryColor: primaryColor,
+            primaryColorDark: primaryColor,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            colorScheme:
+                ColorScheme.fromSwatch().copyWith(secondary: accentColors),
+            useMaterial3: true),
         home: MyHomePage(),
       ),
     );

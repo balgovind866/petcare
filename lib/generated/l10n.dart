@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -1001,10 +1002,10 @@ class S {
   }
 
   /// `First Name`
-  String get firstName {
+  String get userName {
     return Intl.message(
-      'First Name',
-      name: 'firstName',
+      'User Name',
+      name: 'userName',
       desc: '',
       args: [],
     );
@@ -1059,6 +1060,7 @@ class S {
       args: [],
     );
   }
+
   /// `Mobile Number*`
   String get mobileNumberAstrix {
     return Intl.message(

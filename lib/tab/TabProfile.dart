@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:petcare/Provider/SettingProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -16,6 +17,8 @@ import 'package:petcare/screen/NotificationList.dart';
 import 'package:petcare/screen/ShippingAddressPage.dart';
 import 'package:petcare/screen/WriteReviewPage.dart';
 import 'package:petcare/tab/TabOrder.dart';
+import 'package:provider/provider.dart';
+import 'package:random_avatar/random_avatar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TabProfile extends StatefulWidget {
@@ -58,6 +61,8 @@ class _TabProfile extends State<TabProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final userData = context.watch<SettingProvider>();
+
     SizeConfig().init(context);
     double leftMargin = MediaQuery.of(context).size.width * 0.04;
     double imageSize = SizeConfig.safeBlockVertical! * 15;
@@ -86,18 +91,9 @@ class _TabProfile extends State<TabProfile> {
                     Row(
                       children: [
                         Container(
-                          height: imageSize,
-                          width: imageSize,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.transparent,
-                            image: DecorationImage(
-                              image: AssetImage(Constants.assetsImagePath +
-                                  profileModel.image!),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                            height: imageSize,
+                            width: imageSize,
+                            child: RandomAvatar(userData.userName)),
                         Expanded(
                           child: Container(
                             margin: EdgeInsets.only(left: 15),
@@ -106,7 +102,7 @@ class _TabProfile extends State<TabProfile> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 getCustomText(
-                                    profileModel.name ?? "",
+                                    userData.userName ?? "",
                                     textColor,
                                     1,
                                     TextAlign.start,
@@ -115,7 +111,7 @@ class _TabProfile extends State<TabProfile> {
                                 Padding(
                                   padding: EdgeInsets.only(top: 2),
                                   child: getCustomText(
-                                      profileModel.email ?? "",
+                                      userData.email ?? "",
                                       primaryTextColor,
                                       1,
                                       TextAlign.start,
@@ -133,12 +129,12 @@ class _TabProfile extends State<TabProfile> {
                 ),
               ),
             ),
-            InkWell(
-              child: _getCellSwitch(S.of(context).darkMode, Icons.view_day),
-              onTap: () {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
-              },
-            ),
+            // InkWell(
+            //   child: _getCellSwitch(S.of(context).darkMode, Icons.view_day),
+            //   onTap: () {
+            //     // Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+            //   },
+            // ),
             InkWell(
               child: _getCell(S.of(context).editProfiles, Icons.edit),
               onTap: () {

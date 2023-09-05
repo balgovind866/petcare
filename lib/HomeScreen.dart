@@ -59,13 +59,16 @@ class _HomeScreen extends State<HomeScreen> {
     TabHome(),
     ShoppingPage(),
     // TabOrder(),
-    // TabPets(),
+    TabPets(),
     TabProfile()
   ];
   List<Destination> allDestinations = [];
 
   requestPer() async {
-    await Geolocator.requestPermission();
+    if (!(await Geolocator.checkPermission() == LocationPermission.whileInUse ||
+        await Geolocator.checkPermission() == LocationPermission.always)) {
+      Geolocator.requestPermission();
+    }
   }
 
   @override
@@ -83,7 +86,7 @@ class _HomeScreen extends State<HomeScreen> {
     allDestinations = <Destination>[
       Destination(S.of(context).home, CupertinoIcons.home),
       Destination(S.of(context).shopping, CupertinoIcons.bag_fill),
-      // Destination(S.of(context).pets, Icons.pets_rounded),
+      Destination(S.of(context).pets, Icons.pets_rounded),
       Destination(S.of(context).profile, Icons.person),
     ];
     return WillPopScope(
