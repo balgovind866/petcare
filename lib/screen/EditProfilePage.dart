@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petcare/HomeScreen.dart';
@@ -119,31 +117,18 @@ class _EditProfilePage extends State<EditProfilePage> {
                                   margin: EdgeInsets.only(bottom: 10),
                                   height: 150,
                                   width: 150,
-                                  child: Container(
-                                      margin: EdgeInsets.all(5.0),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.black,
-
-                                        // image: new DecorationImage(
-                                        //   image:(_image!=null)?FileImage(new File(_image!.path)):AssetImage("assetName"),
-                                        // (_image == null)
-                                        //     ? AssetImage(
-                                        //         Constants.assetsImagePath +
-                                        //             "hugh.png")
-                                        //     : FileImage(new File(_image!.path!)),
-                                        // fit: BoxFit.cover,
-                                        // )
-                                        // borderRadius: BorderRadius.all(Radius.elliptical(20.0, 20.0)),
-                                      ),
-                                      child: (_image != null)
-                                          ? Image.memory(_image!.readAsBytes()
-                                              as Uint8List)
-                                          : (userData.profileUrl != ""
-                                              ? Image.network(
-                                                  userData.profileUrl)
-                                              : RandomAvatar(
-                                                  userData.userName))),
+                                  child: FutureBuilder(
+                                      future: _image?.readAsBytes(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          return CircleAvatar(
+                                              backgroundImage:
+                                                  MemoryImage(snapshot.data!));
+                                        } else if (userData.profileUrl != "")
+                                          return Image.network(
+                                              userData.profileUrl);
+                                        return RandomAvatar(userData.userName);
+                                      }),
                                 ),
                                 Positioned(
                                     right: 20,
@@ -234,50 +219,6 @@ class _EditProfilePage extends State<EditProfilePage> {
                             ),
                             flex: 1,
                           ),
-                          // Expanded(
-                          //   child: Column(
-                          //     children: [
-                          //       Padding(
-                          //         padding: EdgeInsets.only(top: 10, left: 8),
-                          //         child: Align(
-                          //             alignment: Alignment.topLeft,
-                          //             child: getCustomText(
-                          //                 S.of(context).lastName,
-                          //                 textColor,
-                          //                 1,
-                          //                 TextAlign.start,
-                          //                 FontWeight.bold,
-                          //                 12)),
-                          //       ),
-                          //       Container(
-                          //         margin: EdgeInsets.only(bottom: 10, left: 8),
-                          //         height: editTextHeight,
-                          //         child: TextField(
-                          //           maxLines: 1,
-                          //           controller: _textEditingControllerLastName,
-                          //           style: TextStyle(
-                          //               fontFamily: Constants.fontsFamily,
-                          //               color: primaryTextColor,
-                          //               fontWeight: FontWeight.w400,
-                          //               fontSize: 16),
-                          //           decoration: InputDecoration(
-                          //             contentPadding:
-                          //                 EdgeInsets.only(top: 3, left: 8),
-                          //             enabledBorder: UnderlineInputBorder(
-                          //               borderSide:
-                          //                   BorderSide(color: textColor),
-                          //             ),
-                          //             focusedBorder: UnderlineInputBorder(
-                          //               borderSide:
-                          //                   BorderSide(color: disableIconColor),
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          //   flex: 1,
-                          // )
                         ],
                       ),
                       Padding(
@@ -318,52 +259,6 @@ class _EditProfilePage extends State<EditProfilePage> {
                       ),
                       Row(
                         children: [
-                          // Expanded(
-                          //   child: Column(
-                          //     children: [
-                          //       Padding(
-                          //         padding: EdgeInsets.only(
-                          //           top: 10,
-                          //         ),
-                          //         child: Align(
-                          //             alignment: Alignment.topLeft,
-                          //             child: getCustomText(
-                          //                 S.of(context).gender,
-                          //                 textColor,
-                          //                 1,
-                          //                 TextAlign.start,
-                          //                 FontWeight.bold,
-                          //                 12)),
-                          //       ),
-                          //       Container(
-                          //         margin: EdgeInsets.only(bottom: 10),
-                          //         height: editTextHeight,
-                          //         child: TextField(
-                          //           controller: _textEditingControllerGender,
-                          //           maxLines: 1,
-                          //           style: TextStyle(
-                          //               fontFamily: Constants.fontsFamily,
-                          //               color: primaryTextColor,
-                          //               fontWeight: FontWeight.w400,
-                          //               fontSize: 16),
-                          //           decoration: InputDecoration(
-                          //             contentPadding:
-                          //                 EdgeInsets.only(top: 3, left: 8),
-                          //             enabledBorder: UnderlineInputBorder(
-                          //               borderSide:
-                          //                   BorderSide(color: textColor),
-                          //             ),
-                          //             focusedBorder: UnderlineInputBorder(
-                          //               borderSide:
-                          //                   BorderSide(color: disableIconColor),
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          //   flex: 1,
-                          // ),
                           Expanded(
                             child: Column(
                               children: [
@@ -429,12 +324,13 @@ class _EditProfilePage extends State<EditProfilePage> {
                                     fontSize: 12),
                                 textAlign: TextAlign.start,
                               ),
-                              onTap: () {
-                                Navigator.push(
+                              onTap: () async {
+                                await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             AddNewAddressPage()));
+                                getAddress();
                               },
                             )
                           ],
@@ -453,7 +349,8 @@ class _EditProfilePage extends State<EditProfilePage> {
                                 child: Column(
                                   children: [
                                     Container(
-                                      height: SizeConfig.safeBlockVertical! * 8,
+                                      height:
+                                          SizeConfig.safeBlockVertical! * 10,
                                       margin:
                                           EdgeInsets.only(top: 10, bottom: 10),
                                       child: Column(
@@ -494,8 +391,20 @@ class _EditProfilePage extends State<EditProfilePage> {
                                                                   top: 5),
                                                           child: getCustomText(
                                                               addressList[index]
-                                                                      .location ??
+                                                                      .address ??
                                                                   "",
+                                                              primaryTextColor,
+                                                              1,
+                                                              TextAlign.start,
+                                                              FontWeight.w500,
+                                                              15),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 5),
+                                                          child: getCustomText(
+                                                              "${addressList[index].area} ${addressList[index].city}",
                                                               primaryTextColor,
                                                               1,
                                                               TextAlign.start,
@@ -586,8 +495,9 @@ class _EditProfilePage extends State<EditProfilePage> {
       EMAIL: _textEditingControllerEmail.text.toString(),
       USERNAME: _textEditingControllerName.text.toString(),
       MOBILE: _textEditingControllerMobile.text.toString(),
-      IMAGE: _image
+      // IMAGE: MultipartFile(contentType: MediaTy)
     };
+
     print("USER_ID: {CUR_USERID}");
     apiBaseHelper.postAPICall(getUpdateUserApi, parameter).then(
       (getdata) {
@@ -607,11 +517,11 @@ class _EditProfilePage extends State<EditProfilePage> {
           // CUR_USERNAME = name;
 
           UserProvider userProvider = context.read<UserProvider>();
-          userProvider.setName(name ?? '');
+          userProvider.setName(name);
 
           SettingProvider settingProvider = context.read<SettingProvider>();
           settingProvider.saveUserDetail(
-              id, name, email, mobile, address, '', context);
+              id, name, email, mobile, address, image, context);
           setSnackbar("Successfully updated user", context);
         } else {
           setSnackbar(msg!, context);

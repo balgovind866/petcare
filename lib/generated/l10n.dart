@@ -572,10 +572,10 @@ class S {
   }
 
   /// `City/District*`
-  String get citydistrict {
+  String get cityarea {
     return Intl.message(
-      'City/District*',
-      name: 'citydistrict',
+      'City/Area*',
+      name: 'cityarea',
       desc: '',
       args: [],
     );

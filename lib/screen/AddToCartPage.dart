@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/Model/Section_Model.dart';
 import 'package:petcare/Provider/CartProvider.dart';
+import 'package:petcare/Provider/UserProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -26,7 +27,7 @@ class AddToCartPage extends StatefulWidget {
   }
 }
 
-double totalPrice = 0, oriPrice = 0, delCharge = 0, taxPer = 0;
+double totalPrice = 0, oriPrice = 0, delCharge = 0, taxPer = 0, taxTotal = 0;
 List<Promo> promoList = [];
 
 class _AddToCartPage extends State<AddToCartPage> {
@@ -39,7 +40,7 @@ class _AddToCartPage extends State<AddToCartPage> {
 
   bool _isNetworkAvail = true;
   final List<TextEditingController> _controller = [];
-
+  bool isLoader = false;
   @override
   void initState() {
     super.initState();
@@ -57,7 +58,7 @@ class _AddToCartPage extends State<AddToCartPage> {
   @override
   Widget build(BuildContext context) {
     cartModelList = context.watch<CartProvider>().cartList;
-
+    print("Cart data :${cartModelList}");
     SizeConfig().init(context);
     double leftMargin = MediaQuery.of(context).size.width * 0.04;
     double imageSize = SizeConfig.safeBlockVertical! * 8;
@@ -97,18 +98,234 @@ class _AddToCartPage extends State<AddToCartPage> {
             child: Column(
               children: [
                 Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(
-                        left: leftMargin,
-                        right: leftMargin,
-                        bottom: MediaQuery.of(context).size.width * 0.01),
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: cartModelList.length,
-                        itemBuilder: (context, index) {
-                          return ListItem(
-                              imageSize, cartModelList[index], removeItem);
-                        }),
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: leftMargin,
+                            right: leftMargin,
+                            bottom: MediaQuery.of(context).size.width * 0.01),
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: cartModelList.length,
+                            itemBuilder: (context, index) {
+                              return Row(
+                                children: [
+                                  Container(
+                                    height: imageSize,
+                                    width: imageSize,
+                                    margin: EdgeInsets.all(10),
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.rectangle,
+                                        color: accentColors,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(7),
+                                        ),
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                                cartModelList[index]
+                                                    .productList![0]
+                                                    .image!),
+                                            fit: BoxFit.cover)),
+                                    // child: Image.asset(
+                                    //     Constants.assetsImagePath + subCategoryModel.image,height: double.infinity,width: double.infinity,),
+                                  ),
+                                  Expanded(
+                                    child: Stack(children: [
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          getCustomText(
+                                              cartModelList[index]
+                                                      .productList![0]
+                                                      .name ??
+                                                  "",
+                                              textColor,
+                                              1,
+                                              TextAlign.start,
+                                              FontWeight.bold,
+                                              Constants.getScreenPercentSize(
+                                                  context, 2)),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 2, right: 15),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Expanded(
+                                                  child: getCustomText(
+                                                      INDIAN_RS_SYM +
+                                                          cartModelList[index]
+                                                              .singleItemNetAmount!
+                                                              .toString(),
+                                                      textColor,
+                                                      1,
+                                                      TextAlign.start,
+                                                      FontWeight.w500,
+                                                      15),
+                                                  flex: 1,
+                                                ),
+
+                                                // new Spacer(),
+                                                InkWell(
+                                                  child: Container(
+                                                      // height: 25,
+                                                      // width: 80,
+                                                      margin: EdgeInsets.only(
+                                                        right: 15,
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.all(5),
+                                                      child: InkWell(
+                                                        child: Center(
+                                                            child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            InkWell(
+                                                              child: Container(
+                                                                height: Constants
+                                                                    .getScreenPercentSize(
+                                                                        context,
+                                                                        3.5),
+                                                                width: Constants
+                                                                    .getScreenPercentSize(
+                                                                        context,
+                                                                        3.5),
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    border: Border.all(
+                                                                        width:
+                                                                            1,
+                                                                        color: Colors
+                                                                            .grey)),
+                                                                child: Center(
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .remove,
+                                                                    size: 15,
+                                                                    color: Colors
+                                                                        .grey,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              onTap: () {
+                                                                // if (int.parse(
+                                                                //         sectionModel.qty!) >
+                                                                //     1) {
+
+                                                                updateCart(
+                                                                        cartModelList[index]
+                                                                            .varientId!,
+                                                                        int.parse(cartModelList[index].qty!) -
+                                                                            1)
+                                                                    .then(
+                                                                        (val) {
+                                                                  _getCart('0');
+                                                                });
+
+                                                                print(
+                                                                    "Product var id ${cartModelList[index].varientId!}");
+                                                                // }
+                                                              },
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      left: 15,
+                                                                      right:
+                                                                          15),
+                                                              child: getCustomTextWithoutAlign(
+                                                                  cartModelList[
+                                                                          index]
+                                                                      .qty
+                                                                      .toString(),
+                                                                  primaryTextColor,
+                                                                  FontWeight
+                                                                      .w400,
+                                                                  Constants
+                                                                      .getScreenPercentSize(
+                                                                          context,
+                                                                          1.5)),
+                                                            ),
+                                                            InkWell(
+                                                              child: Container(
+                                                                height: Constants
+                                                                    .getScreenPercentSize(
+                                                                        context,
+                                                                        3.5),
+                                                                width: Constants
+                                                                    .getScreenPercentSize(
+                                                                        context,
+                                                                        3.5),
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    border: Border.all(
+                                                                        width:
+                                                                            1,
+                                                                        color:
+                                                                            accentColors)),
+                                                                child: Center(
+                                                                  child: Icon(
+                                                                    Icons.add,
+                                                                    size: 15,
+                                                                    color:
+                                                                        accentColors,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              onTap: () {
+                                                                updateCart(
+                                                                        cartModelList[index]
+                                                                            .varientId!,
+                                                                        int.parse(cartModelList[index].qty!) +
+                                                                            1)
+                                                                    .then(
+                                                                        (val) {
+                                                                  _getCart('0');
+                                                                });
+                                                              },
+                                                            )
+                                                          ],
+                                                        )),
+                                                      )),
+                                                  onTap: () {},
+                                                ),
+
+                                                // )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ]),
+                                  ),
+                                ],
+                              );
+
+                              // ListItem(imageSize, cartModelList[index],
+                              //     removeItem, () => _getCart("0"));
+                            }),
+                      ),
+                      if (isLoader) Center(child: CircularProgressIndicator())
+                    ],
                   ),
                   flex: 1,
                 ),
@@ -139,7 +356,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                           ),
                           Expanded(
                             child: getCustomText(
-                                INDIAN_RS_SYM + "88.10",
+                                INDIAN_RS_SYM + oriPrice.toString(),
                                 primaryTextColor,
                                 1,
                                 TextAlign.end,
@@ -168,7 +385,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                             ),
                             Expanded(
                               child: getCustomText(
-                                  INDIAN_RS_SYM + "9.90",
+                                  INDIAN_RS_SYM + delCharge.toString(),
                                   primaryTextColor,
                                   1,
                                   TextAlign.end,
@@ -195,7 +412,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                           ),
                           Expanded(
                             child: getCustomText(
-                                INDIAN_RS_SYM + "6.50",
+                                INDIAN_RS_SYM + taxTotal.toString(),
                                 primaryTextColor,
                                 1,
                                 TextAlign.end,
@@ -228,7 +445,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                           ),
                           Expanded(
                             child: getCustomText(
-                                INDIAN_RS_SYM + "104.50",
+                                INDIAN_RS_SYM + totalPrice.toString(),
                                 textColor,
                                 1,
                                 TextAlign.end,
@@ -280,8 +497,45 @@ class _AddToCartPage extends State<AddToCartPage> {
     setState(() {});
   }
 
+  Future<void> updateCart(String productId, int qty) async {
+    var parameter = {
+      USER_ID: CUR_USERID,
+      PRODUCT_VARIENT_ID: productId,
+      QTY: qty.toString(),
+    };
+    apiBaseHelper.postAPICall(manageCartApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data'];
+          print("Data added to cart $data");
+          // widget.model!.prVarientList![_oldSelVarient].cartCount =
+          //     qty.toString();
+
+          context.read<UserProvider>().setCartCount(data['cart_count']);
+          var cart = getdata['cart'];
+          List<SectionModel> cartList = [];
+          cartList = (cart as List)
+              .map((cart) => SectionModel.fromCart(cart))
+              .toList();
+          context.read<CartProvider>().setCartlist(cartList);
+        } else {
+          setSnackbar(msg!, context);
+        }
+      },
+      onError: (error) async {
+        if (error.toString() == "Invalid number") {}
+        setSnackbar(error.toString(), context);
+      },
+    );
+  }
+
   Future<void> _getCart(String save) async {
     _isNetworkAvail = await isNetworkAvailable();
+    setState(() {
+      isLoader = true;
+    });
 
     if (_isNetworkAvail) {
       try {
@@ -296,8 +550,12 @@ class _AddToCartPage extends State<AddToCartPage> {
             oriPrice = double.parse(getdata[SUB_TOTAL]);
 
             taxPer = double.parse(getdata[TAX_PER]);
+            taxTotal = double.parse(getdata["tax_amount"]);
+
+            delCharge = double.parse(getdata["delivery_charge"]);
 
             totalPrice = delCharge + oriPrice;
+            isLoader = false;
 
             List<SectionModel> cartList = (data as List)
                 .map((data) => SectionModel.fromCart(data))
@@ -316,6 +574,16 @@ class _AddToCartPage extends State<AddToCartPage> {
             }
             setState(() {});
           } else {
+            setState(() {
+              oriPrice = 0;
+              taxPer = 0;
+              taxTotal = 0;
+
+              delCharge = 0;
+
+              totalPrice = delCharge + oriPrice;
+              isLoader = false;
+            });
             if (msg != 'Cart Is Empty !') setSnackbar(msg!, context);
           }
           if (mounted) {
@@ -323,8 +591,6 @@ class _AddToCartPage extends State<AddToCartPage> {
               _isCartLoad = false;
             });
           }
-          // TODO:fix this
-          // _getAddress();
         }, onError: (error) {
           setSnackbar(error.toString(), context);
         });
@@ -427,21 +693,24 @@ class ListItem extends StatefulWidget {
   final SectionModel sectionModel;
 
   final ValueChanged<SectionModel> onChanged;
+  final VoidCallback updateList;
 
-  ListItem(this.imageSize, this.sectionModel, this.onChanged);
+  ListItem(this.imageSize, this.sectionModel, this.onChanged, this.updateList);
 
   @override
   RoomEditDeleteItemState createState() => RoomEditDeleteItemState(
-      this.imageSize, this.sectionModel, this.onChanged);
+      this.imageSize, this.sectionModel, this.onChanged, this.updateList);
 }
 
 class RoomEditDeleteItemState extends State<ListItem> {
   double imageSize;
   final ValueChanged<SectionModel> onChanged;
+  final VoidCallback updateList;
   SectionModel sectionModel;
   double radius = 7;
 
-  RoomEditDeleteItemState(this.imageSize, this.sectionModel, this.onChanged);
+  RoomEditDeleteItemState(
+      this.imageSize, this.sectionModel, this.onChanged, this.updateList);
 
   @override
   Widget build(BuildContext context) {
@@ -500,7 +769,7 @@ class RoomEditDeleteItemState extends State<ListItem> {
                                   Expanded(
                                     child: getCustomText(
                                         INDIAN_RS_SYM +
-                                            sectionModel.perItemTotal!
+                                            sectionModel.singleItemNetAmount!
                                                 .toString(),
                                         textColor,
                                         1,
@@ -550,14 +819,18 @@ class RoomEditDeleteItemState extends State<ListItem> {
                                                   ),
                                                 ),
                                                 onTap: () {
-                                                  //   setState(() {
-                                                  //     if (sectionModel
-                                                  //             .qty! >
-                                                  //         1) {
-                                                  //       subCategoryModel
-                                                  //           .quantity--;
-                                                  //     }
-                                                  //   });
+                                                  // if (int.parse(
+                                                  //         sectionModel.qty!) >
+                                                  //     1) {
+                                                  updateCart(
+                                                      sectionModel.varientId!,
+                                                      int.parse(sectionModel
+                                                              .qty!) -
+                                                          1);
+
+                                                  print(
+                                                      "Product var id ${sectionModel.varientId!}");
+                                                  // }
                                                 },
                                               ),
                                               Padding(
@@ -646,208 +919,38 @@ class RoomEditDeleteItemState extends State<ListItem> {
         ],
       ),
     ));
+  }
 
-    // return InkWell(
-    //     child: Slidable(
-    //   actionPane: SlidableDrawerActionPane(),
-    //   child: Center(
-    //       child: InkWell(
-    //     child: Container(
-    //       margin: EdgeInsets.only(top: 10, bottom: 10),
-    //       decoration: new BoxDecoration(
-    //           color: whiteColor,
-    //           boxShadow: [
-    //             BoxShadow(
-    //               color: Colors.black12,
-    //               offset: Offset(1, 1),
-    //               blurRadius: 1,
-    //             )
-    //           ],
-    //           borderRadius: BorderRadius.all(Radius.circular(10.0))),
-    //       child: Column(
-    //         children: [
-    //           Row(
-    //             children: [
-    //               Container(
-    //                 height: imageSize,
-    //                 width: imageSize,
-    //                 margin: EdgeInsets.all(15),
-    //                 decoration: BoxDecoration(
-    //                   shape: BoxShape.rectangle,
-    //                   color: Colors.transparent,
-    //                   image: DecorationImage(
-    //                     image: ExactAssetImage(Constants.assetsImagePath+subCategoryModel.image),
-    //                     fit: BoxFit.cover,
-    //                   ),
-    //                   borderRadius: BorderRadius.all(
-    //                     Radius.circular(5),
-    //                   ),
-    //                 ),
-    //               ),
-    //               Expanded(
-    //                 child: Stack(
-    //                   children: [
-    //                     Column(
-    //                       mainAxisAlignment: MainAxisAlignment.start,
-    //                       crossAxisAlignment: CrossAxisAlignment.start,
-    //                       children: [
-    //                         getCustomText(subCategoryModel.name, textColor, 1, TextAlign.start, FontWeight.w500, 12),
-    //                         Padding(
-    //                           padding: EdgeInsets.only(top: 10, right: 15),
-    //                           child: Row(
-    //                             mainAxisAlignment: MainAxisAlignment.start,
-    //                             crossAxisAlignment: CrossAxisAlignment.center,
-    //                             children: [
-    //                               InkWell(
-    //                                 child: Container(
-    //                                     height: 25,
-    //                                     // width: 80,
-    //                                     margin: EdgeInsets.only(
-    //                                       right: 15,
-    //                                     ),
-    //                                     padding: EdgeInsets.all(5),
-    //                                     // decoration: BoxDecoration(
-    //                                     //   color: ConstantData.textColor,
-    //                                     //   borderRadius: BorderRadius.all(
-    //                                     //     Radius.circular(10),
-    //                                     //   ),
-    //                                     // ),
-    //
-    //                                     decoration: BoxDecoration(
-    //                                         border: Border.all(
-    //                                             color:primaryTextColor),
-    //                                         borderRadius: BorderRadius.all(
-    //                                             Radius.circular(5))),
-    //                                     child: InkWell(
-    //                                       child: Center(
-    //                                           child: Row(
-    //                                         mainAxisAlignment:
-    //                                             MainAxisAlignment.center,
-    //                                         crossAxisAlignment:
-    //                                             CrossAxisAlignment.center,
-    //                                         children: [
-    //                                           InkWell(
-    //                                             child: Container(
-    //                                               height: 15,
-    //                                               width: 15,
-    //                                               child: Center(
-    //                                                 child: Icon(
-    //                                                   Icons.remove,
-    //                                                   size: 10,
-    //                                                   color: primaryTextColor,
-    //                                                 ),
-    //                                               ),
-    //                                             ),
-    //                                             onTap: () {
-    //                                               setState(() {
-    //                                                 if (subCategoryModel
-    //                                                         .quantity >
-    //                                                     1) {
-    //                                                   subCategoryModel
-    //                                                       .quantity--;
-    //                                                 }
-    //                                               });
-    //                                             },
-    //                                           ),
-    //                                           Padding(
-    //                                             padding: EdgeInsets.only(
-    //                                                 left: 10, right: 10),
-    //                                             child: getCustomText(subCategoryModel.quantity
-    //                                                 .toString(), textColor, 1, TextAlign.start, FontWeight.w400, 10),
-    //                                           ),
-    //
-    //                                           // InkWell(
-    //                                           //     child: Icon(
-    //                                           //       CupertinoIcons.add,
-    //                                           //       color:
-    //                                           //       ConstantData.textColor,
-    //                                           //       size: 15,
-    //                                           //     ),
-    //                                           //     onTap: () {
-    //                                           //       subCategoryModel.quantity++;
-    //                                           //
-    //                                           //       setState(() {});
-    //                                           //     }),
-    //
-    //                                           InkWell(
-    //                                             child: Container(
-    //                                               height: 15,
-    //                                               width: 15,
-    //                                               // decoration: BoxDecoration(
-    //                                               //     color: Colors.transparent,
-    //                                               //     shape: BoxShape.circle,
-    //                                               //     border: Border.all(
-    //                                               //         width: 1,
-    //                                               //         color: ConstantData
-    //                                               //             .primaryTextColor)
-    //                                               // ),
-    //                                               child: Center(
-    //                                                 child: Icon(
-    //                                                   Icons.add,
-    //                                                   size: 10,
-    //                                                   color: primaryTextColor,
-    //                                                 ),
-    //                                               ),
-    //                                             ),
-    //                                             onTap: () {
-    //                                               subCategoryModel.quantity++;
-    //                                               setState(() {});
-    //                                             },
-    //                                           )
-    //                                         ],
-    //                                       )),
-    //                                     )),
-    //                                 onTap: () {},
-    //                               ),
-    //                               new Spacer(),
-    //                               Text(
-    //                                 subCategoryModel.price,
-    //                                 textAlign: TextAlign.start,
-    //                                 style: TextStyle(
-    //                                   fontFamily: "SFProText",
-    //                                   fontWeight: FontWeight.bold,
-    //                                   fontSize: 15,
-    //                                   color:textColor,
-    //                                 ),
-    //                               ),
-    //
-    //                               // )
-    //                             ],
-    //                           ),
-    //                         )
-    //                       ],
-    //                     ),
-    //                   ],
-    //                 ),
-    //                 flex: 1,
-    //               )
-    //             ],
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //     onTap: () {},
-    //   )),
-    //   secondaryActions: <Widget>[
-    //     InkWell(
-    //       child: Container(
-    //         height: 40,
-    //         width: 40,
-    //         margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-    //         decoration: BoxDecoration(
-    //           color:textColor,
-    //           shape: BoxShape.circle,
-    //         ),
-    //         child: Icon(
-    //           Icons.close,
-    //           color: ConstantColors.bgColor,
-    //         ),
-    //       ),
-    //       onTap: () {
-    //         widget.onChanged(subCategoryModel);
-    //       },
-    //     )
-    //   ],
-    // ));
+  void updateCart(String productId, int qty) {
+    var parameter = {
+      USER_ID: CUR_USERID,
+      PRODUCT_VARIENT_ID: productId,
+      QTY: qty.toString(),
+    };
+    apiBaseHelper.postAPICall(manageCartApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data'];
+          print("Data added to cart $msg");
+          // widget.model!.prVarientList![_oldSelVarient].cartCount =
+          //     qty.toString();
+          context.read<UserProvider>().setCartCount(data['cart_count']);
+          var cart = getdata['cart'];
+          List<SectionModel> cartList = [];
+          cartList = (cart as List)
+              .map((cart) => SectionModel.fromCart(cart))
+              .toList();
+          context.read<CartProvider>().setCartlist(cartList);
+        } else {
+          setSnackbar(msg!, context);
+        }
+      },
+      onError: (error) async {
+        if (error.toString() == "Invalid number") {}
+        setSnackbar(error.toString(), context);
+      },
+    ).then((value) => updateList());
   }
 }

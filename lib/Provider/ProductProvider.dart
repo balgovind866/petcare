@@ -28,32 +28,41 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setFilteredProductList(String searchText) {
+  setFilteredProductList(String searchText, List catList) {
     // _filteredProductList = productList!;
     if (searchText != "") {
-      _productList = _productList
+      _productList = _originalProductList
           .where((e) =>
               e.name!.toLowerCase().contains(searchText.toLowerCase()) ||
               e.catName!.toLowerCase().contains(searchText.toLowerCase()))
           .toList();
-    } else {
+    }
+    if (catList.isNotEmpty) {
+      _productList = _productList
+          .where((e) => catList.any((element) => e.catName == element.name))
+          .toList();
+    }
+    if (catList.isEmpty && searchText == "") {
       _productList = _originalProductList;
     }
     notifyListeners();
   }
 
-  setCategoryProductList(List catList) {
+  setFilterPriceBrandList(List catList, List<double> priceRange) {
     // _filteredProductList = productList!;
+    _productList = _originalProductList;
     if (catList.isNotEmpty) {
-      print("Here1 ${catList[0].name}");
-
       _productList = _productList
-          .where((e) => catList.any((element) => e.catName == element.name))
+          .where((e) => catList.any(
+              (element) => e.catName!.toLowerCase() == element.toLowerCase()))
           .toList();
-    } else {
-      print("Here2");
-      _productList = _originalProductList;
     }
+
+    _productList = _productList
+        .where((item) => item.prVarientList!.any((element) =>
+            double.parse(element.price!) >= priceRange[0] &&
+            double.parse(element.price!) <= priceRange[1]))
+        .toList();
     notifyListeners();
   }
 

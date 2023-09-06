@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:html/parser.dart';
@@ -303,24 +304,24 @@ class _ProductDetail extends State<ProductDetail>
                         ),
                         // backgroundColor: ConstantColors.bgColors  ,
                         actions: <Widget>[
-                          IconButton(
-                              icon: Icon(
-                                // (_modelProduct.isFav)
-                                //     ?
-                                // Icons.favorite_rounded
-                                //       :
-                                Icons.favorite_border_rounded,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  // if (_modelProduct.isFav) {
-                                  //   _modelProduct.isFav = false;
-                                  // } else {
-                                  //   _modelProduct.isFav = true;
-                                  // }
-                                });
-                              })
+                          // IconButton(
+                          //     icon: Icon(
+                          //       // (_modelProduct.isFav)
+                          //       //     ?
+                          //       // Icons.favorite_rounded
+                          //       //       :
+                          //       Icons.favorite_border_rounded,
+                          //       color: Colors.red,
+                          //     ),
+                          //     onPressed: () {
+                          //       setState(() {
+                          //         // if (_modelProduct.isFav) {
+                          //         //   _modelProduct.isFav = false;
+                          //         // } else {
+                          //         //   _modelProduct.isFav = true;
+                          //         // }
+                          //       });
+                          //     })
                           // Align(
                           //   alignment: Alignment.topRight,
                           //   child:InkWell(
@@ -701,8 +702,8 @@ class _ProductDetail extends State<ProductDetail>
                                   ),
                                   Row(
                                     children: _modelProduct!.prVarientList!
-                                        .map(
-                                          (e) => Padding(
+                                        .mapIndexed(
+                                          (index, e) => Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Container(
                                               width: heightAdRemove,
@@ -727,6 +728,7 @@ class _ProductDetail extends State<ProductDetail>
                                                     setState(() {
                                                       selectedVarient =
                                                           e.varient_value!;
+                                                      _oldSelVarient = index;
                                                       orgPrice = double.parse(
                                                           e.price!);
                                                       setPrice();

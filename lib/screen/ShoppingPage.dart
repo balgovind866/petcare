@@ -34,21 +34,11 @@ class _ShoppingPage extends State<ShoppingPage> {
 
   // List<SubCategoryModel> subList = DataFile.getSubCategoryModel();
   List<String> selectionList = ["All", "Food", "Belt", "Cloths"];
-  List<String> selectedFilterList = [];
+  List selectedFilterList = [];
   List<Product>? catList = [];
   List<Product>? popularList = [];
 
-  List<String> filterList = [
-    // "King",
-    // "Pedigre",
-    // "Barker",
-    // "Whiskes",
-    // "Chomp",
-    // "Pet Toys",
-    // "Meowo",
-    // "Basche",
-    // "Domino"
-  ];
+  List<String> filterList = [];
   List<String> selectedSortList = [];
   List<String> sortSelectionList = [
     // "Latest Product",
@@ -57,8 +47,9 @@ class _ShoppingPage extends State<ShoppingPage> {
     "Highest Price"
   ];
   int selectedPos = -1;
-  double _lowerValue = 10;
-  double _upperValue = 200;
+  double _lowerValue = 300;
+  double _upperValue = 20000;
+  String searchText = "";
 
   @override
   void initState() {
@@ -75,6 +66,7 @@ class _ShoppingPage extends State<ShoppingPage> {
     List<Product?> popularList = context.watch<CategoryProvider>().subList;
     catList
         .forEach((e) => filterList.addAll(e!.subList!.map((val) => val.name!)));
+
     // print("e :${e!.subList![0].name}"
 
     SizeConfig().init(context);
@@ -146,7 +138,15 @@ class _ShoppingPage extends State<ShoppingPage> {
                             child: TextField(
                               maxLines: 1,
                               onChanged: (val) {
-                                productCtrl.setFilteredProductList(val);
+                                if (selectedPos == -1) {
+                                  productCtrl.setFilteredProductList(val, []);
+                                } else {
+                                  productCtrl.setFilteredProductList(
+                                      val, catList[selectedPos]!.subList!);
+                                }
+                                setState(() {
+                                  searchText = val;
+                                });
                               },
                               style: TextStyle(
                                   fontFamily: Constants.fontsFamily,
@@ -206,12 +206,14 @@ class _ShoppingPage extends State<ShoppingPage> {
                             setState(() {
                               if (selectedPos == index) {
                                 selectedPos = -1;
-                                productCtrl.setCategoryProductList([]);
+                                productCtrl
+                                    .setFilteredProductList(searchText, []);
                               } else {
-                                productCtrl.setCategoryProductList([]);
+                                productCtrl
+                                    .setFilteredProductList(searchText, []);
                                 selectedPos = index;
-                                productCtrl.setCategoryProductList(
-                                    catList[index]!.subList!);
+                                productCtrl.setFilteredProductList(
+                                    searchText, catList[index]!.subList!);
                               }
                             });
                           },
@@ -307,6 +309,14 @@ class _ShoppingPage extends State<ShoppingPage> {
                                       FontWeight.w400,
                                       Constants.getPercentSize1(
                                           mainCatHeight, 7)),
+                                  getCustomText(
+                                      _subCatModle.catName ?? "",
+                                      textColor,
+                                      1,
+                                      TextAlign.start,
+                                      FontWeight.w400,
+                                      Constants.getPercentSize1(
+                                          mainCatHeight, 5)),
                                   Row(
                                     children: [
                                       getSpace(Constants.getPercentSize1(
@@ -465,6 +475,7 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                         .contains(
                                                             sortSelectionList[
                                                                 index])) {
+                                                      selectedSortList.clear();
                                                       selectedSortList.add(
                                                           sortSelectionList[
                                                               index]);
@@ -478,6 +489,7 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                             ProductProvider>();
                                                     productCtrl.sort(
                                                         isDesc: index == 1);
+                                                    setState(() {});
                                                   },
                                                   child: Container(
                                                     margin: EdgeInsets.all(
@@ -663,8 +675,8 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                 SfRangeSlider(
                                                   values: SfRangeValues(
                                                       _lowerValue, _upperValue),
-                                                  min: 0,
-                                                  max: 300,
+                                                  min: 300,
+                                                  max: 20000,
                                                   shouldAlwaysShowTooltip: true,
                                                   showLabels: true,
                                                   onChanged: (value) {
@@ -673,63 +685,6 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                     setState(() {});
                                                   },
                                                 ),
-                                                // FlutterSlider(
-                                                //   handlerHeight: 10,
-                                                //   values: [_lowerValue, _upperValue],
-                                                //   rangeSlider: true,
-                                                //   max: 300,
-                                                //   min: 0,
-                                                //   step: FlutterSliderStep(step: 1),
-                                                //   jump: false,
-                                                //   trackBar: FlutterSliderTrackBar(
-                                                //       activeTrackBarHeight: 8,
-                                                //       activeTrackBar: BoxDecoration(
-                                                //           borderRadius:
-                                                //               BorderRadius.circular(
-                                                //                   4),
-                                                //           color: primaryColor),
-                                                //       inactiveTrackBarHeight: 8,
-                                                //       inactiveTrackBar: BoxDecoration(
-                                                //           borderRadius:
-                                                //               BorderRadius.circular(
-                                                //                   4),
-                                                //           color: viewColor)),
-                                                //   tooltip: FlutterSliderTooltip(
-                                                //       disableAnimation: true,
-                                                //       alwaysShowTooltip: true,
-                                                //       boxStyle: FlutterSliderTooltipBox(
-                                                //           decoration: BoxDecoration(
-                                                //               color: Colors
-                                                //                   .transparent)),
-                                                //       textStyle: TextStyle(
-                                                //           fontFamily:
-                                                //               Constants.fontsFamily,
-                                                //           fontWeight: FontWeight.w800,
-                                                //           fontSize: 15,
-                                                //           color: textColor),
-                                                //       format: (String value) {
-                                                //         return '{INDIAN_RS_SYM}' + value;
-                                                //       }),
-                                                //   handler: FlutterSliderHandler(
-                                                //     decoration: BoxDecoration(),
-                                                //     child: Container(
-                                                //       padding: EdgeInsets.all(10),
-                                                //     ),
-                                                //   ),
-                                                //   rightHandler: FlutterSliderHandler(
-                                                //     decoration: BoxDecoration(),
-                                                //     child: Container(
-                                                //       padding: EdgeInsets.all(10),
-                                                //     ),
-                                                //   ),
-                                                //   disabled: false,
-                                                //   onDragging: (handlerIndex,
-                                                //       lowerValue, upperValue) {
-                                                //     _lowerValue = lowerValue;
-                                                //     _upperValue = upperValue;
-                                                //     setState(() {});
-                                                //   },
-                                                // ),
                                                 getCustomText(
                                                     S.of(context).brand,
                                                     textColor,
@@ -739,21 +694,92 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                     Constants.getPercentSize(
                                                         bottomDialogTextSizeFilter,
                                                         3)),
-
                                                 Container(
                                                   decoration: BoxDecoration(),
-                                                  child: MultiSelectDialogField(
+                                                  child:
+                                                      //     MultipleSearchSelection(
+                                                      //   items: filterList,
+                                                      //   pickedItemBuilder:
+                                                      //       (item) {
+                                                      //     return Container(
+                                                      //       decoration:
+                                                      //           BoxDecoration(
+                                                      //         color: Colors.white,
+                                                      //         border: Border.all(
+                                                      //             color:
+                                                      //                 Colors.grey[
+                                                      //                     400]!),
+                                                      //       ),
+                                                      //       child: Padding(
+                                                      //         padding:
+                                                      //             const EdgeInsets
+                                                      //                 .all(8),
+                                                      //         child: Text(item),
+                                                      //       ),
+                                                      //     );
+                                                      //   },
+                                                      //   fieldToCheck:
+                                                      //       (filterList) {
+                                                      //     return filterList;
+                                                      //   },
+                                                      //   itemBuilder:
+                                                      //       (item, index) {
+                                                      //     return Padding(
+                                                      //       padding:
+                                                      //           const EdgeInsets
+                                                      //               .all(6.0),
+                                                      //       child: Container(
+                                                      //         height: 100,
+                                                      //         decoration:
+                                                      //             BoxDecoration(
+                                                      //           borderRadius:
+                                                      //               BorderRadius
+                                                      //                   .circular(
+                                                      //                       6),
+                                                      //           color:
+                                                      //               Colors.white,
+                                                      //         ),
+                                                      //         child: Padding(
+                                                      //           padding:
+                                                      //               const EdgeInsets
+                                                      //                   .symmetric(
+                                                      //             vertical: 20.0,
+                                                      //             horizontal: 12,
+                                                      //           ),
+                                                      //           child: Text(item),
+                                                      //         ),
+                                                      //       ),
+                                                      //     );
+                                                      //   },
+                                                      // )
+                                                      MultiSelectBottomSheetField(
+                                                    initialValue:
+                                                        selectedFilterList,
                                                     items: filterList
                                                         .map((e) =>
                                                             MultiSelectItem(
                                                                 e, e))
                                                         .toList(),
                                                     chipDisplay:
-                                                        MultiSelectChipDisplay(),
+                                                        MultiSelectChipDisplay(
+                                                      textStyle: TextStyle(
+                                                          color: Colors.white),
+                                                      chipColor: Colors.blue,
+                                                      scroll: true,
+                                                    ),
                                                     onConfirm:
                                                         (List<dynamic> list) {},
+                                                    onSelectionChanged:
+                                                        (List selectedList) {
+                                                      print(selectedList);
+                                                      setState(() {
+                                                        selectedFilterList =
+                                                            selectedList;
+                                                      });
+                                                    },
                                                   ),
                                                 ),
+                                                Spacer(),
                                                 Row(
                                                   children: [
                                                     Expanded(
@@ -766,6 +792,16 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                           Constants.getPercentSize1(
                                                               bottomDialogTextSizeFilter,
                                                               4), () {
+                                                        setState(() {
+                                                          selectedFilterList =
+                                                              [];
+                                                          _lowerValue = 300;
+                                                          _upperValue = 20000;
+                                                        });
+                                                        productCtrl
+                                                            .setFilterPriceBrandList(
+                                                                [],
+                                                                [300, 20000]);
                                                         Navigator.of(context)
                                                             .pop();
                                                       }),
@@ -784,6 +820,13 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                           Constants.getPercentSize1(
                                                               bottomDialogTextSizeFilter,
                                                               4), () {
+                                                        productCtrl
+                                                            .setFilterPriceBrandList(
+                                                                selectedFilterList,
+                                                                [
+                                                              _lowerValue,
+                                                              _upperValue
+                                                            ]);
                                                         Navigator.of(context)
                                                             .pop();
                                                       }),

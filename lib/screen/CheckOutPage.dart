@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
-import 'package:petcare/data/DataFile.dart';
-import 'package:petcare/generated/l10n.dart';
-import 'package:petcare/model/AddressModel.dart';
 import 'package:petcare/customwidget/ReviewSlider.dart';
+import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
+import 'package:petcare/model/User.dart';
 import 'package:petcare/screen/AddNewAddressPage.dart';
 import 'package:petcare/screen/PaymentPage.dart';
 
@@ -18,7 +20,7 @@ class CheckOutPage extends StatefulWidget {
 }
 
 class _CheckOutPage extends State<CheckOutPage> {
-  List<AddressModel> addressList = DataFile.getAddressList();
+  List addressList = [];
 
   int _selectedPosition = 0;
   int currentStep = 0;
@@ -26,7 +28,7 @@ class _CheckOutPage extends State<CheckOutPage> {
   @override
   void initState() {
     super.initState();
-    addressList = DataFile.getAddressList();
+    getAddress();
     setState(() {});
   }
 
@@ -109,12 +111,13 @@ class _CheckOutPage extends State<CheckOutPage> {
                               //     TextAlign.start,
                               //     FontWeight.w600,
                               //     12),
-                              onTap: () {
-                                Navigator.push(
+                              onTap: () async {
+                                await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             AddNewAddressPage()));
+                                getAddress();
                               },
                             )
                           ],
@@ -171,15 +174,32 @@ class _CheckOutPage extends State<CheckOutPage> {
                                                               TextAlign.start,
                                                               FontWeight.w700,
                                                               15),
-                                                          getCustomText(
-                                                              addressList[index]
-                                                                      .location ??
-                                                                  "",
-                                                              primaryTextColor,
-                                                              2,
-                                                              TextAlign.start,
-                                                              FontWeight.w500,
-                                                              15),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: 5),
+                                                            child: getCustomText(
+                                                                addressList[index]
+                                                                        .address ??
+                                                                    "",
+                                                                primaryTextColor,
+                                                                1,
+                                                                TextAlign.start,
+                                                                FontWeight.w500,
+                                                                15),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: 5),
+                                                            child: getCustomText(
+                                                                "${addressList[index].area} ${addressList[index].city}",
+                                                                primaryTextColor,
+                                                                1,
+                                                                TextAlign.start,
+                                                                FontWeight.w500,
+                                                                15),
+                                                          )
                                                         ],
                                                       ),
                                                       flex: 1,
@@ -261,5 +281,30 @@ class _CheckOutPage extends State<CheckOutPage> {
           ),
         ),
         onWillPop: _requestPop);
+  }
+
+  Future<void> getAddress() async {
+    Map parameter = {
+      USER_ID: CUR_USERID,
+    };
+    // print("USER_ID: {CUR_USERID}");
+    apiBaseHelper.postAPICall(getAddressApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data'];
+          addressList =
+              (data as List).map((data) => User.fromAddress(data)).toList();
+          setState(() {});
+          setSnackbar(msg!, context);
+        } else {
+          setSnackbar(msg!, context);
+        }
+      },
+      onError: (error) {
+        setSnackbar(error.toString(), context);
+      },
+    );
   }
 }
