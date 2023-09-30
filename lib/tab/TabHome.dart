@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -7,12 +8,14 @@ import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/data/PrefData.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
 import 'package:petcare/model/DiscModel.dart';
+import 'package:petcare/model/Model.dart';
 import 'package:petcare/model/ModelBlog.dart';
 import 'package:petcare/model/ModelTopCategory.dart';
 import 'package:petcare/model/SubCategoryModel.dart';
 import 'package:petcare/screen/AdoptionList.dart';
-import 'package:petcare/screen/BookPetHotel.dart';
 import 'package:petcare/screen/BookPetTreatment.dart';
 import 'package:petcare/screen/ShoppingPage.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +30,8 @@ class TabHome extends StatefulWidget {
 class _TabHome extends State<TabHome> {
   List<ModelTopCategory> topCatList = [];
   double screenHeight = 50;
-  List<DiscModel> discModelList = [];
+  List<Model> discModelList = [];
+  // List<DiscModel> discModelList = [];
   List<SubCategoryModel> subList = DataFile.getSubCategoryModel();
   List<DiscModel> adoptModelList = [];
   List<ModelBlog> blogLists = [];
@@ -35,7 +39,8 @@ class _TabHome extends State<TabHome> {
   @override
   void initState() {
     super.initState();
-    discModelList = DataFile.getDiscModel();
+    getOfferImages();
+    // discModelList = DataFile.getDiscModel();
     adoptModelList = DataFile.getAdoptModel();
   }
 
@@ -61,7 +66,7 @@ class _TabHome extends State<TabHome> {
     double slider2Height = Constants.getPercentSize(screenHeight, 27);
     double sellingItemWidth = SizeConfig.safeBlockHorizontal! * 42;
     double sellingItemHeight = SizeConfig.safeBlockHorizontal! * 50;
-
+    print("discmodel $discModelList");
     final List<Widget> imageSliders = discModelList
         .map((item) => Container(
                 child: Container(
@@ -83,8 +88,7 @@ class _TabHome extends State<TabHome> {
                             color: whiteColor,
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             image: DecorationImage(
-                              image: ExactAssetImage(
-                                  Constants.assetsImagePath + item.image!),
+                              image: NetworkImage(item.image!),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -131,32 +135,32 @@ class _TabHome extends State<TabHome> {
                                         //       Constants.getPercentSize(
                                         //           sliderHeight, 9)),
                                         // ),
-                                        getSpace(Constants.getPercentSize(
-                                            sliderHeight, 3)),
-                                        Padding(
-                                          padding: EdgeInsets.all(0),
-                                          child: getCustomText(
-                                              item.name ?? "",
-                                              Colors.white,
-                                              1,
-                                              TextAlign.start,
-                                              FontWeight.w600,
-                                              Constants.getPercentSize(
-                                                  sliderHeight, 7)),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.all(0),
-                                          child: getCustomText(
-                                              item.offText ?? "",
-                                              Colors.white,
-                                              1,
-                                              TextAlign.start,
-                                              FontWeight.w400,
-                                              Constants.getPercentSize(
-                                                  sliderHeight, 6)),
-                                        ),
-                                        getSpace(Constants.getPercentSize1(
-                                            sliderHeight, 1.5))
+                                        // getSpace(Constants.getPercentSize(
+                                        //     sliderHeight, 3)),
+                                        // Padding(
+                                        //   padding: EdgeInsets.all(0),
+                                        //   child: getCustomText(
+                                        //       item.name ?? "",
+                                        //       Colors.white,
+                                        //       1,
+                                        //       TextAlign.start,
+                                        //       FontWeight.w600,
+                                        //       Constants.getPercentSize(
+                                        //           sliderHeight, 7)),
+                                        // ),
+                                        // Padding(
+                                        //   padding: EdgeInsets.all(0),
+                                        //   child: getCustomText(
+                                        //       item.desc ?? "",
+                                        //       Colors.white,
+                                        //       1,
+                                        //       TextAlign.start,
+                                        //       FontWeight.w400,
+                                        //       Constants.getPercentSize(
+                                        //           sliderHeight, 6)),
+                                        // ),
+                                        // getSpace(Constants.getPercentSize1(
+                                        //     sliderHeight, 1.5))
                                       ],
                                     ),
                                     flex: 1,
@@ -172,89 +176,91 @@ class _TabHome extends State<TabHome> {
             )))
         .toList();
 
-    // final List<Widget> adoptSliders = adoptModelList
-    //     .map((item) => Container(
-    //             child: Container(
-    //           margin: EdgeInsets.all(7),
-    //           child: InkWell(
-    //             onTap: () {},
-    //             child: ClipRRect(
-    //                 borderRadius: BorderRadius.all(Radius.circular(7)),
-    //                 child: Stack(
-    //                   children: <Widget>[
-    //                     Container(
-    //                       padding: EdgeInsets.only(
-    //                           left: SizeConfig.safeBlockHorizontal * 3),
-    //                       width: MediaQuery.of(context).size.width * 1,
-    //                       decoration: BoxDecoration(
-    //                         color: whiteColor,
-    //                         borderRadius: BorderRadius.all(Radius.circular(10)),
-    //                         image: DecorationImage(
-    //                           image: ExactAssetImage(
-    //                               Constants.assetsImagePath + item.image),
-    //                           fit: BoxFit.cover,
-    //                         ),
-    //                       ),
-    //                     ),
-    //                     Container(
-    //                       // padding: EdgeInsets.symmetric(
-    //                       //     horizontal: SizeConfig.safeBlockHorizontal * 3),
-    //                       // width: SizeConfig.safeBlockHorizontal * 45,
-    //                       child: Column(
-    //                         mainAxisAlignment: MainAxisAlignment.end,
-    //                         crossAxisAlignment: CrossAxisAlignment.start,
-    //                         children: [
-    //                           Row(
-    //                             mainAxisSize: MainAxisSize.max,
-    //                             crossAxisAlignment: CrossAxisAlignment.end,
-    //                             mainAxisAlignment:
-    //                                 MainAxisAlignment.spaceBetween,
-    //                             children: [
-    //                               // Expanded(
-    //                               //   child:
-    //                               Container(
-    //                                 width: SizeConfig.safeBlockHorizontal * 45,
-    //                                 color: Colors.black54,
-    //                                 padding: EdgeInsets.only(left: 7),
-    //                                 child: getCustomText(
-    //                                     item.name,
-    //                                     Colors.white,
-    //                                     2,
-    //                                     TextAlign.start,
-    //                                     FontWeight.w700,
-    //                                     Constants.getPercentSize1(
-    //                                         SizeConfig.safeBlockHorizontal * 40,
-    //                                         10)),
-    //                               ),
-    //                               // , flex: 1,),
-    //                               Container(
-    //                                 padding: EdgeInsets.only(right: 3),
-    //                                 width: SizeConfig.safeBlockHorizontal * 25,
-    //                                 // width: SizeConfig.safeBlockHorizontal * 30,
-    //                                 child: getButtonWithColorWithSize(
-    //                                     S.of(context).adoptNow,
-    //                                     accentColors,
-    //                                     Constants.getPercentSize1(
-    //                                         slider2Height, 2),
-    //                                     Constants.getPercentSize1(
-    //                                         SizeConfig.safeBlockHorizontal * 30,
-    //                                         9),
-    //                                     // SizeConfig.safeBlockHorizontal * 30, 9),
-    //                                     () {
-    //                                   sendToAdopt();
-    //                                 }),
-    //                               ),
-    //                               // getHorizonSpace(1)
-    //                             ],
-    //                           ),
-    //                         ],
-    //                       ),
-    //                     )
-    //                   ],
-    //                 )),
-    //           ),
-    //         )))
-    //     .toList();
+    final List<Widget> adoptSliders = adoptModelList
+        .map((item) => Container(
+                child: Container(
+              margin: EdgeInsets.all(7),
+              child: InkWell(
+                onTap: () {},
+                child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: SizeConfig.safeBlockHorizontal! * 3),
+                          width: MediaQuery.of(context).size.width * 1,
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            image: DecorationImage(
+                              image: ExactAssetImage(
+                                  Constants.assetsImagePath + item.image!),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          // padding: EdgeInsets.symmetric(
+                          //     horizontal: SizeConfig.safeBlockHorizontal * 3),
+                          // width: SizeConfig.safeBlockHorizontal * 45,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Expanded(
+                                  //   child:
+                                  Container(
+                                    width: SizeConfig.safeBlockHorizontal! * 45,
+                                    color: Colors.black54,
+                                    padding: EdgeInsets.only(left: 7),
+                                    child: getCustomText(
+                                        item.name!,
+                                        Colors.white,
+                                        2,
+                                        TextAlign.start,
+                                        FontWeight.w700,
+                                        Constants.getPercentSize1(
+                                            SizeConfig.safeBlockHorizontal! *
+                                                40,
+                                            10)),
+                                  ),
+                                  // , flex: 1,),
+                                  Container(
+                                    padding: EdgeInsets.only(right: 3),
+                                    width: SizeConfig.safeBlockHorizontal! * 25,
+                                    // width: SizeConfig.safeBlockHorizontal * 30,
+                                    child: getButtonWithColorWithSize(
+                                        S.of(context).services,
+                                        accentColors,
+                                        Constants.getPercentSize1(
+                                            slider2Height, 2),
+                                        Constants.getPercentSize1(
+                                            SizeConfig.safeBlockHorizontal! *
+                                                30,
+                                            9),
+                                        // SizeConfig.safeBlockHorizontal * 30, 9),
+                                        () {
+                                      sendToAdopt();
+                                    }),
+                                  ),
+                                  // getHorizonSpace(1)
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    )),
+              ),
+            )))
+        .toList();
     SettingProvider settingProvider =
         Provider.of<SettingProvider>(context, listen: false);
     return Scaffold(
@@ -278,7 +284,7 @@ class _TabHome extends State<TabHome> {
                       fontFamily: Constants.fontsFamily),
                   children: <TextSpan>[
                     new TextSpan(
-                        text: settingProvider.userName+",",
+                        text: settingProvider.userName + ",",
                         style: TextStyle(
                             color: accentColors,
                             fontWeight: FontWeight.w600,
@@ -320,7 +326,7 @@ class _TabHome extends State<TabHome> {
                           break;
                         case 1:
                           PrefData()
-                              .setSelectedMainCategory(Constants.TREATMENT_ID);
+                              .setSelectedMainCategory(Constants.GROOMING_ID);
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => BookPetTreatment(),
                           ));
@@ -328,9 +334,9 @@ class _TabHome extends State<TabHome> {
                           break;
                         case 2:
                           PrefData()
-                              .setSelectedMainCategory(Constants.PET_HOTEL_ID);
+                              .setSelectedMainCategory(Constants.PET_WALKER_ID);
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => BookPetHotel(),
+                            builder: (context) => BookPetTreatment(),
                           ));
                           break;
                         case 3:
@@ -598,7 +604,7 @@ class _TabHome extends State<TabHome> {
                                             25,
                                         // width: SizeConfig.safeBlockHorizontal * 30,
                                         child: getButtonWithColorWithSize(
-                                            S.of(context).adoptNow,
+                                            S.of(context).services,
                                             accentColors,
                                             Constants.getPercentSize1(
                                                 slider2Height, 2),
@@ -633,5 +639,27 @@ class _TabHome extends State<TabHome> {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => AdoptionList(),
     ));
+  }
+
+  void getOfferImages() {
+    Map parameter = {};
+
+    apiBaseHelper.postAPICall(getOfferImageApi, parameter).then((getdata) {
+      bool error = getdata['error'];
+      String? msg = getdata['message'];
+      if (!error) {
+        var data = getdata['data'];
+        discModelList.clear();
+        discModelList =
+            (data as List).map((data) => Model.fromSlider(data)).toList();
+      } else {
+        setSnackbar(msg!, context);
+      }
+      setState(() {});
+      // context.read<HomeProvider>().setOfferLoading(false);
+    }, onError: (error) {
+      setSnackbar(error.toString(), context);
+      // context.read<HomeProvider>().setOfferLoading(false);
+    });
   }
 }

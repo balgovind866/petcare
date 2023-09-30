@@ -12,8 +12,8 @@ class Constants {
   static const double avatarRadius = 40;
   static const NONE_CAT = 0;
   static const SHOPPING_ID = 1;
-  static const TREATMENT_ID = 2;
-  static const PET_HOTEL_ID = 3;
+  static const GROOMING_ID = 2;
+  static const PET_WALKER_ID = 3;
   static const ADOPTION_ID = 4;
   static ThemeData themeData = ThemeData();
   static double bottomTxt = 23;

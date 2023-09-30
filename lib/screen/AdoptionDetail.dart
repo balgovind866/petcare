@@ -1,19 +1,18 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:petcare/constants/ConstantColors.dart';
-import 'package:petcare/data/PrefData.dart';
-import 'package:petcare/screen/SubmitAdoptionForm.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/customwidget/StarRating.dart';
 import 'package:petcare/data/DataFile.dart';
+import 'package:petcare/data/PrefData.dart';
 import 'package:petcare/generated/l10n.dart';
-
-import 'dart:math' as math;
-
-import 'package:petcare/model/ReviewModel.dart';
 import 'package:petcare/model/ModelAdoption.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:petcare/model/ReviewModel.dart';
+import 'package:petcare/screen/SubmitAdoptionForm.dart';
 // import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart'; // import this
 
 // ignore: must_be_immutable
@@ -132,7 +131,7 @@ class _AdoptionDetail extends State<AdoptionDetail>
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          primary: accentColors,
+                          backgroundColor: accentColors,
                         ),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -153,7 +152,7 @@ class _AdoptionDetail extends State<AdoptionDetail>
                             // getHorizonSpace(
                             //     SizeConfig.safeBlockHorizontal * 5),
                             getCustomText(
-                                S.of(context).adoptNow,
+                                S.of(context).services,
                                 Colors.white,
                                 1,
                                 TextAlign.center,

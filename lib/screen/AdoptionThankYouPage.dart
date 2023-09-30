@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:petcare/HomeScreen.dart';
-import 'package:petcare/constants/ConstantWidgets.dart';
-import 'package:petcare/data/PrefData.dart';
-import 'package:petcare/screen/RateProduct.dart';
 import 'package:petcare/constants/ConstantColors.dart';
+import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/data/DataFile.dart';
+import 'package:petcare/data/PrefData.dart';
 import 'package:petcare/generated/l10n.dart';
 import 'package:petcare/model/AddressModel.dart';
 import 'package:petcare/model/CardModel.dart';
+import 'package:petcare/screen/RateProduct.dart';
 
 import '../tab/TabOrder.dart';
 
@@ -55,7 +55,7 @@ class _AdoptionThankYouPage extends State<AdoptionThankYouPage> {
     SizeConfig().init(context);
     double leftMargin = MediaQuery.of(context).size.width * 0.05;
     double size = SizeConfig.safeBlockVertical! * 30;
-    double screenHeight = SizeConfig.safeBlockVertical !* 100;
+    double screenHeight = SizeConfig.safeBlockVertical! * 100;
     double screenWidth = SizeConfig.safeBlockHorizontal! * 100;
 
     return WillPopScope(
@@ -93,9 +93,9 @@ class _AdoptionThankYouPage extends State<AdoptionThankYouPage> {
                         color: accentColors,
                       ),
                       getCustomText(
-                          (getSelectedCat == Constants.TREATMENT_ID)
+                          (getSelectedCat == Constants.GROOMING_ID)
                               ? "Your appointment has\n been booked"
-                              : (getSelectedCat == Constants.PET_HOTEL_ID)
+                              : (getSelectedCat == Constants.PET_WALKER_ID)
                                   ? "Your hotel booking has\nbeen placed"
                                   : (getSelectedCat == Constants.SHOPPING_ID)
                                       ? "Your order has\n been booked"
@@ -111,9 +111,9 @@ class _AdoptionThankYouPage extends State<AdoptionThankYouPage> {
                                 Constants.getPercentSize1(screenWidth, 10),
                             vertical: 10),
                         child: getCustomTextWithoutMax(
-                            (getSelectedCat == Constants.TREATMENT_ID)
+                            (getSelectedCat == Constants.GROOMING_ID)
                                 ? "Thank you for your order. We will be waiting for you and your furry friend."
-                                : (getSelectedCat == Constants.PET_HOTEL_ID)
+                                : (getSelectedCat == Constants.PET_WALKER_ID)
                                     ? "Thank you for your order. We impatiently wait to take care of your pet."
                                     : (getSelectedCat == Constants.SHOPPING_ID)
                                         ? "Thank you for your order. We will be waiting for you and your furry friend."
@@ -124,15 +124,20 @@ class _AdoptionThankYouPage extends State<AdoptionThankYouPage> {
                             Constants.getPercentSize1(screenHeight, 2.2)),
                       ),
                       Visibility(
-                        visible: (getSelectedCat==Constants.SHOPPING_ID)?true:false,
-                          child:InkWell(
-                            onTap: (){
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => TabOrder(),));
+                          visible: (getSelectedCat == Constants.SHOPPING_ID)
+                              ? true
+                              : false,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => TabOrder(),
+                              ));
                             },
-                            child:  Text(
+                            child: Text(
                               "Track Order",
                               style: TextStyle(
-                                  fontSize: 16, decoration: TextDecoration.underline),
+                                  fontSize: 16,
+                                  decoration: TextDecoration.underline),
                             ),
                           ))
                     ],

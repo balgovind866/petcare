@@ -50,6 +50,7 @@ class _ShoppingPage extends State<ShoppingPage> {
   double _lowerValue = 300;
   double _upperValue = 20000;
   String searchText = "";
+  TextEditingController searchTextCtrl = TextEditingController(text: "");
 
   @override
   void initState() {
@@ -136,18 +137,13 @@ class _ShoppingPage extends State<ShoppingPage> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5))),
                             child: TextField(
+                              controller: searchTextCtrl,
                               maxLines: 1,
-                              onChanged: (val) {
-                                if (selectedPos == -1) {
-                                  productCtrl.setFilteredProductList(val, []);
-                                } else {
-                                  productCtrl.setFilteredProductList(
-                                      val, catList[selectedPos]!.subList!);
-                                }
-                                setState(() {
-                                  searchText = val;
-                                });
-                              },
+                              // onChanged: (val) {
+                              //   setState(() {
+                              //     searchText = val;
+                              //   });
+                              // },
                               style: TextStyle(
                                   fontFamily: Constants.fontsFamily,
                                   color: primaryTextColor,
@@ -170,6 +166,7 @@ class _ShoppingPage extends State<ShoppingPage> {
                           ),
                         ),
                         InkWell(
+                          onTap: () {},
                           child: Container(
                               height: imageSize,
                               width: imageSize,
@@ -185,9 +182,17 @@ class _ShoppingPage extends State<ShoppingPage> {
                                   color: whiteColor,
                                   size: imageSize1,
                                 )),
-                                onTap: () {},
+                                onTap: () {
+                                  if (selectedPos == -1) {
+                                    productCtrl.setFilteredProductList(
+                                        searchTextCtrl.text, []);
+                                  } else {
+                                    productCtrl.setFilteredProductList(
+                                        searchTextCtrl.text,
+                                        catList[selectedPos]!.subList!);
+                                  }
+                                },
                               )),
-                          onTap: () {},
                         ),
                       ],
                     ),
@@ -206,14 +211,15 @@ class _ShoppingPage extends State<ShoppingPage> {
                             setState(() {
                               if (selectedPos == index) {
                                 selectedPos = -1;
-                                productCtrl
-                                    .setFilteredProductList(searchText, []);
+                                productCtrl.setFilteredProductList(
+                                    searchTextCtrl.text, []);
                               } else {
-                                productCtrl
-                                    .setFilteredProductList(searchText, []);
+                                productCtrl.setFilteredProductList(
+                                    searchTextCtrl.text, []);
                                 selectedPos = index;
                                 productCtrl.setFilteredProductList(
-                                    searchText, catList[index]!.subList!);
+                                    searchTextCtrl.text,
+                                    catList[index]!.subList!);
                               }
                             });
                           },
@@ -471,6 +477,7 @@ class _ShoppingPage extends State<ShoppingPage> {
                                               itemBuilder: (context, index) {
                                                 return InkWell(
                                                   onTap: () {
+                                                    int sortBy = -1;
                                                     if (!selectedSortList
                                                         .contains(
                                                             sortSelectionList[
@@ -479,17 +486,17 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                       selectedSortList.add(
                                                           sortSelectionList[
                                                               index]);
+                                                      sortBy =
+                                                          index == 1 ? 0 : 1;
                                                     } else {
                                                       selectedSortList.remove(
                                                           sortSelectionList[
                                                               index]);
                                                     }
-                                                    final productCtrl =
-                                                        context.read<
-                                                            ProductProvider>();
-                                                    productCtrl.sort(
-                                                        isDesc: index == 1);
+
+                                                    productCtrl.sort(sortBy);
                                                     setState(() {});
+                                                    Navigator.pop(context);
                                                   },
                                                   child: Container(
                                                     margin: EdgeInsets.all(
@@ -697,61 +704,6 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                 Container(
                                                   decoration: BoxDecoration(),
                                                   child:
-                                                      //     MultipleSearchSelection(
-                                                      //   items: filterList,
-                                                      //   pickedItemBuilder:
-                                                      //       (item) {
-                                                      //     return Container(
-                                                      //       decoration:
-                                                      //           BoxDecoration(
-                                                      //         color: Colors.white,
-                                                      //         border: Border.all(
-                                                      //             color:
-                                                      //                 Colors.grey[
-                                                      //                     400]!),
-                                                      //       ),
-                                                      //       child: Padding(
-                                                      //         padding:
-                                                      //             const EdgeInsets
-                                                      //                 .all(8),
-                                                      //         child: Text(item),
-                                                      //       ),
-                                                      //     );
-                                                      //   },
-                                                      //   fieldToCheck:
-                                                      //       (filterList) {
-                                                      //     return filterList;
-                                                      //   },
-                                                      //   itemBuilder:
-                                                      //       (item, index) {
-                                                      //     return Padding(
-                                                      //       padding:
-                                                      //           const EdgeInsets
-                                                      //               .all(6.0),
-                                                      //       child: Container(
-                                                      //         height: 100,
-                                                      //         decoration:
-                                                      //             BoxDecoration(
-                                                      //           borderRadius:
-                                                      //               BorderRadius
-                                                      //                   .circular(
-                                                      //                       6),
-                                                      //           color:
-                                                      //               Colors.white,
-                                                      //         ),
-                                                      //         child: Padding(
-                                                      //           padding:
-                                                      //               const EdgeInsets
-                                                      //                   .symmetric(
-                                                      //             vertical: 20.0,
-                                                      //             horizontal: 12,
-                                                      //           ),
-                                                      //           child: Text(item),
-                                                      //         ),
-                                                      //       ),
-                                                      //     );
-                                                      //   },
-                                                      // )
                                                       MultiSelectBottomSheetField(
                                                     initialValue:
                                                         selectedFilterList,
@@ -795,8 +747,11 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                         setState(() {
                                                           selectedFilterList =
                                                               [];
+                                                          selectedPos = -1;
                                                           _lowerValue = 300;
                                                           _upperValue = 20000;
+                                                          searchTextCtrl.text =
+                                                              "";
                                                         });
                                                         productCtrl
                                                             .setFilterPriceBrandList(
@@ -820,6 +775,9 @@ class _ShoppingPage extends State<ShoppingPage> {
                                                           Constants.getPercentSize1(
                                                               bottomDialogTextSizeFilter,
                                                               4), () {
+                                                        searchTextCtrl.text =
+                                                            "";
+                                                        selectedPos = -1;
                                                         productCtrl
                                                             .setFilterPriceBrandList(
                                                                 selectedFilterList,

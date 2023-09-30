@@ -11,6 +11,7 @@ import 'package:petcare/generated/l10n.dart';
 import 'package:petcare/helper/ApiBaseHelper.dart';
 import 'package:petcare/helper/Constant.dart';
 import 'package:petcare/helper/Session.dart';
+import 'package:petcare/screen/BookPetTreatment.dart';
 import 'package:petcare/tab/TabHome.dart';
 import 'package:petcare/tab/TabPets.dart';
 import 'package:petcare/tab/TabProfile.dart';
@@ -60,6 +61,7 @@ class _HomeScreen extends State<HomeScreen> {
     ShoppingPage(),
     // TabOrder(),
     TabPets(),
+    BookPetTreatment(),
     TabProfile()
   ];
   List<Destination> allDestinations = [];
@@ -86,6 +88,7 @@ class _HomeScreen extends State<HomeScreen> {
     allDestinations = <Destination>[
       Destination(S.of(context).home, CupertinoIcons.home),
       Destination(S.of(context).shopping, CupertinoIcons.bag_fill),
+      Destination(S.of(context).services, Icons.room_service),
       Destination(S.of(context).pets, Icons.pets_rounded),
       Destination(S.of(context).profile, Icons.person),
     ];

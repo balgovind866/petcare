@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/SizeConfig.dart';
-import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
-import 'package:petcare/model/AddressModel.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
+
+import '../model/User.dart';
 import 'AddNewAddressPage.dart';
 
 class ShippingAddressPage extends StatefulWidget {
@@ -15,14 +18,13 @@ class ShippingAddressPage extends StatefulWidget {
 }
 
 class _ShippingAddressPage extends State<ShippingAddressPage> {
-  List<AddressModel> addressList = DataFile.getAddressList();
-
+  List addressList = [];
   int _selectedAddress = 0;
 
   @override
   void initState() {
     super.initState();
-    addressList = DataFile.getAddressList();
+    getAddress();
     setState(() {});
   }
 
@@ -84,11 +86,12 @@ class _ShippingAddressPage extends State<ShippingAddressPage> {
                       InkWell(
                         child: getCustomText(S.of(context).newAddress,
                             textColor, 1, TextAlign.start, FontWeight.w600, 12),
-                        onTap: () {
-                          Navigator.push(
+                        onTap: () async {
+                          await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AddNewAddressPage()));
+                          getAddress();
                         },
                       )
                     ],
@@ -140,7 +143,7 @@ class _ShippingAddressPage extends State<ShippingAddressPage> {
                                 Padding(
                                   padding: EdgeInsets.only(top: 10, bottom: 10),
                                   child: getCustomText(
-                                      addressList[index].location ?? "",
+                                      addressList[index].address ?? "",
                                       primaryTextColor,
                                       1,
                                       TextAlign.start,
@@ -148,7 +151,7 @@ class _ShippingAddressPage extends State<ShippingAddressPage> {
                                       12),
                                 ),
                                 getCustomText(
-                                    addressList[index].phoneNumber ?? "",
+                                    "${addressList[index].area} ${addressList[index].city}",
                                     primaryTextColor,
                                     1,
                                     TextAlign.start,
@@ -169,5 +172,30 @@ class _ShippingAddressPage extends State<ShippingAddressPage> {
           ),
         ),
         onWillPop: _requestPop);
+  }
+
+  Future<void> getAddress() async {
+    Map parameter = {
+      USER_ID: CUR_USERID,
+    };
+    // print("USER_ID: {CUR_USERID}");
+    apiBaseHelper.postAPICall(getAddressApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data'];
+          addressList =
+              (data as List).map((data) => User.fromAddress(data)).toList();
+          setState(() {});
+          setSnackbar(msg!, context);
+        } else {
+          setSnackbar(msg!, context);
+        }
+      },
+      onError: (error) {
+        setSnackbar(error.toString(), context);
+      },
+    );
   }
 }

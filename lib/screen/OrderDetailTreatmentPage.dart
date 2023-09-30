@@ -163,7 +163,7 @@ class _OrderDetailTreatmentPage extends State<OrderDetailTreatmentPage>
                 ),
                 getSpace(Constants.getPercentSize1(totalHeight, 3)),
                 getCustomText(
-                    S.of(context).treatment,
+                    S.of(context).grooming,
                     primaryTextColor,
                     1,
                     TextAlign.start,

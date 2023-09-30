@@ -1,5 +1,11 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/Provider/SettingProvider.dart';
 import 'package:petcare/Provider/UserProvider.dart';
@@ -25,6 +31,7 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePage extends State<EditProfilePage> {
   List addressList = [];
+  bool _isNetworkAvail = false;
 
   int _selectedPosition = 0;
 
@@ -33,6 +40,10 @@ class _EditProfilePage extends State<EditProfilePage> {
     super.initState();
 
     getAddress();
+    final userData = context.read<SettingProvider>();
+    _textEditingControllerName.text = userData.userName;
+    _textEditingControllerEmail.text = userData.email;
+    _textEditingControllerMobile.text = userData.mobile;
     setState(() {});
   }
 
@@ -66,14 +77,14 @@ class _EditProfilePage extends State<EditProfilePage> {
   // TextEditingController _textEditingControllerGender =
   //     TextEditingController(text: "Male");
   TextEditingController _textEditingControllerMobile =
-      TextEditingController(text: "8759632256");
+      TextEditingController(text: "");
 
   @override
   Widget build(BuildContext context) {
     final userData = context.watch<SettingProvider>();
-    _textEditingControllerName.text = userData.userName;
-    _textEditingControllerEmail.text = userData.email;
-    _textEditingControllerMobile.text = userData.mobile;
+    // _textEditingControllerName.text = userData.userName;
+    // _textEditingControllerEmail.text = userData.email;
+    // _textEditingControllerMobile.text = userData.mobile;
 
     SizeConfig().init(context);
     double leftMargin = MediaQuery.of(context).size.width * 0.05;
@@ -125,8 +136,10 @@ class _EditProfilePage extends State<EditProfilePage> {
                                               backgroundImage:
                                                   MemoryImage(snapshot.data!));
                                         } else if (userData.profileUrl != "")
-                                          return Image.network(
-                                              userData.profileUrl);
+                                          return CircleAvatar(
+                                            backgroundImage: NetworkImage(
+                                                userData.profileUrl),
+                                          );
                                         return RandomAvatar(userData.userName);
                                       }),
                                 ),
@@ -490,20 +503,38 @@ class _EditProfilePage extends State<EditProfilePage> {
   }
 
   Future<void> updateUserData() async {
-    Map parameter = {
-      USER_ID: CUR_USERID,
-      EMAIL: _textEditingControllerEmail.text.toString(),
-      USERNAME: _textEditingControllerName.text.toString(),
-      MOBILE: _textEditingControllerMobile.text.toString(),
-      // IMAGE: MultipartFile(contentType: MediaTy)
-    };
+    _isNetworkAvail = await isNetworkAvailable();
+    if (_isNetworkAvail) {
+      try {
+        var image;
 
-    print("USER_ID: {CUR_USERID}");
-    apiBaseHelper.postAPICall(getUpdateUserApi, parameter).then(
-      (getdata) {
+        var request = http.MultipartRequest('POST', (getUpdateUserApi));
+        request.headers.addAll(headers);
+        request.fields[USER_ID] = CUR_USERID!;
+        request.fields[EMAIL] = _textEditingControllerEmail.text.toString();
+        request.fields[USERNAME] = _textEditingControllerName.text.toString();
+        request.fields[MOBILE] = _textEditingControllerMobile.text.toString();
+        if (_image != null) {
+          final mimeType = lookupMimeType(_image!.path);
+
+          var extension = mimeType!.split('/');
+
+          var pic = await http.MultipartFile.fromPath(
+            IMAGE,
+            _image!.path,
+            contentType: MediaType('image', extension[1]),
+          );
+          request.files.add(pic);
+        }
+        var response = await request.send();
+        var responseData = await response.stream.toBytes();
+        var responseString = String.fromCharCodes(responseData);
+        var getdata = json.decode(responseString);
         bool error = getdata['error'];
         String? msg = getdata['message'];
+
         if (!error) {
+          // var data = getdata['data'];
           var i = getdata['data'][0];
           print("Updated user data $i");
           String id = i[ID];
@@ -512,9 +543,15 @@ class _EditProfilePage extends State<EditProfilePage> {
           String mobile = i[MOBILE];
           String address = i[ADDRESS];
           String image = i[IMAGE];
-          CUR_USERID = id;
-
-          // CUR_USERNAME = name;
+          // for (var i in data) {
+          //   image = i[IMAGE];
+          // }
+          // var settingProvider =
+          //     Provider.of<SettingProvider>(context, listen: false);
+          // settingProvider.setPrefrence(IMAGE, image);
+          // var userProvider = Provider.of<UserProvider>(context, listen: false);
+          // userProvider.setProfilePic(image);
+          // setSnackbar(getTranslated(context, 'PROFILE_UPDATE_MSG')!, context);
 
           UserProvider userProvider = context.read<UserProvider>();
           userProvider.setName(name);
@@ -526,12 +563,63 @@ class _EditProfilePage extends State<EditProfilePage> {
         } else {
           setSnackbar(msg!, context);
         }
-      },
-      onError: (error) {
-        setSnackbar(error.toString(), context);
-      },
-    );
+      } on TimeoutException catch (_) {
+        setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+      }
+    } else {
+      if (mounted) {
+        setState(
+          () {
+            _isNetworkAvail = false;
+          },
+        );
+      }
+    }
   }
+
+  // Future<void> updateUserData() async {
+  //   Map parameter = {
+  //     USER_ID: CUR_USERID,
+  //     EMAIL: _textEditingControllerEmail.text.toString(),
+  //     USERNAME: _textEditingControllerName.text.toString(),
+  //     MOBILE: _textEditingControllerMobile.text.toString(),
+  //     // IMAGE: MultipartFile(contentType: MediaTy)
+  //   };
+
+  //   print("USER_ID: {CUR_USERID}");
+  //   apiBaseHelper.postAPICall(getUpdateUserApi, parameter).then(
+  //     (getdata) {
+  //       bool error = getdata['error'];
+  //       String? msg = getdata['message'];
+  // if (!error) {
+  //   var i = getdata['data'][0];
+  //   print("Updated user data $i");
+  //   String id = i[ID];
+  //   String name = i[USERNAME];
+  //   String email = i[EMAIL];
+  //   String mobile = i[MOBILE];
+  //   String address = i[ADDRESS];
+  //   String image = i[IMAGE];
+  //   CUR_USERID = id;
+
+  //   // CUR_USERNAME = name;
+
+  //   UserProvider userProvider = context.read<UserProvider>();
+  //   userProvider.setName(name);
+
+  //   SettingProvider settingProvider = context.read<SettingProvider>();
+  //   settingProvider.saveUserDetail(
+  //       id, name, email, mobile, address, image, context);
+  //   setSnackbar("Successfully updated user", context);
+  // } else {
+  //   setSnackbar(msg!, context);
+  // }
+  //     },
+  //     onError: (error) {
+  //       setSnackbar(error.toString(), context);
+  //     },
+  //   );
+  // }
 
   Future<void> getAddress() async {
     Map parameter = {

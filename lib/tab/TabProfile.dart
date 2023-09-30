@@ -93,7 +93,12 @@ class _TabProfile extends State<TabProfile> {
                         Container(
                             height: imageSize,
                             width: imageSize,
-                            child: RandomAvatar(userData.userName)),
+                            child: userData.profileUrl.isNotEmpty
+                                ? CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(userData.profileUrl),
+                                  )
+                                : RandomAvatar(userData.userName)),
                         Expanded(
                           child: Container(
                             margin: EdgeInsets.only(left: 15),

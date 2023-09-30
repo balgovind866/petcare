@@ -43,17 +43,17 @@ class _BookPetTreatment extends State<BookPetTreatment> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    double screenHeight = SizeConfig.safeBlockVertical !* 100;
-    double screenWidth = SizeConfig.safeBlockHorizontal !* 100;
+    double screenHeight = SizeConfig.safeBlockVertical! * 100;
+    double screenWidth = SizeConfig.safeBlockHorizontal! * 100;
     double containerHeight = Constants.getPercentSize1(screenWidth, 28);
     double containerHeight2 = Constants.getPercentSize1(screenWidth, 25);
     double imageSize2 = Constants.getPercentSize1(containerHeight, 65);
     double imageSize = Constants.getPercentSize1(containerHeight, 70);
     double containerHeight3 = Constants.getPercentSize1(screenWidth, 12);
-    var bottomDialogTextSize = SizeConfig.safeBlockVertical !* 55;
+    var bottomDialogTextSize = SizeConfig.safeBlockVertical! * 55;
     double dialogContainerHeight = Constants.getPercentSize1(screenWidth, 28);
     double dialogSubContainerHeight =
-        Constants.getPercentSize1(containerHeight,Constants.subContainer);
+        Constants.getPercentSize1(containerHeight, Constants.subContainer);
     print("subcontainer111==$dialogSubContainerHeight");
 
     var _crossAxisSpacing2 = 8.0;
@@ -113,21 +113,21 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                   height: containerHeight,
                   margin: EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                    color: cardColor,
-                    // color: Colors.grey,
-                    // border:
-                    //     Border.all(color: Colors.grey, width: 0.8),
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    boxShadow: [
-                      BoxShadow(color:shadowColor, blurRadius:1.2)
-                      // BoxShadow(color: "#B9B9B9".toColor(), blurRadius:1.2)
-                    ]
+                      color: cardColor,
+                      // color: Colors.grey,
+                      // border:
+                      //     Border.all(color: Colors.grey, width: 0.8),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      boxShadow: [
+                        BoxShadow(color: shadowColor, blurRadius: 1.2)
+                        // BoxShadow(color: "#B9B9B9".toColor(), blurRadius:1.2)
+                      ]
 
                       // border: Border.all(
                       //   color: Colors.grey,
                       // ),
                       // borderRadius: BorderRadius.all(Radius.circular(7))
-                ),
+                      ),
                   padding: EdgeInsets.all(
                       Constants.getPercentSize1(containerHeight, 7)),
                   child: InkWell(
@@ -171,7 +171,8 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    getDialogDivider(SizeConfig.safeBlockHorizontal!*20),
+                                    getDialogDivider(
+                                        SizeConfig.safeBlockHorizontal! * 20),
                                     getCustomText(
                                         S.of(context).pets,
                                         textColor,
@@ -181,7 +182,9 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                         Constants.getPercentSize(
                                             bottomDialogTextSize, 5)),
                                     getCustomText(
-                                        S.of(context).selectPetThatWillGetTreatment,
+                                        S
+                                            .of(context)
+                                            .selectPetThatWillGetTreatment,
                                         primaryTextColor,
                                         1,
                                         TextAlign.start,
@@ -329,7 +332,10 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                                                             .center,
                                                                     children: [
                                                                       getCustomText(
-                                                                          S.of(context).AGE,
+                                                                          S
+                                                                              .of(
+                                                                                  context)
+                                                                              .AGE,
                                                                           primaryTextColor,
                                                                           1,
                                                                           TextAlign
@@ -376,7 +382,10 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                                                             .center,
                                                                     children: [
                                                                       getCustomText(
-                                                                          S.of(context).SEX,
+                                                                          S
+                                                                              .of(
+                                                                                  context)
+                                                                              .SEX,
                                                                           primaryTextColor,
                                                                           1,
                                                                           TextAlign
@@ -423,7 +432,10 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                                                             .center,
                                                                     children: [
                                                                       getCustomText(
-                                                                          S.of(context).WEIGHT,
+                                                                          S
+                                                                              .of(
+                                                                                  context)
+                                                                              .WEIGHT,
                                                                           primaryTextColor,
                                                                           1,
                                                                           TextAlign
@@ -547,20 +559,20 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                   height: containerHeight,
                   margin: EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                    color: cardColor,
-                    // color: Colors.grey,
-                    // border:
-                    //     Border.all(color: Colors.grey, width: 0.8),
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    boxShadow: [
-                      BoxShadow(color:shadowColor, blurRadius:1.2)
-                      // BoxShadow(color: "#B9B9B9".toColor(), blurRadius:1.2)
-                    ]
+                      color: cardColor,
+                      // color: Colors.grey,
+                      // border:
+                      //     Border.all(color: Colors.grey, width: 0.8),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      boxShadow: [
+                        BoxShadow(color: shadowColor, blurRadius: 1.2)
+                        // BoxShadow(color: "#B9B9B9".toColor(), blurRadius:1.2)
+                      ]
                       // border: Border.all(
                       //   color: Colors.grey,
                       // ),
                       // borderRadius: BorderRadius.all(Radius.circular(7))
-                ),
+                      ),
                   padding: EdgeInsets.all(
                       Constants.getPercentSize1(containerHeight, 7)),
                   child: InkWell(
@@ -604,9 +616,10 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    getDialogDivider(SizeConfig.safeBlockHorizontal!*20),
+                                    getDialogDivider(
+                                        SizeConfig.safeBlockHorizontal! * 20),
                                     getCustomText(
-                                        S.of(context).treatment,
+                                        S.of(context).grooming,
                                         textColor,
                                         1,
                                         TextAlign.start,
@@ -1001,8 +1014,7 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                     // ],
                     onDateChange: (date) {
                       // New date selected
-                      setState(() {
-                      });
+                      setState(() {});
                     },
                   ),
                 ),

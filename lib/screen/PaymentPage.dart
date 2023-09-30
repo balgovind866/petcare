@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:petcare/constants/ConstantColors.dart';
-import 'package:petcare/data/PrefData.dart';
-import 'package:petcare/screen/ConfirmationPage.dart';
-import 'package:petcare/screen/HotelConfirmationPage.dart';
-import 'package:petcare/screen/TreatmentConfirmationPage.dart';
-import 'package:petcare/screen/AddNewCardPage.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/customwidget/ReviewSlider.dart';
 import 'package:petcare/data/DataFile.dart';
+import 'package:petcare/data/PrefData.dart';
 import 'package:petcare/generated/l10n.dart';
-import 'package:petcare/model/PaymentModel.dart';
 import 'package:petcare/model/CardModel.dart';
+import 'package:petcare/model/PaymentModel.dart';
+import 'package:petcare/screen/AddNewCardPage.dart';
+import 'package:petcare/screen/ConfirmationPage.dart';
+import 'package:petcare/screen/HotelConfirmationPage.dart';
+import 'package:petcare/screen/TreatmentConfirmationPage.dart';
 
 class PaymentPage extends StatefulWidget {
   @override
@@ -161,7 +161,9 @@ class _PaymentPage extends State<PaymentPage> {
                                       // ),
 
                                       child: getCustomText(
-                                          paymentList[index].name!.toUpperCase(),
+                                          paymentList[index]
+                                              .name!
+                                              .toUpperCase(),
                                           (index == _paymentPosition)
                                               ? whiteColor
                                               : textColor,
@@ -291,7 +293,10 @@ class _PaymentPage extends State<PaymentPage> {
                                               padding:
                                                   EdgeInsets.only(left: 10),
                                               child: Text(
-                                                S.of(context).validFrom.toUpperCase(),
+                                                S
+                                                    .of(context)
+                                                    .validFrom
+                                                    .toUpperCase(),
                                                 style: TextStyle(
                                                     fontFamily:
                                                         Constants.fontsFamily,
@@ -306,7 +311,7 @@ class _PaymentPage extends State<PaymentPage> {
                                               padding:
                                                   EdgeInsets.only(left: 10),
                                               child: Text(
-                                                cardList[index].expDate??"",
+                                                cardList[index].expDate ?? "",
                                                 style: TextStyle(
                                                     fontFamily:
                                                         Constants.fontsFamily,
@@ -327,7 +332,8 @@ class _PaymentPage extends State<PaymentPage> {
                                           children: [
                                             Text(
                                               cardList[index]
-                                                  .name!.toUpperCase(),
+                                                  .name!
+                                                  .toUpperCase(),
                                               style: TextStyle(
                                                   fontFamily:
                                                       Constants.fontsFamily,
@@ -416,13 +422,13 @@ class _PaymentPage extends State<PaymentPage> {
                       )),
                   onTap: () async {
                     int i = await PrefData.getSelectedMainCategory();
-                    if (i == Constants.TREATMENT_ID) {
+                    if (i == Constants.GROOMING_ID) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
                                   TreatmentConfirmationPage()));
-                    } else if (i == Constants.PET_HOTEL_ID) {
+                    } else if (i == Constants.PET_WALKER_ID) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(

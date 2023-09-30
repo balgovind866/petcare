@@ -273,10 +273,10 @@ class DataFile {
 
     introList.add(new ModelTopCategory(
         Constants.SHOPPING_ID, "shopping_bag.png", S.of(context).shopping));
-    // introList.add(new ModelTopCategory(
-    //     Constants.TREATMENT_ID, "pet_treatment.png", S.of(context).treatment));
-    // introList.add(new ModelTopCategory(
-    //     Constants.PET_HOTEL_ID, "pet.png", S.of(context).petHotel));
+    introList.add(new ModelTopCategory(
+        Constants.GROOMING_ID, "pet_treatment.png", S.of(context).grooming));
+    introList.add(new ModelTopCategory(
+        Constants.PET_WALKER_ID, "pet.png", S.of(context).petWalker));
     // introList.add(new ModelTopCategory(
     //     Constants.ADOPTION_ID, "pet_house.png", S.of(context).adoption));
 
@@ -365,7 +365,7 @@ class DataFile {
 
     DiscModel mainModel = new DiscModel();
     mainModel.id = 1;
-    mainModel.name = "Find Your Next Best Friend";
+    mainModel.name = "Find Best Services for your Pet";
     mainModel.image = "frnd_slider1.jpg";
     // mainModel.image = "slider_1.jpg";
     mainModel.offText = "upto 50% off*";

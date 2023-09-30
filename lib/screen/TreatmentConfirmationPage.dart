@@ -428,7 +428,7 @@ class _TreatmentConfirmationPage extends State<TreatmentConfirmationPage> {
                         getSpace(Constants.getPercentSize1(screenHeight, 3)),
 
                         getCustomText(
-                            S.of(context).treatment,
+                            S.of(context).grooming,
                             primaryTextColor,
                             1,
                             TextAlign.start,

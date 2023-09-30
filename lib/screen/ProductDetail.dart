@@ -810,7 +810,7 @@ class _ProductDetail extends State<ProductDetail>
                                         padding: EdgeInsets.all(7),
                                         child: getCustomTextWithoutMax(
                                             _parseHtmlString(
-                                                _modelProduct!.desc!),
+                                                _modelProduct?.desc ?? ""),
                                             textColor,
                                             TextAlign.start,
                                             FontWeight.w400,

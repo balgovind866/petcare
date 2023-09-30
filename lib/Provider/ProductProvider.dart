@@ -66,11 +66,15 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  sort({isDesc = false}) {
-    _productList.sortByCompare<num>(
-      (a) => a.prVarientList!.map((e) => double.parse(e.price!)).min,
-      (a, b) => isDesc ? b.compareTo(a) : a.compareTo(b),
-    );
+  sort(int sortBy) {
+    _productList = _originalProductList;
+    print("SortBy $sortBy");
+    if (sortBy != -1) {
+      _productList.sortByCompare<num>(
+        (a) => a.prVarientList!.map((e) => double.parse(e.price!)).min,
+        (a, b) => sortBy == 0 ? b.compareTo(a) : a.compareTo(b),
+      );
+    }
     notifyListeners();
   }
 }

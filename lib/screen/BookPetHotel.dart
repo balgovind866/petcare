@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -8,7 +9,6 @@ import 'package:petcare/generated/l10n.dart';
 import 'package:petcare/model/ModelAdoption.dart';
 import 'package:petcare/model/ModelTreatment.dart';
 import 'package:petcare/screen/CheckOutPage.dart';
-import 'package:intl/intl.dart' show DateFormat;
 
 class BookPetHotel extends StatefulWidget {
   BookPetHotel();
@@ -30,19 +30,18 @@ class _BookPetHotel extends State<BookPetHotel> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    double screenHeight = SizeConfig.safeBlockVertical !* 100;
-    double screenWidth = SizeConfig.safeBlockHorizontal !* 100;
+    double screenHeight = SizeConfig.safeBlockVertical! * 100;
+    double screenWidth = SizeConfig.safeBlockHorizontal! * 100;
     double containerHeight = Constants.getPercentSize1(screenWidth, 24);
     double containerHeight2 = Constants.getPercentSize1(screenWidth, 25);
     double imageSize2 = Constants.getPercentSize1(containerHeight, 65);
     double imageSize = Constants.getPercentSize1(containerHeight, 70);
     double containerHeight3 = Constants.getPercentSize1(screenWidth, 12);
-    var bottomDialogTextSize = SizeConfig.safeBlockVertical !* 55;
+    var bottomDialogTextSize = SizeConfig.safeBlockVertical! * 55;
     double dialogContainerHeight = Constants.getPercentSize1(screenWidth, 28);
     double dialogSubContainerHeight =
         Constants.getPercentSize1(containerHeight, Constants.subContainer2);
     print("subcontainer11==$dialogSubContainerHeight");
-
 
     return WillPopScope(
       child: Scaffold(
@@ -67,7 +66,7 @@ class _BookPetHotel extends State<BookPetHotel> {
             child: ListView(
               children: [
                 getCustomText(
-                    S.of(context).petHotel,
+                    S.of(context).petWalker,
                     textColor,
                     1,
                     TextAlign.start,
@@ -100,12 +99,8 @@ class _BookPetHotel extends State<BookPetHotel> {
                       borderRadius: BorderRadius.all(Radius.circular(7)),
                       color: cardColor,
                       boxShadow: [
-                        BoxShadow(
-                            color: shadowColor,
-                            blurRadius: 2
-                        )
-                      ]
-                  ),
+                        BoxShadow(color: shadowColor, blurRadius: 2)
+                      ]),
                   padding: EdgeInsets.all(
                       Constants.getPercentSize1(containerHeight, 7)),
                   child: InkWell(
@@ -158,7 +153,9 @@ class _BookPetHotel extends State<BookPetHotel> {
                                         Constants.getPercentSize(
                                             bottomDialogTextSize, 5)),
                                     getCustomText(
-                                        S.of(context).selectPetThatWillGetTreatment,
+                                        S
+                                            .of(context)
+                                            .selectPetThatWillGetTreatment,
                                         primaryTextColor,
                                         1,
                                         TextAlign.start,
@@ -295,7 +292,8 @@ class _BookPetHotel extends State<BookPetHotel> {
                                                                       borderRadius:
                                                                           BorderRadius.all(Radius.circular(
                                                                               7)),
-                                                                      color:lightPrimaryColors),
+                                                                      color:
+                                                                          lightPrimaryColors),
                                                                   child: Column(
                                                                     mainAxisAlignment:
                                                                         MainAxisAlignment
@@ -305,7 +303,10 @@ class _BookPetHotel extends State<BookPetHotel> {
                                                                             .center,
                                                                     children: [
                                                                       getCustomText(
-                                                                          S.of(context).AGE,
+                                                                          S
+                                                                              .of(
+                                                                                  context)
+                                                                              .AGE,
                                                                           primaryTextColor,
                                                                           1,
                                                                           TextAlign
@@ -341,7 +342,8 @@ class _BookPetHotel extends State<BookPetHotel> {
                                                                       borderRadius:
                                                                           BorderRadius.all(Radius.circular(
                                                                               7)),
-                                                                      color: lightPrimaryColors),
+                                                                      color:
+                                                                          lightPrimaryColors),
                                                                   child: Column(
                                                                     mainAxisAlignment:
                                                                         MainAxisAlignment
@@ -351,7 +353,10 @@ class _BookPetHotel extends State<BookPetHotel> {
                                                                             .center,
                                                                     children: [
                                                                       getCustomText(
-                                                                          S.of(context).SEX,
+                                                                          S
+                                                                              .of(
+                                                                                  context)
+                                                                              .SEX,
                                                                           primaryTextColor,
                                                                           1,
                                                                           TextAlign
@@ -387,7 +392,8 @@ class _BookPetHotel extends State<BookPetHotel> {
                                                                       borderRadius:
                                                                           BorderRadius.all(Radius.circular(
                                                                               7)),
-                                                                      color: lightPrimaryColors),
+                                                                      color:
+                                                                          lightPrimaryColors),
                                                                   child: Column(
                                                                     mainAxisAlignment:
                                                                         MainAxisAlignment
@@ -397,7 +403,10 @@ class _BookPetHotel extends State<BookPetHotel> {
                                                                             .center,
                                                                     children: [
                                                                       getCustomText(
-                                                                          S.of(context).WEIGHT,
+                                                                          S
+                                                                              .of(
+                                                                                  context)
+                                                                              .WEIGHT,
                                                                           primaryTextColor,
                                                                           1,
                                                                           TextAlign
@@ -519,18 +528,18 @@ class _BookPetHotel extends State<BookPetHotel> {
                 Container(
                   margin: EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(7)),
-                      color: cardColor,
-                      // boxShadow: [
-                      //   BoxShadow(
-                      //       color: shadowColor,
-                      //       blurRadius: 2
-                      //   )
-                      // ]
-                      // border: Border.all(
-                      //   color: Colors.grey,
-                      // ),
-                      // borderRadius: BorderRadius.all(Radius.circular(7))
+                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                    color: cardColor,
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //       color: shadowColor,
+                    //       blurRadius: 2
+                    //   )
+                    // ]
+                    // border: Border.all(
+                    //   color: Colors.grey,
+                    // ),
+                    // borderRadius: BorderRadius.all(Radius.circular(7))
                   ),
                   padding: EdgeInsets.symmetric(
                       horizontal: Constants.getPercentSize1(containerHeight, 7),
@@ -580,18 +589,18 @@ class _BookPetHotel extends State<BookPetHotel> {
                 Container(
                   margin: EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(7)),
-                      color: cardColor,
-                      // boxShadow: [
-                      //   BoxShadow(
-                      //       color: shadowColor,
-                      //       blurRadius: 2
-                      //   )
-                      // ]
-                      // border: Border.all(
-                      //   color: Colors.grey,
-                      // ),
-                      // borderRadius: BorderRadius.all(Radius.circular(7))
+                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                    color: cardColor,
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //       color: shadowColor,
+                    //       blurRadius: 2
+                    //   )
+                    // ]
+                    // border: Border.all(
+                    //   color: Colors.grey,
+                    // ),
+                    // borderRadius: BorderRadius.all(Radius.circular(7))
                   ),
                   padding: EdgeInsets.symmetric(
                       horizontal: Constants.getPercentSize1(containerHeight, 7),
@@ -897,17 +906,12 @@ class _BookPetHotel extends State<BookPetHotel> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(7)),
                       color: cardColor,
-                      boxShadow: [
-                        BoxShadow(
-                            color: shadowColor,
-                            blurRadius: 2
-                        )
-                      ]
+                      boxShadow: [BoxShadow(color: shadowColor, blurRadius: 2)]
                       // border: Border.all(
                       //   color: Colors.grey,
                       // ),
                       // borderRadius: BorderRadius.all(Radius.circular(7))
-                  ),
+                      ),
                   padding: EdgeInsets.all(
                       Constants.getPercentSize1(containerHeight, 7)),
                   child: InkWell(
@@ -952,7 +956,7 @@ class _BookPetHotel extends State<BookPetHotel> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     getCustomText(
-                                        S.of(context).treatment,
+                                        S.of(context).grooming,
                                         textColor,
                                         1,
                                         TextAlign.start,
@@ -1181,7 +1185,9 @@ class _BookPetHotel extends State<BookPetHotel> {
                                         Constants.getPercentSize1(
                                             containerHeight, 11)),
                                     getCustomText(
-                                        "+"+treatmentList[selectedPetTreatmentPos]
+                                        "+" +
+                                            treatmentList[
+                                                    selectedPetTreatmentPos]
                                                 .currencyCode +
                                             treatmentList[
                                                     selectedPetTreatmentPos]

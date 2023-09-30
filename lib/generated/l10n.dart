@@ -391,21 +391,21 @@ class S {
     );
   }
 
-  /// `Treatment`
-  String get treatment {
+  /// `Grooming`
+  String get grooming {
     return Intl.message(
-      'Treatment',
-      name: 'treatment',
+      'Grooming',
+      name: 'grooming',
       desc: '',
       args: [],
     );
   }
 
-  /// `Pet Hotel`
-  String get petHotel {
+  /// `Pet Walker`
+  String get petWalker {
     return Intl.message(
-      'Pet Hotel',
-      name: 'petHotel',
+      'Pet Walker',
+      name: 'petWalker',
       desc: '',
       args: [],
     );
@@ -822,10 +822,10 @@ class S {
   }
 
   /// `Adopt Now`
-  String get adoptNow {
+  String get services {
     return Intl.message(
-      'Adopt Now',
-      name: 'adoptNow',
+      'Services',
+      name: 'services',
       desc: '',
       args: [],
     );
