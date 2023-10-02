@@ -1,6 +1,11 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -8,6 +13,9 @@ import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/generated/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
+import 'package:http/http.dart' as http;
 
 class AddNewPet extends StatefulWidget {
   @override
@@ -49,6 +57,12 @@ class _AddNewPet extends State<AddNewPet> {
   String dropdownValue = 'Dog';
 
   List<String> spinnerItems = ['Dog', 'Cat', 'Rabbit'];
+  TextEditingController nameCtrl = TextEditingController(text: "");
+  TextEditingController breedCtrl = TextEditingController(text: "");
+  TextEditingController ageCtrl = TextEditingController(text: "");
+  TextEditingController descCtrl = TextEditingController(text: "");
+  TextEditingController weightCtrl = TextEditingController(text: "");
+  String gender = 'Male';
 
   getHintStyle() {
     return TextStyle(
@@ -216,6 +230,7 @@ class _AddNewPet extends State<AddNewPet> {
                 child: TextField(
                   maxLines: 1,
                   style: style,
+                  controller: nameCtrl,
                   decoration: getHintDecoration(S.of(context).yourBuddyName),
                 ),
               ),
@@ -268,49 +283,62 @@ class _AddNewPet extends State<AddNewPet> {
                 child: TextField(
                   maxLines: 1,
                   style: style,
+                  controller: breedCtrl,
                   decoration: getHintDecoration(S.of(context).breed),
                 ),
               ),
               getSpace(Constants.getPercentSize1(screenHeight, 1.3)),
-              getTopTitle(S.of(context).birthdate),
+              getTopTitle("Age"),
               Container(
                 height: containerHeight,
                 decoration: getDecorations(),
                 padding: getPadding(),
-                child: InkWell(
-                  onTap: () async {
-                    await showDatePicker(
-                      context: context,
-                      initialDate: currentDate,
-                      firstDate: currentDate,
-                      lastDate: DateTime(2050),
-                    ).then((pickedDate) {
-                      if (pickedDate != null && pickedDate != currentDate)
-                        setState(() {
-                          currentDate = pickedDate;
-                        });
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: getCustomText(
-                            DateFormat.yMMMd().format(currentDate),
-                            primaryTextColor,
-                            1,
-                            TextAlign.start,
-                            FontWeight.w400,
-                            Constants.getPercentSize1(screenHeight, 2)),
-                        flex: 1,
-                      ),
-                      Icon(
-                        Icons.calendar_today_outlined,
-                        color: primaryTextColor,
-                      )
-                    ],
-                  ),
+                child: TextField(
+                  maxLines: 1,
+                  style: style,
+                  controller: ageCtrl,
+                  decoration: getHintDecoration("e.g 2 Years 3 Months"),
                 ),
               ),
+              getSpace(Constants.getPercentSize1(screenHeight, 1.3)),
+              // Container(
+              //   height: containerHeight,
+              //   decoration: getDecorations(),
+              //   padding: getPadding(),
+              //   child: InkWell(
+              //     onTap: () async {
+              //       await showDatePicker(
+              //         context: context,
+              //         initialDate: currentDate,
+              //         firstDate: currentDate,
+              //         lastDate: DateTime(2050),
+              //       ).then((pickedDate) {
+              //         if (pickedDate != null && pickedDate != currentDate)
+              //           setState(() {
+              //             currentDate = pickedDate;
+              //           });
+              //       });
+              //     },
+              //     child: Row(
+              //       children: [
+              //         Expanded(
+              //           child: getCustomText(
+              //               DateFormat.yMMMd().format(currentDate),
+              //               primaryTextColor,
+              //               1,
+              //               TextAlign.start,
+              //               FontWeight.w400,
+              //               Constants.getPercentSize1(screenHeight, 2)),
+              //           flex: 1,
+              //         ),
+              //         Icon(
+              //           Icons.calendar_today_outlined,
+              //           color: primaryTextColor,
+              //         )
+              //       ],
+              //     ),
+              //   ),
+              // ),
               getSpace(Constants.getPercentSize1(screenHeight, 1.3)),
               getTopTitle(S.of(context).gender),
               Container(
@@ -322,6 +350,7 @@ class _AddNewPet extends State<AddNewPet> {
                         onTap: () {
                           setState(() {
                             selectedPos = 0;
+                            gender = 'Male';
                           });
                         },
                         child: Container(
@@ -371,6 +400,7 @@ class _AddNewPet extends State<AddNewPet> {
                         onTap: () {
                           setState(() {
                             selectedPos = 1;
+                            gender = 'Female';
                           });
                         },
                         child: Container(
@@ -424,6 +454,7 @@ class _AddNewPet extends State<AddNewPet> {
                 decoration: getDecorations(),
                 padding: getPadding(),
                 child: TextField(
+                  controller: weightCtrl,
                   keyboardType: TextInputType.number,
                   maxLines: 1,
                   style: style,
@@ -437,6 +468,7 @@ class _AddNewPet extends State<AddNewPet> {
                 decoration: getDecorations(),
                 padding: getPadding(),
                 child: TextField(
+                  controller: descCtrl,
                   keyboardType: TextInputType.multiline,
                   style: style,
                   decoration: getHintDecoration(S.of(context).description),
@@ -447,7 +479,8 @@ class _AddNewPet extends State<AddNewPet> {
                   S.of(context).save,
                   accentColors,
                   Constants.getPercentSize1(screenHeight, 1.5),
-                  Constants.getPercentSize1(screenHeight, 2.5), () {
+                  Constants.getPercentSize1(screenHeight, 2.5), () async {
+                await addPet();
                 finish();
               }),
               getSpace(Constants.getPercentSize1(screenHeight, 2))
@@ -470,5 +503,44 @@ class _AddNewPet extends State<AddNewPet> {
     return EdgeInsets.symmetric(
         horizontal: Constants.getPercentSize1(
             SizeConfig.safeBlockHorizontal! * 100, 2));
+  }
+
+  Future<void> addPet() async {
+    try {
+      var request = http.MultipartRequest('POST', (addPetApi));
+      request.headers.addAll(headers);
+      request.fields[USER_ID] = CUR_USERID!;
+      request.fields[NAME] = nameCtrl.text.toString();
+      request.fields[DESC] = descCtrl.text.toString();
+      request.fields[GENDER] = gender;
+      request.fields[AGE] = ageCtrl.text.toString();
+      request.fields[BREED] = breedCtrl.text.toString();
+      if (_image != null) {
+        final mimeType = lookupMimeType(_image!.path);
+
+        var extension = mimeType!.split('/');
+
+        var pic = await http.MultipartFile.fromPath(
+          PROFILEIMG,
+          _image!.path,
+          contentType: MediaType('image', extension[1]),
+        );
+        request.files.add(pic);
+      }
+      var response = await request.send();
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+      var getdata = json.decode(responseString);
+      bool error = getdata['error'];
+      String? msg = getdata['message'];
+
+      if (!error) {
+        setSnackbar("Successfully Added pet", context);
+      } else {
+        setSnackbar(msg!, context);
+      }
+    } on TimeoutException catch (_) {
+      setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+    }
   }
 }

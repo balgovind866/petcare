@@ -60,8 +60,8 @@ class _HomeScreen extends State<HomeScreen> {
     TabHome(),
     ShoppingPage(),
     // TabOrder(),
-    TabPets(),
     BookPetTreatment(),
+    TabPets(),
     TabProfile()
   ];
   List<Destination> allDestinations = [];
@@ -184,20 +184,6 @@ class _HomeScreen extends State<HomeScreen> {
     if (selId != '') {
       parameter[ATTRIBUTE_VALUE_ID] = selId;
     }
-    // if (widget.tag!) parameter[TAG] = widget.name!;
-    // if (widget.fromSeller!) {
-    //   parameter['seller_id'] = widget.id!;
-    // } else {
-    //   parameter[CATID] = widget.id ?? '';
-    // }
-    // if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID!;
-
-    // if (widget.dis != null) {
-    //   parameter[DISCOUNT] = widget.dis.toString();
-    // } else {
-    //   parameter[SORT] = sortBy;
-    //   parameter[ORDER] = orderBy;
-    // }
 
     if (_currentRangeValues != null &&
         _currentRangeValues!.start.round().toString() != '0') {

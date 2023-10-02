@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/generated/l10n.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
 
 class WriteReviewPage extends StatefulWidget {
   @override
@@ -24,6 +27,10 @@ class _WriteReviewPage extends State<WriteReviewPage> {
     Navigator.of(context).pop();
     return new Future.value(true);
   }
+
+  TextEditingController _nameCtrl = TextEditingController(text: "");
+  TextEditingController _reviewCtrl = TextEditingController(text: "");
+  double _rating = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +91,9 @@ class _WriteReviewPage extends State<WriteReviewPage> {
                         ),
                         onRatingUpdate: (rating) {
                           print(rating);
+                          setState(() {
+                            _rating = rating;
+                          });
                         },
                       ),
                     ),
@@ -118,6 +128,7 @@ class _WriteReviewPage extends State<WriteReviewPage> {
                         Container(
                           margin: EdgeInsets.only(bottom: 10),
                           child: TextField(
+                            controller: _nameCtrl,
                             maxLines: 1,
                             style: TextStyle(
                                 fontFamily: Constants.fontsFamily,
@@ -150,6 +161,7 @@ class _WriteReviewPage extends State<WriteReviewPage> {
                         Container(
                           margin: EdgeInsets.only(bottom: 10),
                           child: TextField(
+                            controller: _reviewCtrl,
                             maxLines: 1,
                             style: TextStyle(
                                 fontFamily: Constants.fontsFamily,
@@ -189,7 +201,9 @@ class _WriteReviewPage extends State<WriteReviewPage> {
                                   FontWeight.w900,
                                   15)),
                         )),
-                    onTap: () {},
+                    onTap: () {
+                      addReview();
+                    },
                   ),
                 ],
               ),
@@ -197,5 +211,33 @@ class _WriteReviewPage extends State<WriteReviewPage> {
           ),
         ),
         onWillPop: _requestPop);
+  }
+
+  Future<void> addReview() async {
+    Map parameter = {
+      USER_ID: CUR_USERID,
+      NAME: _nameCtrl.text,
+      REVIEW: _reviewCtrl.text,
+      RATING: _rating.toString(),
+    };
+    print("HELLO");
+    apiBaseHelper.postAPICall(addReviewApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data'];
+
+          setSnackbar(msg!, context);
+        } else {
+          setSnackbar(msg!, context);
+        }
+        setState(() {});
+      },
+      onError: (error) {
+        setState(() {});
+        setSnackbar(error.toString(), context);
+      },
+    );
   }
 }

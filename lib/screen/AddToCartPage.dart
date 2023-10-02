@@ -466,7 +466,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                                   BorderRadius.all(Radius.circular(8))),
                           child: Center(
                             child: getCustomText(
-                                S.of(context).chekout,
+                                S.of(context).checkout,
                                 Colors.white,
                                 1,
                                 TextAlign.start,

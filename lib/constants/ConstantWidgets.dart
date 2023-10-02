@@ -124,8 +124,7 @@ Widget getButtonWithColor(String text, Color color, Function function) {
     style: ElevatedButton.styleFrom(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-      ),
-      primary: color,
+      ), backgroundColor: color,
     ),
     onPressed: () {
       function();
@@ -169,8 +168,7 @@ Widget getButtonWithColorWithSize(String text, Color color,
     style: ElevatedButton.styleFrom(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-      ),
-      primary: color,
+      ), backgroundColor: color,
     ),
     onPressed: () {
       function();
@@ -189,8 +187,7 @@ Widget getButtonWithText(String text, Function function) {
     style: ElevatedButton.styleFrom(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-      ),
-      primary: accentColors,
+      ), backgroundColor: accentColors,
     ),
     onPressed: () {
       function();
@@ -208,11 +205,10 @@ Widget getBorderButtonWithText(String text, Color buttonColor,
     Color borderColor, Color fontColor, Function function) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
-      elevation: 0,
+      elevation: 0, backgroundColor: buttonColor,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: borderColor, width: 0.5)),
-      primary: buttonColor,
     ),
     onPressed: () {
       function();
@@ -236,11 +232,10 @@ Widget getBorderButtonWithSize(
     Function function) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
-      elevation: 0,
+      elevation: 0, backgroundColor: buttonColor,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: borderColor, width: 0.5)),
-      primary: buttonColor,
     ),
     onPressed: () {
       function();
@@ -307,7 +302,7 @@ Widget getRoundCornerButton(String texts, Color color, Color textColor,
   return ElevatedButton(
       style: ElevatedButton.styleFrom(
         // primary: Colors.red,
-        primary: color,
+        backgroundColor: color,
         padding: EdgeInsets.symmetric(horizontal: 35, vertical: 10),
         // onPrimary: Colors.white,
         shape: RoundedRectangleBorder(
@@ -350,7 +345,7 @@ Widget getRoundCornerButtonWithoutIcon(String texts, Color color,
   return ElevatedButton(
       style: ElevatedButton.styleFrom(
         // primary: Colors.red,
-        primary: color,
+        backgroundColor: color,
         padding: EdgeInsets.symmetric(horizontal: 35, vertical: 10),
         // onPrimary: Colors.white,
         shape: RoundedRectangleBorder(
@@ -386,7 +381,7 @@ Widget getRoundCornerBorderButton(String texts, Color color, Color borderColor,
   return ElevatedButton(
       style: ElevatedButton.styleFrom(
         // primary: Colors.red,
-        primary: color,
+        backgroundColor: color,
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
         // onPrimary: Colors.white,
         shape: RoundedRectangleBorder(

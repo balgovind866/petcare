@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:petcare/HomeScreen.dart';
+import 'package:petcare/Model/Section_Model.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -17,8 +18,10 @@ import 'package:petcare/model/ModelTopCategory.dart';
 import 'package:petcare/model/SubCategoryModel.dart';
 import 'package:petcare/screen/AdoptionList.dart';
 import 'package:petcare/screen/BookPetTreatment.dart';
+import 'package:petcare/screen/ProductDetail.dart';
 import 'package:petcare/screen/ShoppingPage.dart';
 import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 
 import '../Provider/SettingProvider.dart';
 
@@ -35,6 +38,7 @@ class _TabHome extends State<TabHome> {
   List<SubCategoryModel> subList = DataFile.getSubCategoryModel();
   List<DiscModel> adoptModelList = [];
   List<ModelBlog> blogLists = [];
+  List<Product>? bestSellingList = [];
 
   @override
   void initState() {
@@ -42,6 +46,7 @@ class _TabHome extends State<TabHome> {
     getOfferImages();
     // discModelList = DataFile.getDiscModel();
     adoptModelList = DataFile.getAdoptModel();
+    getBestSellingProducts();
   }
 
   Widget getTitles(String str) {
@@ -428,15 +433,14 @@ class _TabHome extends State<TabHome> {
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 primary: false,
-                itemCount: subList.length,
+                itemCount: bestSellingList!.length,
                 itemBuilder: (context, index) {
-                  SubCategoryModel _subCatModle = subList[index];
+                  Product _subCatModle = bestSellingList![index];
                   return InkWell(
                     onTap: () {
-                      // TODO: fix this
-                      // Navigator.of(context).push(MaterialPageRoute(
-                      //   builder: (context) => ProductDetail(_subCatModle),
-                      // ));
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ProductDetail(_subCatModle),
+                      ));
                     },
                     child: Container(
                       width: sellingItemWidth,
@@ -462,8 +466,7 @@ class _TabHome extends State<TabHome> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(7)),
                               child: Image.asset(
-                                Constants.assetsImagePath +
-                                    _subCatModle.image[0],
+                                Constants.assetsImagePath + _subCatModle.image!,
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: double.infinity,
@@ -485,28 +488,28 @@ class _TabHome extends State<TabHome> {
                               getSpace(Constants.getPercentSize1(
                                   sellingItemHeight, 1.2)),
                               getCustomText(
-                                  _subCatModle.priceCurrency! +
-                                      _subCatModle.price.toString(),
+                                  INDIAN_RS_SYM +
+                                      _subCatModle.prVarientList![0].price!,
                                   colorOrange,
                                   1,
                                   TextAlign.start,
                                   FontWeight.w600,
                                   Constants.getPercentSize1(
                                       sellingItemHeight, 8)),
-                              Text(
-                                _subCatModle.priceCurrency! +
-                                    (_subCatModle.price! -
-                                            Constants.discountVal)
-                                        .toString(),
-                                style: TextStyle(
-                                    color: primaryTextColor,
-                                    decoration: TextDecoration.lineThrough,
-                                    fontFamily: Constants.fontsFamily,
-                                    fontSize: Constants.getPercentSize1(
-                                        sellingItemHeight, 6),
-                                    fontWeight: FontWeight.w600),
-                                maxLines: 1,
-                              )
+                              // Text(
+                              //   INDIAN_RS_SYM
+                              //   // (_subCatModle.maxPrice! -
+                              //   //         Constants.discountVal)
+                              //   ,
+                              //   style: TextStyle(
+                              //       color: primaryTextColor,
+                              //       decoration: TextDecoration.lineThrough,
+                              //       fontFamily: Constants.fontsFamily,
+                              //       fontSize: Constants.getPercentSize1(
+                              //           sellingItemHeight, 6),
+                              //       fontWeight: FontWeight.w600),
+                              //   maxLines: 1,
+                              // )
                               // getCustomText(
                               //     _subCatModle.price,
                               //     primaryColor,
@@ -660,6 +663,33 @@ class _TabHome extends State<TabHome> {
     }, onError: (error) {
       setSnackbar(error.toString(), context);
       // context.read<HomeProvider>().setOfferLoading(false);
+    });
+  }
+
+  void getBestSellingProducts() {
+    apiBaseHelper.postAPICall(getBestSellingProductsApi, {}).then((getdata) {
+      bool error = getdata['error'];
+      String? msg = getdata['message'];
+      if (!error) {
+        var data = getdata['data'];
+        print("hello $data");
+        bestSellingList =
+            (data as List).map((data) => Product.fromJson(data)).toList();
+        // print("BestSelling: $bestSellingList");
+        bestSellingList = bestSellingList!.map(
+          (e) {
+            e.prVarientList!.sortBy<num>((x) => double.parse(x.price!));
+            return e;
+          },
+        ).toList();
+        setState(() {});
+      } else {
+        if (msg != 'Products Not Found !') setSnackbar(msg!, context);
+      }
+    }, onError: (error) {
+      setSnackbar(error.toString(), context);
+      setState(() {});
+      //context.read<ProductListProvider>().setProductLoading(false);
     });
   }
 }

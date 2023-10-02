@@ -23,14 +23,14 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    double screenHeight = SizeConfig.safeBlockVertical !* 100;
-    double screenWidth = SizeConfig.safeBlockHorizontal !* 100;
+    double screenHeight = SizeConfig.safeBlockVertical! * 100;
+    double screenWidth = SizeConfig.safeBlockHorizontal! * 100;
     double containerHeight3 = Constants.getPercentSize1(screenWidth, 12);
     double containerHeight4 = Constants.getPercentSize1(screenWidth, 20);
     double containerHeight = Constants.getPercentSize1(screenWidth, 30);
     double containerHeight2 = Constants.getPercentSize1(screenWidth, 18);
-    double subContainerHeight = Constants.getPercentSize1(containerHeight, Constants.subContainer);
-
+    double subContainerHeight =
+        Constants.getPercentSize1(containerHeight, Constants.subContainer);
 
     return WillPopScope(
       child: Scaffold(
@@ -40,7 +40,10 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
             elevation: 0,
             automaticallyImplyLeading: false,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios_outlined,color: textColor,),
+              icon: Icon(
+                Icons.arrow_back_ios_outlined,
+                color: textColor,
+              ),
               onPressed: () {
                 finish();
               },
@@ -73,17 +76,12 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(7)),
                       color: cardColor,
-                      boxShadow: [
-                        BoxShadow(
-                            color: shadowColor,
-                            blurRadius: 2
-                        )
-                      ]
+                      boxShadow: [BoxShadow(color: shadowColor, blurRadius: 2)]
                       // border: Border.all(
                       //   color: Colors.grey,
                       // ),
                       // borderRadius: BorderRadius.all(Radius.circular(7))
-                  ),
+                      ),
                   padding: EdgeInsets.all(
                       Constants.getPercentSize1(containerHeight, 7)),
                   child: Row(
@@ -96,9 +94,8 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                           width: Constants.getPercentSize1(containerHeight, 60),
                           height:
                               Constants.getPercentSize1(containerHeight, 60),
-                          child: Image.asset(
-                            Constants.assetsImagePath +
-                                widget._modelAdoption.image[0],
+                          child: Image.network(
+                            widget._modelAdoption.profile_img,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -118,7 +115,7 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                                 FontWeight.bold,
                                 Constants.getPercentSize1(containerHeight, 14)),
                             getCustomText(
-                                widget._modelAdoption.desc,
+                                widget._modelAdoption.description,
                                 primaryTextColor,
                                 1,
                                 TextAlign.start,
@@ -154,7 +151,8 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                                             TextAlign.center,
                                             FontWeight.w500,
                                             Constants.getPercentSize1(
-                                                subContainerHeight, Constants.topTxt)),
+                                                subContainerHeight,
+                                                Constants.topTxt)),
                                         getCustomText(
                                             widget._modelAdoption.age,
                                             textColor,
@@ -162,7 +160,8 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                                             TextAlign.center,
                                             FontWeight.w500,
                                             Constants.getPercentSize1(
-                                                subContainerHeight, Constants.bottomTxt))
+                                                subContainerHeight,
+                                                Constants.bottomTxt))
                                       ],
                                     ),
                                   )),
@@ -188,7 +187,8 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                                             TextAlign.center,
                                             FontWeight.w500,
                                             Constants.getPercentSize1(
-                                                subContainerHeight, Constants.topTxt)),
+                                                subContainerHeight,
+                                                Constants.topTxt)),
                                         getCustomText(
                                             widget._modelAdoption.gender,
                                             textColor,
@@ -196,7 +196,8 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                                             TextAlign.center,
                                             FontWeight.w500,
                                             Constants.getPercentSize1(
-                                                subContainerHeight, Constants.bottomTxt))
+                                                subContainerHeight,
+                                                Constants.bottomTxt))
                                       ],
                                     ),
                                   )),
@@ -222,16 +223,17 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                                             TextAlign.center,
                                             FontWeight.w500,
                                             Constants.getPercentSize1(
-                                                subContainerHeight, Constants.topTxt)),
+                                                subContainerHeight,
+                                                Constants.topTxt)),
                                         getCustomText(
-                                            widget._modelAdoption.weight,
+                                            widget._modelAdoption.weight ?? "",
                                             textColor,
                                             1,
                                             TextAlign.center,
                                             FontWeight.w500,
                                             Constants.getPercentSize1(
-                                                subContainerHeight, Constants.bottomTxt))
-                                        
+                                                subContainerHeight,
+                                                Constants.bottomTxt))
                                       ],
                                     ),
                                   ))
@@ -252,17 +254,12 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(7)),
                       color: cardColor,
-                      boxShadow: [
-                        BoxShadow(
-                            color: shadowColor,
-                            blurRadius: 2
-                        )
-                      ]
+                      boxShadow: [BoxShadow(color: shadowColor, blurRadius: 2)]
                       // border: Border.all(
                       //   color: Colors.grey,
                       // ),
                       // borderRadius: BorderRadius.all(Radius.circular(7))
-                  ),
+                      ),
                   padding: EdgeInsets.symmetric(
                       horizontal:
                           Constants.getPercentSize1(containerHeight2, 10),
@@ -346,17 +343,12 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(7)),
                       color: cardColor,
-                      boxShadow: [
-                        BoxShadow(
-                            color: shadowColor,
-                            blurRadius: 2
-                        )
-                      ]
+                      boxShadow: [BoxShadow(color: shadowColor, blurRadius: 2)]
                       // border: Border.all(
                       //   color: Colors.grey,
                       // ),
                       // borderRadius: BorderRadius.all(Radius.circular(7))
-                  ),
+                      ),
                   padding: EdgeInsets.symmetric(
                       horizontal:
                           Constants.getPercentSize1(containerHeight2, 10),
@@ -504,17 +496,12 @@ class _SubmitAdoptionForm extends State<SubmitAdoptionForm> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(7)),
                       color: cardColor,
-                      boxShadow: [
-                        BoxShadow(
-                            color: shadowColor,
-                            blurRadius: 2
-                        )
-                      ]
+                      boxShadow: [BoxShadow(color: shadowColor, blurRadius: 2)]
                       // border: Border.all(
                       //   color: Colors.grey,
                       // ),
                       // borderRadius: BorderRadius.all(Radius.circular(7))
-                  ),
+                      ),
                   child: TextField(
                     decoration: InputDecoration(
                         border: InputBorder.none,

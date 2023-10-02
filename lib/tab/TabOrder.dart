@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:petcare/constants/ConstantColors.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
 import 'package:petcare/screen/OrderDetailPage.dart';
 import 'package:petcare/screen/OrderDetailTreatmentPage.dart';
 import 'package:petcare/screen/OrderDetailPetHotel.dart';
@@ -9,7 +11,7 @@ import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
-import 'package:petcare/model/OrderModel.dart';
+import 'package:petcare/model/Order_Model.dart';
 import 'package:petcare/model/OrderDescModel.dart';
 import 'package:petcare/screen/OrderTrackMap.dart';
 
@@ -25,40 +27,56 @@ class _TabOrder extends State<TabOrder> {
     Navigator.of(context).pop();
   }
 
-  List<String> selectionList = ["Shopping", "Treatment", "Pet Hotel"];
+  List<String> selectionList = ["Shopping", "Services"];
   int selectedPos = 0;
-  List<OrderModel> allOrderList = DataFile.getOrderList();
+  // List<OrderModel> allOrderList = DataFile.getOrderList();
+  List<OrderModel> allOrderList = [];
+  List<OrderModel> allShoppingList = [];
+  List<OrderModel> allServicesList = [];
 
   int expandPosition = -1;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getOrders();
+  }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    double screenHeight = SizeConfig.safeBlockVertical !* 100;
-    double screenWidth = SizeConfig.safeBlockHorizontal !* 100;
-    double topSliderHeight = SizeConfig.safeBlockHorizontal !* 13;
-    double topSliderWidth = SizeConfig.safeBlockHorizontal !* 24;
-    double imageSize = SizeConfig.safeBlockVertical !* 6;
-    List<OrderDescModel> orderList = DataFile.getOrderDescList();
+    double screenHeight = SizeConfig.safeBlockVertical! * 100;
+    double screenWidth = SizeConfig.safeBlockHorizontal! * 100;
+    double topSliderHeight = SizeConfig.safeBlockHorizontal! * 13;
+    double topSliderWidth = SizeConfig.safeBlockHorizontal! * 24;
+    double imageSize = SizeConfig.safeBlockVertical! * 6;
 
     return WillPopScope(
         child: Scaffold(
           backgroundColor: ConstantColors.bgColor,
-          // appBar: AppBar(
-          //   elevation: 0,
-          //   backgroundColor: Colors.transparent,
-          //   automaticallyImplyLeading: false,
-          //   leading: IconButton(
-          //     icon: Icon(
-          //       Icons.arrow_back_ios_outlined,
-          //       color: textColor,
-          //     ),
-          //     onPressed: () {
-          //       finish();
-          //     },
-          //   ),
-          // ),
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            title: getCustomText(
+                S.of(context).order,
+                textColor,
+                1,
+                TextAlign.start,
+                FontWeight.w500,
+                Constants.getPercentSize1(screenHeight, 3.5)),
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios_outlined,
+                color: textColor,
+              ),
+              onPressed: () {
+                finish();
+              },
+            ),
+          ),
           body: SafeArea(
             child: Container(
               width: double.infinity,
@@ -69,13 +87,6 @@ class _TabOrder extends State<TabOrder> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  getCustomText(
-                      S.of(context).order,
-                      textColor,
-                      1,
-                      TextAlign.start,
-                      FontWeight.w500,
-                      Constants.getPercentSize1(screenHeight, 3.5)),
                   getCustomText(
                       S.of(context).listOfYourAllOrders,
                       primaryTextColor,
@@ -97,6 +108,11 @@ class _TabOrder extends State<TabOrder> {
                           onTap: () {
                             setState(() {
                               selectedPos = index;
+                              if (selectedPos == 0) {
+                                allOrderList = allShoppingList;
+                              } else if (selectedPos == 1) {
+                                allOrderList = allServicesList;
+                              }
                             });
                           },
                           child: Container(
@@ -107,7 +123,7 @@ class _TabOrder extends State<TabOrder> {
                                 color: (selectedPos == index)
                                     ? accentColors
                                     : lightPrimaryColors),
-                                    // : "#ECEDFA".toColor()),
+                            // : "#ECEDFA".toColor()),
                             margin: EdgeInsets.all(
                                 Constants.getPercentSize1(topSliderWidth, 5)),
                             child: Align(
@@ -154,10 +170,10 @@ class _TabOrder extends State<TabOrder> {
                                                 padding: EdgeInsets.all(5),
                                                 decoration: BoxDecoration(
                                                   shape: BoxShape.rectangle,
-                                                  color:
-                                                      Constants.getOrderColor(
-                                                          allOrderList[index]
-                                                              .type!),
+                                                  // color: Constants.getOrderColor(
+                                                  //     allOrderList[index]
+                                                  //             .activeStatus ??
+                                                  //         0),
                                                   borderRadius:
                                                       BorderRadius.all(
                                                     Radius.circular(10),
@@ -165,8 +181,9 @@ class _TabOrder extends State<TabOrder> {
                                                 ),
                                                 child: Icon(
                                                   CupertinoIcons.rectangle_dock,
-                                                  color: Constants.getIconColor(
-                                                      allOrderList[index].type!),
+                                                  // color: Constants.getIconColor(
+                                                  //     allOrderList[index]
+                                                  //         .activeStatus!),
                                                 ),
                                               ),
                                               Expanded(
@@ -186,7 +203,7 @@ class _TabOrder extends State<TabOrder> {
                                                               " " +
                                                               allOrderList[
                                                                       index]
-                                                                  .orderId!,
+                                                                  .id!,
                                                           textColor,
                                                           1,
                                                           TextAlign.start,
@@ -199,8 +216,11 @@ class _TabOrder extends State<TabOrder> {
                                                               .center,
                                                       children: [
                                                         getCustomText(
-                                                            allOrderList[index]
-                                                                .items!,
+                                                            allOrderList![index]
+                                                                    .itemList!
+                                                                    .length
+                                                                    .toString() ??
+                                                                "",
                                                             primaryTextColor,
                                                             1,
                                                             TextAlign.start,
@@ -221,7 +241,10 @@ class _TabOrder extends State<TabOrder> {
                                                         ),
                                                         getCustomText(
                                                             allOrderList[index]
-                                                                .type!,
+                                                                    .itemList?[
+                                                                        0]
+                                                                    .status ??
+                                                                "",
                                                             primaryTextColor,
                                                             1,
                                                             TextAlign.start,
@@ -240,9 +263,10 @@ class _TabOrder extends State<TabOrder> {
                                                                         context)
                                                                     .push(
                                                                         MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          OrderDetailPage(),
+                                                                  builder: (context) =>
+                                                                      OrderDetailPage(
+                                                                          orderDetails:
+                                                                              allOrderList[index]),
                                                                 ));
                                                                 break;
                                                               case 1:
@@ -282,26 +306,46 @@ class _TabOrder extends State<TabOrder> {
                                                                 15),
                                                           ),
                                                         ),
-                                                        getHorizonSpace(Constants.getPercentSize1(screenWidth,3)),
-                                                        Visibility(
-                                                          visible: (selectedPos==0)?true:false,
-                                                            child: InkWell(
-                                                          onTap: () {
-                                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderTrackMap(),));
-                                                          },
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    bottom: 5),
-                                                            child: getCustomText(
-                                                                S.of(context).trackOrder,
-                                                                accentColors,
-                                                                1,
-                                                                TextAlign.start,
-                                                                FontWeight.w500,
-                                                                15),
-                                                          ),
-                                                        )),
+                                                        getHorizonSpace(Constants
+                                                            .getPercentSize1(
+                                                                screenWidth,
+                                                                3)),
+                                                        // Visibility(
+                                                        //     visible:
+                                                        //         (selectedPos ==
+                                                        //                 0)
+                                                        //             ? true
+                                                        //             : false,
+                                                        //     child: InkWell(
+                                                        //       onTap: () {
+                                                        //         Navigator.of(
+                                                        //                 context)
+                                                        //             .push(
+                                                        //                 MaterialPageRoute(
+                                                        //           builder:
+                                                        //               (context) =>
+                                                        //                   OrderTrackMap(),
+                                                        //         ));
+                                                        //       },
+                                                        //       child: Padding(
+                                                        //         padding: EdgeInsets
+                                                        //             .only(
+                                                        //                 bottom:
+                                                        //                     5),
+                                                        //         child: getCustomText(
+                                                        //             S
+                                                        //                 .of(
+                                                        //                     context)
+                                                        //                 .trackOrder,
+                                                        //             accentColors,
+                                                        //             1,
+                                                        //             TextAlign
+                                                        //                 .start,
+                                                        //             FontWeight
+                                                        //                 .w500,
+                                                        //             15),
+                                                        //       ),
+                                                        //     )),
                                                       ],
                                                     )
                                                   ],
@@ -337,7 +381,10 @@ class _TabOrder extends State<TabOrder> {
                                         child: Container(
                                           child: ListView.builder(
                                               shrinkWrap: true,
-                                              itemCount: orderList.length,
+                                              itemCount: allOrderList[index]
+                                                  .itemList![0]
+                                                  .listStatus!
+                                                  .length,
                                               physics:
                                                   NeverScrollableScrollPhysics(),
                                               itemBuilder: (context, index) {
@@ -360,17 +407,11 @@ class _TabOrder extends State<TabOrder> {
                                                                 EdgeInsets.only(
                                                                     right: 15,
                                                                     top: 3),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                              color: (orderList[
-                                                                              index]
-                                                                          .completed ==
-                                                                      1)
-                                                                  ? primaryColor
-                                                                  : iconColor,
-                                                            ),
+                                                            decoration: BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color:
+                                                                    primaryColor),
                                                           ),
                                                           Expanded(
                                                             child: Column(
@@ -389,8 +430,8 @@ class _TabOrder extends State<TabOrder> {
                                                                   child: getCustomText(
                                                                       S.of(context).orderId +
                                                                           " " +
-                                                                          orderList[index]
-                                                                              .name!,
+                                                                          (allOrderList[index].itemList?[0].listStatus?[0] ??
+                                                                              ""),
                                                                       textColor,
                                                                       1,
                                                                       TextAlign
@@ -405,8 +446,8 @@ class _TabOrder extends State<TabOrder> {
                                                                           .center,
                                                                   children: [
                                                                     getCustomText(
-                                                                        orderList[index]
-                                                                            .desc!,
+                                                                        (allOrderList[index].itemList?[0].listDate?[0] ??
+                                                                            ""),
                                                                         primaryTextColor,
                                                                         1,
                                                                         TextAlign
@@ -455,5 +496,32 @@ class _TabOrder extends State<TabOrder> {
           ));
           return false;
         });
+  }
+
+  Future<void> getOrders() async {
+    Map parameter = {
+      USER_ID: CUR_USERID,
+    };
+    apiBaseHelper.postAPICall(getOrderApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data'];
+
+          allShoppingList.addAll(
+              (data as List).map((json) => OrderModel.fromJson(json)).toList());
+          allOrderList = allShoppingList;
+          setSnackbar(msg!, context);
+        } else {
+          setSnackbar(msg!, context);
+        }
+        setState(() {});
+      },
+      onError: (error) {
+        setState(() {});
+        setSnackbar(error.toString(), context);
+      },
+    );
   }
 }

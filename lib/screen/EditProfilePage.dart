@@ -506,8 +506,6 @@ class _EditProfilePage extends State<EditProfilePage> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       try {
-        var image;
-
         var request = http.MultipartRequest('POST', (getUpdateUserApi));
         request.headers.addAll(headers);
         request.fields[USER_ID] = CUR_USERID!;

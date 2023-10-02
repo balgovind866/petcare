@@ -12,7 +12,6 @@ import 'package:petcare/model/ProfileModel.dart';
 import 'package:petcare/screen/AboutUsPage.dart';
 import 'package:petcare/screen/EditProfilePage.dart';
 import 'package:petcare/screen/LoginPage.dart';
-import 'package:petcare/screen/MySavedCardsPage.dart';
 import 'package:petcare/screen/NotificationList.dart';
 import 'package:petcare/screen/ShippingAddressPage.dart';
 import 'package:petcare/screen/WriteReviewPage.dart';
@@ -165,12 +164,12 @@ class _TabProfile extends State<TabProfile> {
                 sendAction(ShippingAddressPage());
               },
             ),
-            InkWell(
-              child: _getCell(S.of(context).mySavedCards, Icons.credit_card),
-              onTap: () {
-                sendAction(MySavedCardsPage());
-              },
-            ),
+            // InkWell(
+            //   child: _getCell(S.of(context).mySavedCards, Icons.credit_card),
+            //   onTap: () {
+            //     sendAction(MySavedCardsPage());
+            //   },
+            // ),
             // InkWell(
             //   child: _getCell(S.of(context).giftCard,Icons.card_giftcard),
             //   onTap: () {

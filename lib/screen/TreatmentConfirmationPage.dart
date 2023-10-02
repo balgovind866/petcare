@@ -60,7 +60,7 @@ class _TreatmentConfirmationPage extends State<TreatmentConfirmationPage> {
             elevation: 0,
             centerTitle: true,
             backgroundColor: ConstantColors.bgColor,
-            title: getCustomText(S.of(context).chekout, textColor, 1,
+            title: getCustomText(S.of(context).checkout, textColor, 1,
                 TextAlign.center, FontWeight.bold, 18),
             leading: Builder(
               builder: (BuildContext context) {
@@ -147,7 +147,7 @@ class _TreatmentConfirmationPage extends State<TreatmentConfirmationPage> {
                                     height: imageSize,
                                     child: Image.asset(
                                       Constants.assetsImagePath +
-                                          adoptionModel.image[0],
+                                          adoptionModel.profile_img,
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -173,7 +173,7 @@ class _TreatmentConfirmationPage extends State<TreatmentConfirmationPage> {
                                                 Constants.getPercentSize1(
                                                     containerHeight, 17)),
                                             getCustomText(
-                                                adoptionModel.desc,
+                                                adoptionModel.description,
                                                 primaryTextColor,
                                                 1,
                                                 TextAlign.start,

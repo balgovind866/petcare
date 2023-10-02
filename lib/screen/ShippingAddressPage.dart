@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:petcare/HomeScreen.dart';
+import 'package:petcare/Provider/AddressProvider.dart';
+import 'package:petcare/Provider/SettingProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/generated/l10n.dart';
 import 'package:petcare/helper/Session.dart';
 import 'package:petcare/helper/String.dart';
+import 'package:provider/provider.dart';
 
 import '../model/User.dart';
 import 'AddNewAddressPage.dart';
@@ -18,7 +21,7 @@ class ShippingAddressPage extends StatefulWidget {
 }
 
 class _ShippingAddressPage extends State<ShippingAddressPage> {
-  List addressList = [];
+  List<User> addressList = [];
   int _selectedAddress = 0;
 
   @override
@@ -187,6 +190,7 @@ class _ShippingAddressPage extends State<ShippingAddressPage> {
           var data = getdata['data'];
           addressList =
               (data as List).map((data) => User.fromAddress(data)).toList();
+          context.read<AddressProvider>().setAddressList(addressList);
           setState(() {});
           setSnackbar(msg!, context);
         } else {

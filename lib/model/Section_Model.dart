@@ -11,6 +11,7 @@ class SectionModel {
       perItemPrice,
       singleItemNetAmount,
       singleItemTaxAmount,
+      singleItemDeliveryAmount,
       style,
       shortDesc;
   double? perItemTaxPriceOnItemsTotal,
@@ -37,6 +38,7 @@ class SectionModel {
       this.offset,
       this.selectedId,
       this.filterList,
+      this.singleItemDeliveryAmount,
       this.singleItemTaxAmount,
       this.singleItemNetAmount,
       this.promoList});
@@ -79,7 +81,8 @@ class SectionModel {
         perItemPrice: '0',
         productList: productList,
         singleItemNetAmount: parsedJson['net_amount'].toString(),
-        singleItemTaxAmount: parsedJson['tax_amount'].toString());
+        singleItemTaxAmount: parsedJson['tax_amount'].toString(),
+        singleItemDeliveryAmount: parsedJson['delivery_charge'].toString());
   }
 
   factory SectionModel.fromFav(Map<String, dynamic> parsedJson) {

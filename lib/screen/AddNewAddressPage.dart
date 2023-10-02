@@ -4,7 +4,6 @@ import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
-import 'package:petcare/customwidget/ReviewSlider.dart';
 import 'package:petcare/generated/l10n.dart';
 import 'package:petcare/helper/Session.dart';
 import 'package:petcare/helper/String.dart';
@@ -19,6 +18,8 @@ class AddNewAddressPage extends StatefulWidget {
 
 class _AddNewAddressPage extends State<AddNewAddressPage> {
   int _selectedRadio = 0;
+
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -55,8 +56,8 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    double leftMargin = MediaQuery.of(context).size.width * 0.05;
-    double editTextHeight = MediaQuery.of(context).size.height * 0.06;
+    double leftMargin = MediaQuery.of(context).size.width * 0.04;
+    double editTextHeight = MediaQuery.of(context).size.height * 0.08;
 
     return WillPopScope(
         child: Scaffold(
@@ -65,7 +66,7 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
             elevation: 0,
             centerTitle: true,
             backgroundColor: ConstantColors.bgColor,
-            title: getCustomText(S.of(context).chekout, textColor, 1,
+            title: getCustomText(S.of(context).address, textColor, 1,
                 TextAlign.center, FontWeight.bold, 18),
             leading: Builder(
               builder: (BuildContext context) {
@@ -85,269 +86,306 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
             child: Column(
               children: [
                 Expanded(
-                  child: ListView(
-                    children: [
-                      ReviewSlider(
-                          optionStyle: TextStyle(
-                            fontFamily: Constants.fontsFamily,
-                            fontSize: 8,
-                            color: textColor,
-                            fontWeight: FontWeight.bold,
+                  child: Form(
+                    key: _formkey,
+                    child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        // ReviewSlider(
+                        //     optionStyle: TextStyle(
+                        //       fontFamily: Constants.fontsFamily,
+                        //       fontSize: 8,
+                        //       color: textColor,
+                        //       fontWeight: FontWeight.bold,
+                        //     ),
+                        //     onChange: (index) {},
+                        //     initialValue: 0,
+                        //     width: double.infinity,
+                        //     options: [
+                        //       S.of(context).personalInfo,
+                        //       S.of(context).payment,
+                        //       S.of(context).confirmation
+                        //     ]),
+                        Padding(
+                          padding: EdgeInsets.only(top: 0, bottom: 10),
+                          child: Align(
+                              alignment: Alignment.topLeft,
+                              child: getCustomText(
+                                  S.of(context).deliverTo,
+                                  textColor,
+                                  1,
+                                  TextAlign.start,
+                                  FontWeight.bold,
+                                  16)),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(
+                              top: 10,
+                            ),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: getCustomText(
+                                  S.of(context).fullName,
+                                  textColor,
+                                  1,
+                                  TextAlign.start,
+                                  FontWeight.bold,
+                                  12),
+                            )),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          height: editTextHeight,
+                          child: TextFormField(
+                            maxLines: 1,
+                            controller: _textEditingControllerName,
+                            style: TextStyle(
+                                fontFamily: Constants.fontsFamily,
+                                color: primaryTextColor,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16),
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(top: 3, left: 8),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: textColor),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: disableIconColor),
+                              ),
+                            ),
+                            validator: (value) {
+                              print("hello3");
+                              if (value == null || value.isEmpty) {
+                                print("hello4");
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
                           ),
-                          onChange: (index) {},
-                          initialValue: 0,
-                          width: double.infinity,
-                          options: [
-                            S.of(context).personalInfo,
-                            S.of(context).payment,
-                            S.of(context).confirmation
-                          ]),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20, bottom: 10),
-                        child: Align(
-                            alignment: Alignment.topLeft,
-                            child: getCustomText(
-                                S.of(context).deliverTo,
-                                textColor,
-                                1,
-                                TextAlign.start,
-                                FontWeight.bold,
-                                16)),
-                      ),
-                      Padding(
+                        ),
+                        Padding(
                           padding: EdgeInsets.only(
                             top: 10,
                           ),
                           child: Align(
-                            alignment: Alignment.topLeft,
-                            child: getCustomText(
-                                S.of(context).fullName,
-                                textColor,
-                                1,
-                                TextAlign.start,
-                                FontWeight.bold,
-                                12),
-                          )),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        height: editTextHeight,
-                        child: TextField(
-                          maxLines: 1,
-                          controller: _textEditingControllerName,
-                          style: TextStyle(
-                              fontFamily: Constants.fontsFamily,
-                              color: primaryTextColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 3, left: 8),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: textColor),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: disableIconColor),
-                            ),
-                          ),
+                              alignment: Alignment.topLeft,
+                              child: getCustomText(
+                                  S.of(context).phoneNumber,
+                                  textColor,
+                                  1,
+                                  TextAlign.start,
+                                  FontWeight.bold,
+                                  12)),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                        ),
-                        child: Align(
-                            alignment: Alignment.topLeft,
-                            child: getCustomText(
-                                S.of(context).phoneNumber,
-                                textColor,
-                                1,
-                                TextAlign.start,
-                                FontWeight.bold,
-                                12)),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        height: editTextHeight,
-                        child: TextField(
-                          maxLines: 1,
-                          controller: _textEditingControllerMobile,
-                          keyboardType: TextInputType.number,
-                          style: TextStyle(
-                              fontFamily: Constants.fontsFamily,
-                              color: primaryTextColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 3, left: 8),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: textColor),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: disableIconColor),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: 10,
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          height: editTextHeight,
+                          child: TextFormField(
+                            maxLines: 1,
+                            controller: _textEditingControllerMobile,
+                            keyboardType: TextInputType.number,
+                            style: TextStyle(
+                                fontFamily: Constants.fontsFamily,
+                                color: primaryTextColor,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16),
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(top: 3, left: 8),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: textColor),
                               ),
-                              child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    S.of(context).cityarea,
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        fontFamily: Constants.fontsFamily,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                        color: textColor),
-                                  )),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  DropdownMenu<String?>(
-                                    width:
-                                        MediaQuery.sizeOf(context).width * 0.4,
-                                    hintText: "Select City",
-                                    onSelected: (value) {
-                                      setState(() {
-                                        selectedCityId = value ?? "";
-                                        selectedAreaId = "";
-                                        areaList.clear();
-                                      });
-                                      getAreas();
-                                    },
-                                    dropdownMenuEntries: cityList
-                                        .map((e) => DropdownMenuEntry<String?>(
-                                            value: e.id, label: e.name ?? ""))
-                                        .toList(),
-                                  ),
-                                  DropdownMenu<String?>(
-                                    width:
-                                        MediaQuery.sizeOf(context).width * 0.4,
-                                    enabled: areaList.isNotEmpty,
-                                    hintText: "Select Area",
-                                    onSelected: (value) {
-                                      setState(() {
-                                        selectedAreaId = value ?? "";
-                                        _textEditingControllerPincode.text =
-                                            areaList
-                                                .firstWhere((element) =>
-                                                    element.id ==
-                                                    selectedAreaId)
-                                                .pincode
-                                                .toString();
-                                      });
-                                    },
-                                    dropdownMenuEntries: areaList
-                                        .map((e) => DropdownMenuEntry<String?>(
-                                            value: e.id, label: e.name ?? ""))
-                                        .toList(),
-                                  ),
-                                ],
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: disableIconColor),
                               ),
                             ),
-                          ],
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                          ),
                         ),
-                        flex: 1,
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 10, left: 8),
-                              child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: getCustomText(
-                                      S.of(context).zip,
-                                      textColor,
-                                      1,
-                                      TextAlign.start,
-                                      FontWeight.bold,
-                                      12)),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(bottom: 10, left: 8),
-                              height: editTextHeight,
-                              child: TextField(
-                                maxLines: 1,
-                                controller: _textEditingControllerPincode,
-                                style: TextStyle(
-                                    fontFamily: Constants.fontsFamily,
-                                    color: primaryTextColor,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16),
-                                decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.only(top: 3, left: 8),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColor),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: disableIconColor),
-                                  ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  top: 10,
+                                ),
+                                child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      S.of(context).cityarea,
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          fontFamily: Constants.fontsFamily,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                          color: textColor),
+                                    )),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: MediaQuery.sizeOf(context).width *
+                                          0.4,
+                                      child: DropdownButtonFormField<String?>(
+                                        //     0.4,
+                                        hint: Text("Select City"),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedCityId = value ?? "";
+                                            selectedAreaId = "";
+                                            areaList.clear();
+                                          });
+                                          getAreas();
+                                        },
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Select City';
+                                          }
+                                          return null;
+                                        },
+                                        items: cityList
+                                            .map((e) =>
+                                                DropdownMenuItem<String?>(
+                                                    value: e.id,
+                                                    child: Text(e.name ?? "")))
+                                            .toList(),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.sizeOf(context).width *
+                                          0.4,
+                                      child: DropdownButtonFormField<String?>(
+                                        // enabled: areaList.isNotEmpty,
+                                        hint: Text("Select Area"),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedAreaId = value ?? "";
+                                            _textEditingControllerPincode.text =
+                                                areaList
+                                                    .firstWhere((element) =>
+                                                        element.id ==
+                                                        selectedAreaId)
+                                                    .pincode
+                                                    .toString();
+                                          });
+                                        },
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Select Area';
+                                          }
+                                          return null;
+                                        },
+                                        items: areaList
+                                            .map((e) =>
+                                                DropdownMenuItem<String?>(
+                                                    value: e.id,
+                                                    child: Text(e.name ?? "")))
+                                            .toList(),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                          flex: 1,
                         ),
-                        flex: 1,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 10,
+                        Padding(
+                          padding: EdgeInsets.only(top: 10, left: 8),
+                          child: Align(
+                              alignment: Alignment.topLeft,
+                              child: getCustomText(S.of(context).zip, textColor,
+                                  1, TextAlign.start, FontWeight.bold, 12)),
                         ),
-                        child: Align(
-                            alignment: Alignment.topLeft,
-                            child: getCustomText(
-                                S.of(context).address,
-                                textColor,
-                                1,
-                                TextAlign.start,
-                                FontWeight.bold,
-                                12)),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        height: editTextHeight,
-                        child: TextField(
-                          maxLines: 1,
-                          controller: _textEditingControllerAddress,
-                          style: TextStyle(
-                              fontFamily: Constants.fontsFamily,
-                              color: primaryTextColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 3, left: 8),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: textColor),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10, left: 8),
+                          height: editTextHeight,
+                          child: TextFormField(
+                            maxLines: 1,
+                            controller: _textEditingControllerPincode,
+                            style: TextStyle(
+                                fontFamily: Constants.fontsFamily,
+                                color: primaryTextColor,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16),
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(top: 3, left: 8),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: textColor),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: disableIconColor),
+                              ),
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: disableIconColor),
-                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        child: _radioView(S.of(context).houseapartment,
-                            (_selectedRadio == 0), 0),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        child: _radioView(S.of(context).agencycompany,
-                            (_selectedRadio == 1), 1),
-                      ),
-                    ],
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: 10,
+                          ),
+                          child: Align(
+                              alignment: Alignment.topLeft,
+                              child: getCustomText(
+                                  S.of(context).address,
+                                  textColor,
+                                  1,
+                                  TextAlign.start,
+                                  FontWeight.bold,
+                                  12)),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          height: editTextHeight,
+                          child: TextFormField(
+                            maxLines: 1,
+                            controller: _textEditingControllerAddress,
+                            style: TextStyle(
+                                fontFamily: Constants.fontsFamily,
+                                color: primaryTextColor,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16),
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(top: 3, left: 8),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: textColor),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: disableIconColor),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: _radioView(S.of(context).houseapartment,
+                              (_selectedRadio == 0), 0),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: _radioView(S.of(context).agencycompany,
+                              (_selectedRadio == 1), 1),
+                        ),
+                      ],
+                    ),
                   ),
                   flex: 1,
                 ),
@@ -365,7 +403,11 @@ class _AddNewAddressPage extends State<AddNewAddressPage> {
                         ),
                       )),
                   onTap: () {
-                    addAddressData();
+                    print("hello");
+                    if (_formkey.currentState!.validate()) {
+                      print("hello1");
+                      addAddressData();
+                    }
                   },
                 ),
               ],

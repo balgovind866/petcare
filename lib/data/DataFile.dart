@@ -393,18 +393,42 @@ class DataFile {
 
   static List<ModelAdoption> getAllAdoptionList() {
     List<ModelAdoption> subList = [];
-    subList.add(new ModelAdoption(1, "Cooper", "Labrador Retriver", "3 Months",
-        "Male", ["dog1.jpg", "dog1.jpg"], "2.5 kg"));
-    subList.add(new ModelAdoption(2, "Sophie", "American Eskimo", "5 Months",
-        "Female", ["dog2.jpg", "dog2.jpg"], "2.5 kg"));
-    subList.add(new ModelAdoption(3, "Sophie", "Bichon Fries", "3 Months",
-        "Male", ["dog3.jpg", "dog3.jpg"], "3.1 kg"));
-    subList.add(new ModelAdoption(4, "Lucky", "Beagie", "9 Months", "Female",
-        ["dog4.jpg", "dog4.jpg"], "4 kg"));
-    subList.add(new ModelAdoption(5, "Charlie", "Miniature Pinscher",
-        "3 Months", "Male", ["dog5.jpg", "dog5.jpg"], "2.1 kg"));
-    subList.add(new ModelAdoption(6, "Buddy", "Golder Retriver", "10 Months",
-        "Male", ["dog6.jpg", "dog6.jpg"], "3.9 kg"));
+    subList.add(new ModelAdoption(
+        id: "1",
+        name: "Cooper",
+        breed: "Labrador Retriver",
+        age: "3 Months",
+        gender: "Male",
+        profile_img: "dog1.jpg",
+        weight: "2.5 kg",
+        description: "hello",
+        user_id: "13",
+        created_at: "2023-10-02 12:02:23",
+        updated_at: "2023-10-02 12:02:23"));
+    subList.add(new ModelAdoption(
+        id: "2",
+        name: "Sophie",
+        breed: "American Eskimo",
+        age: "5 Months",
+        gender: "Female",
+        profile_img: "dog2.jpg",
+        weight: "2.5 kg",
+        description: "hello",
+        user_id: "13",
+        created_at: "2023-10-02 12:02:23",
+        updated_at: "2023-10-02 12:02:23"));
+    subList.add(new ModelAdoption(
+        id: "3",
+        name: "Sophie",
+        breed: "Bichon Fries",
+        age: "3 Months",
+        gender: "Male",
+        profile_img: "dog3.jpg",
+        weight: "3.1 kg",
+        description: "hello",
+        user_id: "13",
+        created_at: "2023-10-02 12:02:23",
+        updated_at: "2023-10-02 12:02:23"));
 
     return subList;
   }

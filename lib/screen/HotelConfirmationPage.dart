@@ -76,7 +76,7 @@ class _HotelConfirmationPage extends State<HotelConfirmationPage> {
             elevation: 0,
             centerTitle: true,
             backgroundColor: ConstantColors.bgColor,
-            title: getCustomText(S.of(context).chekout, textColor, 1,
+            title: getCustomText(S.of(context).checkout, textColor, 1,
                 TextAlign.center, FontWeight.bold, 18),
             leading: Builder(
               builder: (BuildContext context) {
@@ -161,9 +161,8 @@ class _HotelConfirmationPage extends State<HotelConfirmationPage> {
                                   child: Container(
                                     width: imageSize,
                                     height: imageSize,
-                                    child: Image.asset(
-                                      Constants.assetsImagePath +
-                                          adoptionModel.image[0],
+                                    child: Image.network(
+                                      adoptionModel.profile_img,
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -189,7 +188,7 @@ class _HotelConfirmationPage extends State<HotelConfirmationPage> {
                                                 Constants.getPercentSize1(
                                                     containerHeight, 17)),
                                             getCustomText(
-                                                adoptionModel.desc,
+                                                adoptionModel.description,
                                                 primaryTextColor,
                                                 1,
                                                 TextAlign.start,

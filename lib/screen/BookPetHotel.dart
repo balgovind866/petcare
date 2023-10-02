@@ -223,11 +223,9 @@ class _BookPetHotel extends State<BookPetHotel> {
                                                             .getPercentSize1(
                                                                 dialogContainerHeight,
                                                                 60),
-                                                        child: Image.asset(
-                                                          Constants
-                                                                  .assetsImagePath +
-                                                              _modelAdoption
-                                                                  .image[0],
+                                                        child: Image.network(
+                                                          _modelAdoption
+                                                              .profile_img,
                                                           fit: BoxFit.cover,
                                                         ),
                                                       ),
@@ -257,7 +255,7 @@ class _BookPetHotel extends State<BookPetHotel> {
                                                                       14)),
                                                           getCustomText(
                                                               _modelAdoption
-                                                                  .desc,
+                                                                  .description,
                                                               primaryTextColor,
                                                               1,
                                                               TextAlign.start,
@@ -417,8 +415,8 @@ class _BookPetHotel extends State<BookPetHotel> {
                                                                               dialogSubContainerHeight,
                                                                               Constants.topTxt)),
                                                                       getCustomText(
-                                                                          _modelAdoption
-                                                                              .weight,
+                                                                          _modelAdoption.weight ??
+                                                                              "",
                                                                           textColor,
                                                                           1,
                                                                           TextAlign
@@ -468,7 +466,7 @@ class _BookPetHotel extends State<BookPetHotel> {
                             height: imageSize,
                             child: Image.asset(
                               Constants.assetsImagePath +
-                                  _adoptionList[selectedPetPos].image[0],
+                                  _adoptionList[selectedPetPos].profile_img,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -492,7 +490,8 @@ class _BookPetHotel extends State<BookPetHotel> {
                                         Constants.getPercentSize1(
                                             containerHeight, 14)),
                                     getCustomText(
-                                        _adoptionList[selectedPetPos].desc,
+                                        _adoptionList[selectedPetPos]
+                                            .description,
                                         primaryTextColor,
                                         1,
                                         TextAlign.start,

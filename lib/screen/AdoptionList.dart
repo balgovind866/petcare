@@ -29,16 +29,16 @@ class _AdoptionList extends State<AdoptionList> {
     var _crossAxisCount = 2;
     var _width = (_screenWidth - ((_crossAxisCount - 1) * _crossAxisSpacing)) /
         _crossAxisCount;
-    var cellHeight = SizeConfig.safeBlockHorizontal !* 58;
+    var cellHeight = SizeConfig.safeBlockHorizontal! * 58;
     var _aspectRatio = _width / cellHeight;
-    double mainCatWidth = (SizeConfig.safeBlockHorizontal !* 50) -
+    double mainCatWidth = (SizeConfig.safeBlockHorizontal! * 50) -
         (cellMargin * 2 + _crossAxisSpacing);
     double mainCatHeight = cellHeight;
     double topSliderWidth = SizeConfig.safeBlockHorizontal! * 20;
-    double topSliderHeight = SizeConfig.safeBlockHorizontal !* 13;
-    double imageSize = SizeConfig.safeBlockVertical !* 6.5;
+    double topSliderHeight = SizeConfig.safeBlockHorizontal! * 13;
+    double imageSize = SizeConfig.safeBlockVertical! * 6.5;
     double imageSize1 = SizeConfig.safeBlockVertical! * 2.5;
-    double marginSearch = SizeConfig.safeBlockHorizontal !* 5;
+    double marginSearch = SizeConfig.safeBlockHorizontal! * 5;
 
     return WillPopScope(
       child: Scaffold(
@@ -184,25 +184,26 @@ class _AdoptionList extends State<AdoptionList> {
 
                           return InkWell(
                             onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => AdoptionDetail(_subCatModle),));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    AdoptionDetail(_subCatModle),
+                              ));
                             },
                             child: Container(
                               width: mainCatWidth,
                               height: mainCatHeight,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(7)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(7)),
                                   color: cardColor,
                                   boxShadow: [
-                                    BoxShadow(
-                                        color: shadowColor,
-                                        blurRadius: 2
-                                    )
+                                    BoxShadow(color: shadowColor, blurRadius: 2)
                                   ]
                                   // borderRadius:
                                   //     BorderRadius.all(Radius.circular(7)),
                                   // border:
                                   //     Border.all(color: Colors.grey, width: 1)
-                              ),
+                                  ),
                               margin: EdgeInsets.all(
                                   Constants.getPercentSize(mainCatHeight, 3)),
                               padding: EdgeInsets.all(
@@ -215,9 +216,8 @@ class _AdoptionList extends State<AdoptionList> {
                                     child: ClipRRect(
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(7)),
-                                      child: Image.asset(
-                                        Constants.assetsImagePath +
-                                            _subCatModle.image[0],
+                                      child: Image.network(
+                                        _subCatModle.profile_img,
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         height: double.infinity,
@@ -236,7 +236,7 @@ class _AdoptionList extends State<AdoptionList> {
                                       Constants.getPercentSize1(
                                           mainCatHeight, 6)),
                                   getCustomText(
-                                      _subCatModle.desc,
+                                      _subCatModle.description,
                                       primaryTextColor,
                                       1,
                                       TextAlign.start,

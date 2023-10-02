@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petcare/HomeScreen.dart';
+import 'package:petcare/Provider/AddressProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -11,6 +12,7 @@ import 'package:petcare/helper/String.dart';
 import 'package:petcare/model/User.dart';
 import 'package:petcare/screen/AddNewAddressPage.dart';
 import 'package:petcare/screen/PaymentPage.dart';
+import 'package:provider/provider.dart';
 
 class CheckOutPage extends StatefulWidget {
   @override
@@ -20,7 +22,7 @@ class CheckOutPage extends StatefulWidget {
 }
 
 class _CheckOutPage extends State<CheckOutPage> {
-  List addressList = [];
+  List<User> addressList = [];
 
   int _selectedPosition = 0;
   int currentStep = 0;
@@ -49,7 +51,7 @@ class _CheckOutPage extends State<CheckOutPage> {
             elevation: 0,
             centerTitle: true,
             backgroundColor: ConstantColors.bgColor,
-            title: getCustomText(S.of(context).chekout, textColor, 1,
+            title: getCustomText(S.of(context).checkout, textColor, 1,
                 TextAlign.center, FontWeight.bold, 18),
             leading: Builder(
               builder: (BuildContext context) {
@@ -271,7 +273,10 @@ class _CheckOutPage extends State<CheckOutPage> {
                               15),
                         ),
                       )),
-                  onTap: () {
+                  onTap: () async {
+                    await context
+                        .read<AddressProvider>()
+                        .setDefaultAddress(_selectedPosition);
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => PaymentPage()));
                   },
@@ -296,6 +301,7 @@ class _CheckOutPage extends State<CheckOutPage> {
           var data = getdata['data'];
           addressList =
               (data as List).map((data) => User.fromAddress(data)).toList();
+          context.read<AddressProvider>().setAddressList(addressList);
           setState(() {});
           setSnackbar(msg!, context);
         } else {

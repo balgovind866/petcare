@@ -132,9 +132,8 @@ class _OrderDetailPetHotel extends State<OrderDetailPetHotel>
                           child: Container(
                             width: imageSize,
                             height: imageSize,
-                            child: Image.asset(
-                              Constants.assetsImagePath +
-                                  adoptionModel.image[0],
+                            child: Image.network(
+                              adoptionModel.profile_img,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -158,7 +157,7 @@ class _OrderDetailPetHotel extends State<OrderDetailPetHotel>
                                         Constants.getPercentSize1(
                                             containerHeight, 17)),
                                     getCustomText(
-                                        adoptionModel.desc,
+                                        adoptionModel.description,
                                         primaryTextColor,
                                         1,
                                         TextAlign.start,

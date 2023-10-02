@@ -23,6 +23,7 @@ const double circularBorderRadius7 = 7;
 const double circularBorderRadius10 = 10;
 
 const String baseUrl = 'https://pet-admin.technorthstar.com/app/v1/api/';
+const String imgBaseUrl = 'https://pet-admin.technorthstar.com/';
 const String jwtKey = '26e4e3a2dc5aa6d37f41459ac52496c9a2b5b2b0';
 
 const String BANK_DETAIL = 'Bank Details:\n' +

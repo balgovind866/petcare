@@ -10,6 +10,7 @@ import 'package:petcare/customwidget/StarRating.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/data/PrefData.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Constant.dart';
 import 'package:petcare/model/ModelAdoption.dart';
 import 'package:petcare/model/ReviewModel.dart';
 import 'package:petcare/screen/SubmitAdoptionForm.dart';
@@ -83,7 +84,8 @@ class _AdoptionDetail extends State<AdoptionDetail>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        for (int i = 0; i < _modelProduct!.image.length; i++) dot((page == i)),
+        for (int i = 0; i < _modelProduct!.profile_img.length; i++)
+          dot((page == i)),
       ],
     );
   }
@@ -185,24 +187,24 @@ class _AdoptionDetail extends State<AdoptionDetail>
                         ),
                         // backgroundColor: ConstantColors.bgColors  ,
                         actions: <Widget>[
-                          IconButton(
-                              icon: Icon(
-                                // (_modelProduct.isFav)
-                                //     ?
-                                // Icons.favorite_rounded
-                                //       :
-                                Icons.favorite_border_rounded,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  // if (_modelProduct.isFav) {
-                                  //   _modelProduct.isFav = false;
-                                  // } else {
-                                  //   _modelProduct.isFav = true;
-                                  // }
-                                });
-                              })
+                          // IconButton(
+                          //     icon: Icon(
+                          //       // (_modelProduct.isFav)
+                          //       //     ?
+                          //       // Icons.favorite_rounded
+                          //       //       :
+                          //       Icons.favorite_border_rounded,
+                          //       color: Colors.red,
+                          //     ),
+                          // onPressed: () {
+                          //   setState(() {
+                          //     // if (_modelProduct.isFav) {
+                          //     //   _modelProduct.isFav = false;
+                          //     // } else {
+                          //     //   _modelProduct.isFav = true;
+                          //     // }
+                          //   });
+                          // })
                           // Align(
                           //   alignment: Alignment.topRight,
                           //   child:InkWell(
@@ -235,28 +237,27 @@ class _AdoptionDetail extends State<AdoptionDetail>
                                 child: Stack(children: [
                                   PageView.builder(
                                     controller: controller,
-                                    itemCount: _modelProduct!.image.length,
+                                    itemCount: 1,
                                     scrollDirection: Axis.horizontal,
                                     onPageChanged: (value) {
                                       selectedSliderPos = value;
                                     },
                                     itemBuilder: (context, index) {
-                                      return Image.asset(
-                                        Constants.assetsImagePath +
-                                            _modelProduct!.image[index],
+                                      return Image.network(
+                                        imgBaseUrl + _modelProduct!.profile_img,
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         height: double.infinity,
                                       );
                                     },
                                   ),
-                                  Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(0),
-                                        // padding: EdgeInsets.all(7),
-                                        child: _drawDots(currentPage),
-                                      ))
+                                  // Align(
+                                  //     alignment: Alignment.bottomCenter,
+                                  //     child: Padding(
+                                  //       padding: EdgeInsets.all(0),
+                                  //       // padding: EdgeInsets.all(7),
+                                  //       child: _drawDots(currentPage),
+                                  //     ))
                                 ]))
                             // DottedSlider(
                             //     color: Colors.transparent,
@@ -295,7 +296,7 @@ class _AdoptionDetail extends State<AdoptionDetail>
                         transform: Matrix4.rotationX(math.pi * -1),
                         child: Image.asset(
                           Constants.assetsImagePath +
-                              _modelProduct!.image[selectedIndex],
+                              _modelProduct!.profile_img,
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: sliderHeight,
@@ -323,7 +324,7 @@ class _AdoptionDetail extends State<AdoptionDetail>
                                   Constants.getPercentSize(
                                       bottomRemainHeight, 6)),
                               getCustomText(
-                                  _modelProduct!.desc,
+                                  _modelProduct!.breed,
                                   primaryTextColor,
                                   1,
                                   TextAlign.start,
@@ -440,7 +441,7 @@ class _AdoptionDetail extends State<AdoptionDetail>
                                               Constants.getPercentSize1(
                                                   containerHeight, 17)),
                                           getCustomText(
-                                              _modelProduct!.weight,
+                                              _modelProduct!.weight ?? "",
                                               textColor,
                                               1,
                                               TextAlign.center,
@@ -455,67 +456,67 @@ class _AdoptionDetail extends State<AdoptionDetail>
                               ),
                               getSpace(Constants.getPercentSize1(
                                   bottomRemainHeight, 3.5)),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.star_rate_rounded,
-                                    color: "#FFA902".toColor(),
-                                  ),
-                                  getCustomText(
-                                      "4.6(89 reviews)",
-                                      textColor,
-                                      1,
-                                      TextAlign.start,
-                                      FontWeight.w600,
-                                      Constants.getPercentSize1(
-                                          bottomRemainHeight, 3.8)),
-                                ],
-                              ),
+                              // Row(
+                              //   children: [
+                              //     Icon(
+                              //       Icons.star_rate_rounded,
+                              //       color: "#FFA902".toColor(),
+                              //     ),
+                              //     getCustomText(
+                              //         "4.6(89 reviews)",
+                              //         textColor,
+                              //         1,
+                              //         TextAlign.start,
+                              //         FontWeight.w600,
+                              //         Constants.getPercentSize1(
+                              //             bottomRemainHeight, 3.8)),
+                              //   ],
+                              // ),
                               getSpace(Constants.getPercentSize(
                                   bottomRemainHeight, 3)),
                               SizedBox(
                                 height: 7,
                               ),
-                              TabBar(
-                                controller: _tabController,
-                                labelColor: accentColors,
-                                indicatorColor: accentColors,
-                                labelPadding: EdgeInsets.all(10),
-                                unselectedLabelColor: Colors.grey,
-                                labelStyle: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
-                                    fontFamily: Constants.fontsFamily),
-                                unselectedLabelStyle: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
-                                    fontFamily: Constants.fontsFamily),
-                                onTap: (int index) {
-                                  setState(() {
-                                    selectedIndex = index;
-                                    _tabController!.animateTo(index);
-                                  });
-                                },
-                                tabs: <Widget>[
-                                  // Text("Product Description"),
-                                  getCustomText(
-                                      S.of(context).description,
-                                      accentColors,
-                                      1,
-                                      TextAlign.center,
-                                      FontWeight.w500,
-                                      Constants.getPercentSize(
-                                          bottomRemainHeight, 4)),
-                                  getCustomText(
-                                      S.of(context).review,
-                                      accentColors,
-                                      1,
-                                      TextAlign.center,
-                                      FontWeight.w500,
-                                      Constants.getPercentSize(
-                                          bottomRemainHeight, 4)),
-                                ],
-                              ),
+                              // TabBar(
+                              //   controller: _tabController,
+                              //   labelColor: accentColors,
+                              //   indicatorColor: accentColors,
+                              //   labelPadding: EdgeInsets.all(10),
+                              //   unselectedLabelColor: Colors.grey,
+                              //   labelStyle: TextStyle(
+                              //       fontWeight: FontWeight.w500,
+                              //       fontSize: 18,
+                              //       fontFamily: Constants.fontsFamily),
+                              //   unselectedLabelStyle: TextStyle(
+                              //       fontWeight: FontWeight.w500,
+                              //       fontSize: 18,
+                              //       fontFamily: Constants.fontsFamily),
+                              //   onTap: (int index) {
+                              //     setState(() {
+                              //       selectedIndex = index;
+                              //       _tabController!.animateTo(index);
+                              //     });
+                              //   },
+                              //   tabs: <Widget>[
+                              //     // Text("Product Description"),
+                              //     getCustomText(
+                              //         S.of(context).description,
+                              //         accentColors,
+                              //         1,
+                              //         TextAlign.center,
+                              //         FontWeight.w500,
+                              //         Constants.getPercentSize(
+                              //             bottomRemainHeight, 4)),
+                              //     getCustomText(
+                              //         S.of(context).review,
+                              //         accentColors,
+                              //         1,
+                              //         TextAlign.center,
+                              //         FontWeight.w500,
+                              //         Constants.getPercentSize(
+                              //             bottomRemainHeight, 4)),
+                              //   ],
+                              // ),
                               IndexedStack(
                                 children: <Widget>[
                                   Visibility(

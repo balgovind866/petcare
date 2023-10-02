@@ -1,12 +1,16 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
 import 'package:petcare/model/ModelCoupon.dart';
+import 'package:petcare/model/Section_Model.dart';
 
 class CouponList extends StatefulWidget {
   @override
@@ -14,9 +18,16 @@ class CouponList extends StatefulWidget {
 }
 
 class _CouponList extends State<CouponList> {
-  List<ModelCoupon> _couponList = DataFile.getAllCouponList();
+  List<Promo>? _couponList = [];
   int selectedPos = 0;
   // int selectedPos = -1;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCoupon();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +74,9 @@ class _CouponList extends State<CouponList> {
               Expanded(
                 child: Container(
                   child: ListView.builder(
-                    itemCount: _couponList.length,
+                    itemCount: _couponList!.length,
                     itemBuilder: (context, index) {
-                      ModelCoupon _coupon = _couponList[index];
+                      Promo _coupon = _couponList![index];
                       return Container(
                           width: double.infinity,
                           height: itemHeight,
@@ -88,7 +99,7 @@ class _CouponList extends State<CouponList> {
                                     children: [
                                       Expanded(
                                         child: getCustomText(
-                                            _coupon.title,
+                                            _coupon.promoCode ?? "",
                                             textColor,
                                             1,
                                             TextAlign.start,
@@ -106,7 +117,7 @@ class _CouponList extends State<CouponList> {
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(7))),
                                           child: getCustomText(
-                                              _coupon.couponCode,
+                                              _coupon.promoCode ?? "",
                                               Colors.white,
                                               1,
                                               TextAlign.start,
@@ -130,7 +141,7 @@ class _CouponList extends State<CouponList> {
                                     ],
                                   ),
                                   getCustomText(
-                                      _coupon.description,
+                                      _coupon.message ?? "",
                                       Colors.grey,
                                       1,
                                       TextAlign.start,
@@ -159,7 +170,7 @@ class _CouponList extends State<CouponList> {
                     Constants.getPercentSize(
                         SizeConfig.safeBlockVertical! * 7, 30), () {
                   if (selectedPos >= 0) {
-                    finish(_couponList[selectedPos].couponCode);
+                    finish(_couponList?[selectedPos].promoCode ?? "");
                   }
                 }),
               )
@@ -176,5 +187,28 @@ class _CouponList extends State<CouponList> {
 
   void finish(String val) {
     Navigator.of(context).pop(val);
+  }
+
+  Future<void> getCoupon() async {
+    Map parameter = {"sort": "id", "order": "DESC"};
+    // print("USER_ID: {CUR_USERID}");
+    apiBaseHelper.postAPICall(getPromoCodeApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          _couponList!.clear();
+          var promo = getdata[PROMO_CODES];
+          _couponList =
+              (promo as List).map((data) => Promo.fromJson(data)).toList();
+          setState(() {});
+        } else {
+          setSnackbar(msg!, context);
+        }
+      },
+      onError: (error) {
+        setSnackbar(error.toString(), context);
+      },
+    );
   }
 }

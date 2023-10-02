@@ -58,6 +58,7 @@ final Uri checkDeliverableApi = Uri.parse('${baseUrl}is_product_delivarable');
 final Uri checkCartDelApi =
     Uri.parse('${baseUrl}check_cart_products_delivarable');
 final Uri getPromoCodeApi = Uri.parse('${baseUrl}get_promo_codes');
+final Uri validatePromoCodeApi = Uri.parse('${baseUrl}validate_promo_code');
 final Uri deleteUserApi = Uri.parse('${baseUrl}delete_user');
 final Uri getProductFaqsApi = Uri.parse('${baseUrl}get_product_faqs');
 final Uri addProductFaqsApi = Uri.parse('${baseUrl}add_product_faqs');
@@ -66,6 +67,13 @@ final Uri sendWithdrawalRequestApi =
     Uri.parse('${baseUrl}send_withdrawal_request');
 final Uri getWithdrawalRequestApi =
     Uri.parse('${baseUrl}get_withdrawal_request');
+final Uri getBestSellingProductsApi =
+    Uri.parse('${baseUrl}get_best_selling_products');
+final Uri addReviewApi = Uri.parse('${baseUrl}add_review');
+final Uri getPetsApi = Uri.parse('${baseUrl}get_pets');
+final Uri addPetApi = Uri.parse('${baseUrl}add_pet');
+final Uri deletePetApi = Uri.parse('${baseUrl}delete_pet');
+final Uri editPetApi = Uri.parse('${baseUrl}edit_pet');
 
 const String ISFIRSTTIME = 'isfirst$appName';
 const String HISTORYLIST = '$appName+historyList';
@@ -139,6 +147,7 @@ const String BANNER = 'banner';
 const String CAT_FILTER = 'has_child_or_item';
 const String PRODUCT_FILTER = 'has_empty_products';
 const String RATING = 'rating';
+const String REVIEW = 'review';
 const String IDS = 'ids';
 const String VALUE = 'value';
 const String ATTRIBUTES = 'attributes';
@@ -203,6 +212,7 @@ const String HOME = 'Home';
 const String OFFICE = 'Office';
 const String OTHER = 'Other';
 const String FINAL_TOTAL = 'final_total';
+const String FINAL_DISCOUNT = 'final_discount';
 const String PROMOCODE = 'promo_code';
 const String NEWPASS = 'new';
 const String OLDPASS = 'old';
@@ -360,6 +370,11 @@ const String Remark = "remarks";
 const String PENDINg = 'Pending';
 const String ACCEPTEd = 'Accepted';
 const String REJECTEd = 'Rejected';
+
+const String GENDER = 'gender';
+const String AGE = 'age';
+const String BREED = 'breed';
+const String PROFILEIMG = 'profile_img';
 
 String ISDARK = '';
 const String PAYPAL_RESPONSE_URL = '$baseUrl' 'app_payment_status';

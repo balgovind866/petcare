@@ -1,5 +1,6 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -256,7 +257,7 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                                           Constants
                                                                   .assetsImagePath +
                                                               _modelAdoption
-                                                                  .image[0],
+                                                                  .profile_img,
                                                           fit: BoxFit.cover,
                                                         ),
                                                       ),
@@ -286,7 +287,7 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                                                       14)),
                                                           getCustomText(
                                                               _modelAdoption
-                                                                  .desc,
+                                                                  .description,
                                                               primaryTextColor,
                                                               1,
                                                               TextAlign.start,
@@ -446,8 +447,8 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                                                               dialogSubContainerHeight,
                                                                               Constants.topTxt)),
                                                                       getCustomText(
-                                                                          _modelAdoption
-                                                                              .weight,
+                                                                          _modelAdoption.weight ??
+                                                                              "",
                                                                           textColor,
                                                                           1,
                                                                           TextAlign
@@ -497,7 +498,7 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                             height: imageSize,
                             child: Image.asset(
                               Constants.assetsImagePath +
-                                  _adoptionList[selectedPetPos].image[0],
+                                  _adoptionList[selectedPetPos].profile_img,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -521,7 +522,8 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                         Constants.getPercentSize1(
                                             containerHeight, 14)),
                                     getCustomText(
-                                        _adoptionList[selectedPetPos].desc,
+                                        _adoptionList[selectedPetPos]
+                                            .description,
                                         primaryTextColor,
                                         1,
                                         TextAlign.start,
@@ -1094,6 +1096,11 @@ class _BookPetTreatment extends State<BookPetTreatment> {
   }
 
   void finish() {
-    Navigator.of(context).pop();
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(0),
+        ));
+    ;
   }
 }

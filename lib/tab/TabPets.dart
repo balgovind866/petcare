@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
+import 'package:petcare/helper/Constant.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
 import 'package:petcare/screen/AddNewPet.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
@@ -21,9 +25,16 @@ class _TabPets extends State<TabPets> {
 
   List<String> selectionList = ["Shopping", "Treatment", "Pet Hotel"];
   int selectedPos = 0;
-  List<ModelAdoption> allAdoptionList = DataFile.getAllAdoptionList();
+  List<ModelAdoption>? allPetsList = [];
 
   int expandPosition = -1;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getPets();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +86,9 @@ class _TabPets extends State<TabPets> {
               child: Container(
                   child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: allAdoptionList.length,
+                      itemCount: allPetsList?.length,
                       itemBuilder: (context, index) {
-                        ModelAdoption _modelAdoption = allAdoptionList[index];
+                        ModelAdoption _modelAdoption = allPetsList![index];
                         return InkWell(
                           child: Container(
                             margin: EdgeInsets.all(
@@ -112,9 +123,8 @@ class _TabPets extends State<TabPets> {
                                         containerHeight, 60),
                                     height: Constants.getPercentSize1(
                                         containerHeight, 60),
-                                    child: Image.asset(
-                                      Constants.assetsImagePath +
-                                          _modelAdoption.image[0],
+                                    child: Image.network(
+                                      imgBaseUrl + _modelAdoption.profile_img,
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -136,7 +146,7 @@ class _TabPets extends State<TabPets> {
                                           Constants.getPercentSize1(
                                               containerHeight, 13)),
                                       getCustomText(
-                                          _modelAdoption.desc,
+                                          _modelAdoption.description,
                                           primaryTextColor,
                                           1,
                                           TextAlign.start,
@@ -254,7 +264,8 @@ class _TabPets extends State<TabPets> {
                                                           subContainerHeight,
                                                           Constants.topTxt)),
                                                   getCustomText(
-                                                      _modelAdoption.weight,
+                                                      _modelAdoption.weight ??
+                                                          "",
                                                       textColor,
                                                       1,
                                                       TextAlign.center,
@@ -316,16 +327,42 @@ class _TabPets extends State<TabPets> {
                         Constants.getPercentSize1(addButtonSize, 25))
                   ],
                 ),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                onTap: () async {
+                  await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => AddNewPet(),
                   ));
+                  getPets();
                 },
               ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> getPets() async {
+    Map parameter = {};
+    print("HELLO");
+    apiBaseHelper.postAPICall(getPetsApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data']['data'];
+          print("data $data");
+          allPetsList = ((data as List)
+              .map((json) => ModelAdoption.fromJson(json))
+              .toList());
+          setSnackbar(msg!, context);
+        } else {
+          setSnackbar(msg!, context);
+        }
+        setState(() {});
+      },
+      onError: (error) {
+        setSnackbar(error.toString(), context);
+      },
     );
   }
 }

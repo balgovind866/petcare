@@ -1,4 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:petcare/HomeScreen.dart';
+import 'package:petcare/Model/Section_Model.dart';
+import 'package:petcare/Provider/AddressProvider.dart';
+import 'package:petcare/Provider/CartProvider.dart';
+import 'package:petcare/Provider/SettingProvider.dart';
+import 'package:petcare/Provider/UserProvider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
@@ -6,10 +17,15 @@ import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/customwidget/ReviewSlider.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Constant.dart';
+import 'package:petcare/helper/Session.dart';
 import 'package:petcare/model/AddressModel.dart';
 import 'package:petcare/model/CardModel.dart';
+import 'package:petcare/model/User.dart';
+import 'package:petcare/screen/AddToCartPage.dart';
 import 'package:petcare/screen/AdoptionThankYouPage.dart';
 import 'package:petcare/screen/CouponList.dart';
+import 'package:provider/provider.dart';
 
 import '../helper/String.dart';
 
@@ -21,17 +37,41 @@ class ConfirmationPage extends StatefulWidget {
 }
 
 class _ConfirmationPage extends State<ConfirmationPage> {
-  AddressModel addressList = DataFile.getAddressList()[0];
+  // AddressModel addressList = DataFile.getAddressList()[0];
   CardModel cardList = DataFile.getCardList()[0];
 
   int currentStep = 0;
-  TextEditingController _pinEditingController = TextEditingController();
+  TextEditingController _couponEditingController = TextEditingController();
 
+  double subTotal = 0;
+  double shippingFee = 0;
+  double totalTax = 0;
+  double promoCodeDiscount = 0;
+  double totalPrice = 0;
+  User? selectedAddress;
+  double usedBal = 0;
+  bool isUseWallet = false;
+  bool isPromoValid = false;
+  String payMethod = 'Cash On Delivery';
   @override
   void initState() {
     super.initState();
     cardList = DataFile.getCardList()[0];
-    addressList = DataFile.getAddressList()[0];
+    // addressList = DataFile.getAddressList()[0];
+    calculateSubtotal();
+    setState(() {});
+  }
+
+  void calculateSubtotal() {
+    List<SectionModel> cartList = context.read<CartProvider>().cartList;
+
+    cartList.forEach((item) {
+      subTotal += double.parse(item.singleItemNetAmount!);
+      totalTax += double.parse(item.singleItemTaxAmount!);
+      // shippingFee += double.parse(item.singleItemDeliveryAmount!);
+    });
+    totalPrice = subTotal + totalTax + shippingFee - promoCodeDiscount;
+
     setState(() {});
   }
 
@@ -47,7 +87,10 @@ class _ConfirmationPage extends State<ConfirmationPage> {
     SizeConfig().init(context);
     double leftMargin = MediaQuery.of(context).size.width * 0.05;
     double padding = 15;
-
+    List addressList = context.watch<AddressProvider>().addressList;
+    selectedAddress =
+        addressList.firstWhere((element) => element.isDefault == "1");
+    print("addresslist $addressList");
     return WillPopScope(
         child: Scaffold(
           backgroundColor: ConstantColors.bgColor,
@@ -55,7 +98,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
             elevation: 0,
             centerTitle: true,
             backgroundColor: ConstantColors.bgColor,
-            title: getCustomText(S.of(context).chekout, textColor, 1,
+            title: getCustomText(S.of(context).checkout, textColor, 1,
                 TextAlign.center, FontWeight.bold, 18),
             leading: Builder(
               builder: (BuildContext context) {
@@ -127,12 +170,27 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              getCustomText(addressList.name ?? "", textColor,
-                                  1, TextAlign.center, FontWeight.w700, 14),
+                              getCustomText(
+                                  selectedAddress?.name ?? "",
+                                  textColor,
+                                  1,
+                                  TextAlign.center,
+                                  FontWeight.w700,
+                                  14),
                               Padding(
                                 padding: EdgeInsets.only(top: 2),
                                 child: getCustomText(
-                                    addressList.location ?? "",
+                                    selectedAddress?.address ?? "",
+                                    primaryTextColor,
+                                    1,
+                                    TextAlign.start,
+                                    FontWeight.w500,
+                                    12),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 2),
+                                child: getCustomText(
+                                    "${selectedAddress?.area} ${selectedAddress?.city}",
                                     primaryTextColor,
                                     1,
                                     TextAlign.start,
@@ -355,7 +413,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                                     Expanded(
                                       child: TextField(
                                         maxLines: 1,
-                                        controller: _pinEditingController,
+                                        controller: _couponEditingController,
                                         style: TextStyle(
                                             fontFamily: Constants.fontsFamily,
                                             color: primaryTextColor,
@@ -398,7 +456,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                                             ),
                                           )),
                                       onTap: () {
-                                        sendToCoupon();
+                                        applyCoupon();
                                       },
                                     )
                                   ],
@@ -435,7 +493,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                               TextAlign.start, FontWeight.w800, 10),
                           Expanded(
                             child: getCustomText(
-                                INDIAN_RS_SYM + "88.10",
+                                INDIAN_RS_SYM + subTotal.toString(),
                                 textColor,
                                 1,
                                 TextAlign.end,
@@ -446,7 +504,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                         ],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 15, bottom: 15),
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -465,7 +523,38 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                                 TextAlign.start, FontWeight.w800, 10),
                             Expanded(
                               child: getCustomText(
-                                  INDIAN_RS_SYM + "9.90",
+                                  INDIAN_RS_SYM + shippingFee.toString(),
+                                  textColor,
+                                  1,
+                                  TextAlign.end,
+                                  FontWeight.w800,
+                                  10),
+                              flex: 1,
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: getCustomText(
+                                  S.of(context).estimatingTax,
+                                  primaryTextColor,
+                                  1,
+                                  TextAlign.start,
+                                  FontWeight.w600,
+                                  10),
+                              flex: 1,
+                            ),
+                            getCustomText(":", primaryTextColor, 1,
+                                TextAlign.start, FontWeight.w800, 10),
+                            Expanded(
+                              child: getCustomText(
+                                  INDIAN_RS_SYM + totalTax.toString(),
                                   textColor,
                                   1,
                                   TextAlign.end,
@@ -482,7 +571,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                         children: [
                           Expanded(
                             child: getCustomText(
-                                S.of(context).estimatingTax,
+                                S.of(context).promoCodeDiscount,
                                 primaryTextColor,
                                 1,
                                 TextAlign.start,
@@ -494,7 +583,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                               TextAlign.start, FontWeight.w800, 10),
                           Expanded(
                             child: getCustomText(
-                                "{INDIAN_RS_SYM}6.50",
+                                INDIAN_RS_SYM + promoCodeDiscount.toString(),
                                 textColor,
                                 1,
                                 TextAlign.end,
@@ -505,7 +594,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                         ],
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 20, bottom: 20),
+                        margin: EdgeInsets.only(top: 15, bottom: 15),
                         height: 1,
                         color: viewColor,
                       ),
@@ -527,7 +616,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                               TextAlign.start, FontWeight.w800, 12),
                           Expanded(
                             child: getCustomText(
-                                "{INDIAN_RS_SYM}104.50",
+                                INDIAN_RS_SYM + "$totalPrice",
                                 textColor,
                                 1,
                                 TextAlign.end,
@@ -557,11 +646,8 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                               ),
                             )),
                         onTap: () async {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      AdoptionThankYouPage()));
+                          placeOrder("tranId" +
+                              (Random().nextInt(999) + 1000).toString());
                         },
                       ),
                     ],
@@ -583,9 +669,155 @@ class _ConfirmationPage extends State<ConfirmationPage> {
       if (value != null) {
         print("getval==$value");
         setState(() {
-          _pinEditingController.text = value;
+          _couponEditingController.text = value;
         });
       }
     });
+  }
+
+  Future<void> applyCoupon() async {
+    Map parameter = {
+      PROMOCODE: _couponEditingController.text,
+      USER_ID: CUR_USERID,
+      FINAL_TOTAL: (subTotal + shippingFee + totalTax).toString()
+    };
+    // print("USER_ID: {CUR_USERID}");
+    apiBaseHelper.postAPICall(validatePromoApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          var data = getdata['data'][0];
+          promoCodeDiscount = double.parse(data[FINAL_DISCOUNT]);
+          totalPrice = double.parse(data[FINAL_TOTAL]);
+          isPromoValid = true;
+          setSnackbar(msg!, context);
+        } else {
+          isPromoValid = false;
+          setSnackbar(msg!, context);
+        }
+        setState(() {});
+      },
+      onError: (error) {
+        isPromoValid = false;
+        setState(() {});
+        setSnackbar(error.toString(), context);
+      },
+    );
+  }
+
+  Future<void> placeOrder(String tranId) async {
+    SettingProvider settingsProvider =
+        Provider.of<SettingProvider>(context, listen: false);
+
+    String? mob = await settingsProvider.getPrefrence(MOBILE);
+    String? varientId, quantity;
+    List<SectionModel> cartList = context.read<CartProvider>().cartList;
+
+    for (SectionModel sec in cartList) {
+      varientId =
+          varientId != null ? '$varientId,${sec.varientId!}' : sec.varientId;
+      quantity = quantity != null ? '$quantity,${sec.qty!}' : sec.qty;
+    }
+    String payVia;
+
+    payVia = 'Flutterwave';
+
+    try {
+      var parameter = {
+        USER_ID: CUR_USERID,
+        MOBILE: mob,
+        PRODUCT_VARIENT_ID: varientId,
+        QUANTITY: quantity,
+        TOTAL: subTotal.toString(),
+        DEL_CHARGE: shippingFee.toString(),
+        TAX_PER: taxTotal.toString(),
+        FINAL_TOTAL: totalPrice.toString(),
+        PAYMENT_METHOD: payVia,
+        ADD_ID: selectedAddress?.id,
+        ISWALLETBALUSED: isUseWallet! ? '1' : '0',
+        WALLET_BAL_USED: usedBal.toString(),
+      };
+
+      // if (isTimeSlot!) {
+      //   parameter[DELIVERY_TIME] = selTime ?? 'Anytime';
+      //   parameter[DELIVERY_DATE] = selDate ?? '';
+      // }
+      if (isPromoValid!) {
+        parameter[PROMOCODE] = _couponEditingController.text;
+        parameter[PROMO_DIS] = promoCodeDiscount.toString();
+      }
+
+      Response response =
+          await post(placeOrderApi, body: parameter, headers: headers)
+              .timeout(const Duration(seconds: timeOut));
+
+      if (response.statusCode == 200) {
+        var getdata = json.decode(response.body.toString());
+        print("getdata ${getdata}");
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          String orderId = getdata['order_id'].toString();
+
+          AddTransaction(tranId, orderId, SUCCESS, msg, true);
+          setSnackbar(msg!, context);
+        } else {
+          setSnackbar(msg!, context);
+        }
+      }
+    } on TimeoutException catch (_) {
+      setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+    }
+  }
+
+  Future<void> AddTransaction(String tranId, String orderID, String status,
+      String? msg, bool redirect) async {
+    try {
+      var parameter = {
+        USER_ID: CUR_USERID,
+        ORDER_ID: orderID,
+        TYPE: payMethod,
+        TXNID: tranId,
+        AMOUNT: totalPrice.toString(),
+        STATUS: status,
+        MSG: msg
+      };
+
+      Response response =
+          await post(addTransactionApi, body: parameter, headers: headers)
+              .timeout(const Duration(seconds: timeOut));
+
+      var getdata = json.decode(response.body);
+
+      bool error = getdata['error'];
+      String? msg1 = getdata['message'];
+      if (!error) {
+        if (redirect) {
+          context.read<UserProvider>().setCartCount('0');
+          //CUR_CART_COUNT = "0";
+          promoCodeDiscount = 0;
+          // remWalBal = 0;
+          usedBal = 0;
+          payMethod = '';
+          isPromoValid = false;
+          isUseWallet = false;
+          // isPayLayShow = true;
+          // selectedMethod = null;
+          totalPrice = 0;
+          subTotal = 0;
+
+          taxTotal = 0;
+          shippingFee = 0;
+
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AdoptionThankYouPage()));
+        }
+      } else {
+        setSnackbar(msg1!, context);
+      }
+    } on TimeoutException catch (_) {
+      setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+    }
   }
 }

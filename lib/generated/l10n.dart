@@ -471,11 +471,11 @@ class S {
     );
   }
 
-  /// `ChekOut`
-  String get chekout {
+  /// `CheckOut`
+  String get checkout {
     return Intl.message(
-      'ChekOut',
-      name: 'chekout',
+      'CheckOut',
+      name: 'checkout',
       desc: '',
       args: [],
     );
@@ -496,6 +496,16 @@ class S {
     return Intl.message(
       'Estimating Tax',
       name: 'estimatingTax',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Promo code Discount`
+  String get promoCodeDiscount {
+    return Intl.message(
+      'Promo Code Discount',
+      name: 'promoCodeDiscount',
       desc: '',
       args: [],
     );
@@ -891,15 +901,15 @@ class S {
     );
   }
 
-  /// `Check-Out`
-  String get checkout {
-    return Intl.message(
-      'Check-Out',
-      name: 'checkout',
-      desc: '',
-      args: [],
-    );
-  }
+  // /// `Check-Out`
+  // String get checkout {
+  //   return Intl.message(
+  //     'Check-Out',
+  //     name: 'checkout',
+  //     desc: '',
+  //     args: [],
+  //   );
+  // }
 
   /// `Service Type`
   String get serviceType {

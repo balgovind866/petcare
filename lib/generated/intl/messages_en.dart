@@ -67,8 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cardNo": MessageLookupByLibrary.simpleMessage("Card No"),
         "cart": MessageLookupByLibrary.simpleMessage("Cart"),
         "checkin": MessageLookupByLibrary.simpleMessage("Check-in"),
-        "checkout": MessageLookupByLibrary.simpleMessage("Check-Out"),
-        "chekout": MessageLookupByLibrary.simpleMessage("ChekOut"),
+        "checkout": MessageLookupByLibrary.simpleMessage("CheckOut"),
         "citydistrict": MessageLookupByLibrary.simpleMessage("City/District*"),
         "confirmBooking":
             MessageLookupByLibrary.simpleMessage("Confirm Booking"),

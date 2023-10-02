@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:petcare/HomeScreen.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/data/DataFile.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:petcare/helper/Session.dart';
+import 'package:petcare/helper/String.dart';
+import 'package:petcare/model/Order_Model.dart';
 import 'package:petcare/model/SubCategoryModel.dart';
+import 'package:intl/intl.dart';
 
 class OrderDetailPage extends StatefulWidget {
+  final OrderModel orderDetails;
+  OrderDetailPage({super.key, required this.orderDetails});
+
   @override
   _OrderDetailPage createState() {
     return _OrderDetailPage();
@@ -16,11 +25,18 @@ class OrderDetailPage extends StatefulWidget {
 
 class _OrderDetailPage extends State<OrderDetailPage>
     with SingleTickerProviderStateMixin {
-  List<SubCategoryModel> myOrderList = DataFile.getMyOrderList();
+  List<OrderItem> myOrderList = [];
+  // List<OrderModel> myOrderList = [];
 
   Future<bool> _requestPop() {
     Navigator.of(context).pop();
     return new Future.value(true);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   Widget onDelivery() {
@@ -76,7 +92,7 @@ class _OrderDetailPage extends State<OrderDetailPage>
                               color: cellColor,
                               image: DecorationImage(
                                   image: AssetImage(Constants.assetsImagePath +
-                                      myOrderList[index].image[0]),
+                                      'credit_card.png'),
                                   fit: BoxFit.cover),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(
@@ -92,14 +108,17 @@ class _OrderDetailPage extends State<OrderDetailPage>
                               children: [
                                 Row(
                                   children: [
-                                    getCustomText(
-                                        myOrderList[index].name ?? "",
-                                        textColor,
-                                        1,
-                                        TextAlign.start,
-                                        FontWeight.w500,
-                                        Constants.getPercentSize(
-                                            cellHeight, 16)),
+                                    SizedBox(
+                                      width: 150,
+                                      child: getCustomText(
+                                          myOrderList[index].name ?? "",
+                                          textColor,
+                                          1,
+                                          TextAlign.start,
+                                          FontWeight.w500,
+                                          Constants.getPercentSize(
+                                              cellHeight, 16)),
+                                    ),
                                     new Spacer(),
                                     getCustomText(
                                         S.of(context).quantity + ": ",
@@ -120,7 +139,7 @@ class _OrderDetailPage extends State<OrderDetailPage>
                                   ],
                                 ),
                                 getCustomText(
-                                    myOrderList[index].priceCurrency! +
+                                    INDIAN_RS_SYM +
                                         myOrderList[index].price.toString(),
                                     textColor,
                                     1,
@@ -138,7 +157,7 @@ class _OrderDetailPage extends State<OrderDetailPage>
                                     Padding(
                                       padding: EdgeInsets.only(left: 5),
                                       child: getCustomText(
-                                          "Delivered at 11:14 am",
+                                          myOrderList[index].status ?? "",
                                           primaryTextColor,
                                           1,
                                           TextAlign.start,
@@ -167,6 +186,7 @@ class _OrderDetailPage extends State<OrderDetailPage>
 
   @override
   Widget build(BuildContext context) {
+    myOrderList = widget.orderDetails.itemList ?? [];
     SizeConfig().init(context);
     double totalHeight = SizeConfig.safeBlockVertical! * 100;
     double fontSizeTitle = Constants.getPercentSize1(totalHeight, 2.3);
@@ -204,8 +224,8 @@ class _OrderDetailPage extends State<OrderDetailPage>
                   children: [
                     getCustomText(S.of(context).orderId + ": ", textColor, 1,
                         TextAlign.start, FontWeight.w500, fontSizeTitle),
-                    getCustomText("#2CE5DW", accentColors, 1, TextAlign.start,
-                        FontWeight.bold, fontSizeTitle),
+                    getCustomText(widget.orderDetails.id ?? "", accentColors, 1,
+                        TextAlign.start, FontWeight.bold, fontSizeTitle),
                     new Spacer(),
                     Padding(
                       padding: EdgeInsets.only(right: 5),
@@ -215,8 +235,13 @@ class _OrderDetailPage extends State<OrderDetailPage>
                         color: textColor,
                       ),
                     ),
-                    getCustomText("07/01/2021", textColor, 1, TextAlign.start,
-                        FontWeight.w500, fontSizeTitle),
+                    getCustomText(
+                        getFormatedDate(widget.orderDetails.dateTime ?? ""),
+                        textColor,
+                        1,
+                        TextAlign.start,
+                        FontWeight.w500,
+                        fontSizeTitle),
                   ],
                 ),
                 Padding(
@@ -231,33 +256,46 @@ class _OrderDetailPage extends State<OrderDetailPage>
                   ),
                 ),
                 onDelivery(),
-                Padding(
-                  padding: EdgeInsets.only(
-                      top: Constants.getPercentSize(totalHeight, 2),
-                      bottom: Constants.getPercentSize1(totalHeight, 0.7)),
-                  child: getCustomTextWithoutMax(
-                      S.of(context).lorem_text,
-                      textColor,
-                      TextAlign.start,
-                      FontWeight.w500,
-                      fontSizeLarge),
+                // Padding(
+                //   padding: EdgeInsets.only(
+                //       top: Constants.getPercentSize(totalHeight, 2),
+                //       bottom: Constants.getPercentSize1(totalHeight, 0.7)),
+                //   child: getCustomTextWithoutMax(
+                //       S.of(context).lorem_text,
+                //       textColor,
+                //       TextAlign.start,
+                //       FontWeight.w500,
+                //       fontSizeLarge),
+                // ),
+                // getCustomText(
+                //     "$NAME: ${widget.orderDetails.invoice}",
+                //     textColor,
+                //     1,
+                //     TextAlign.start,
+                //     FontWeight.w500,
+                //     fontSizeTitle),
+                getSpace(Constants.getPercentSize1(totalHeight, 1)),
+                Row(
+                  children: [
+                    getCustomText(S.of(context).toatalamount, accentColors, 1,
+                        TextAlign.start, FontWeight.bold, fontSizeLarge),
+                    new Spacer(),
+                    getCustomText(
+                        INDIAN_RS_SYM + widget.orderDetails.total.toString(),
+                        accentColors,
+                        1,
+                        TextAlign.start,
+                        FontWeight.bold,
+                        fontSizeLarge),
+                  ],
                 ),
-                getCustomText(
-                    "Rice ,Alo Borta.Bagon Borta.Vegetables,Beef Curry.Dal.",
-                    textColor,
-                    1,
-                    TextAlign.start,
-                    FontWeight.w500,
-                    fontSizeTitle),
-                Padding(
-                  padding: EdgeInsets.only(
-                      top: Constants.getPercentSize(totalHeight, 2),
-                      bottom: Constants.getPercentSize1(totalHeight, 0.7)),
-                  child: getCustomText(S.of(context).size, textColor, 1,
-                      TextAlign.start, FontWeight.bold, fontSizeLarge),
-                ),
-                getCustomText("12", textColor, 1, TextAlign.start,
-                    FontWeight.w500, fontSizeTitle),
+                getSpace(Constants.getPercentSize1(totalHeight, 1)),
+                getCustomText("Invoice", accentColors, 1, TextAlign.center,
+                    FontWeight.bold, fontSizeLarge),
+                Html(data: widget.orderDetails.invoice),
+
+                // getCustomText("12", textColor, 1, TextAlign.start,
+                //     FontWeight.w500, fontSizeTitle),
                 Container(
                   height: 0.3,
                   color: subTextColor,
@@ -266,20 +304,14 @@ class _OrderDetailPage extends State<OrderDetailPage>
                       top: Constants.getPercentSize(totalHeight, 2)),
                   // margin: EdgeInsets.only(bottom: 15, top: 15),
                 ),
-                Row(
-                  children: [
-                    getCustomText(S.of(context).toatalamount, accentColors, 1,
-                        TextAlign.start, FontWeight.bold, fontSizeLarge),
-                    new Spacer(),
-                    getCustomText("{INDIAN_RS_SYM}24.20", accentColors, 1,
-                        TextAlign.start, FontWeight.bold, fontSizeLarge),
-                  ],
-                ),
-                getSpace(Constants.getPercentSize1(totalHeight, 2)),
               ],
             ),
           ),
         ),
         onWillPop: _requestPop);
+  }
+
+  String getFormatedDate(String s) {
+    return s.split(" ")[0];
   }
 }

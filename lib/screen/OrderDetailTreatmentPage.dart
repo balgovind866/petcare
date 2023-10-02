@@ -116,9 +116,9 @@ class _OrderDetailTreatmentPage extends State<OrderDetailTreatmentPage>
                           child: Container(
                             width: imageSize,
                             height: imageSize,
-                            child: Image.asset(
+                            child: Image.network(
                               Constants.assetsImagePath +
-                                  adoptionModel.image[0],
+                                  adoptionModel.profile_img,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -142,7 +142,7 @@ class _OrderDetailTreatmentPage extends State<OrderDetailTreatmentPage>
                                         Constants.getPercentSize1(
                                             containerHeight, 17)),
                                     getCustomText(
-                                        adoptionModel.desc,
+                                        adoptionModel.description,
                                         primaryTextColor,
                                         1,
                                         TextAlign.start,
