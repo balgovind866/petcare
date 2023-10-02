@@ -342,8 +342,8 @@ class _TabPets extends State<TabPets> {
   }
 
   Future<void> getPets() async {
-    Map parameter = {};
-    print("HELLO");
+    Map parameter = {USER_ID: CUR_USERID};
+    // print("HELLO $CUR_USERID");
     apiBaseHelper.postAPICall(getPetsApi, parameter).then(
       (getdata) {
         bool error = getdata['error'];

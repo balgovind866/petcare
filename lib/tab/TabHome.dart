@@ -465,8 +465,8 @@ class _TabHome extends State<TabHome> {
                             child: ClipRRect(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(7)),
-                              child: Image.asset(
-                                Constants.assetsImagePath + _subCatModle.image!,
+                              child: Image.network(
+                                _subCatModle.image!,
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: double.infinity,

@@ -78,8 +78,10 @@ class _WriteReviewPage extends State<WriteReviewPage> {
                     child: Align(
                       alignment: Alignment.center,
                       child: RatingBar.builder(
+                        maxRating: 5,
                         itemSize: 25,
                         minRating: 1,
+                        initialRating: 5,
                         direction: Axis.horizontal,
                         allowHalfRating: true,
                         itemCount: 5,

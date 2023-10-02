@@ -461,7 +461,9 @@ class _AddToCartPage extends State<AddToCartPage> {
                               top: SizeConfig.safeBlockVertical! * 1.5),
                           height: SizeConfig.safeBlockVertical! * 7,
                           decoration: BoxDecoration(
-                              color: primaryColor,
+                              color: cartModelList.isEmpty
+                                  ? Colors.grey
+                                  : primaryColor,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8))),
                           child: Center(
@@ -475,12 +477,14 @@ class _AddToCartPage extends State<AddToCartPage> {
                                     SizeConfig.safeBlockVertical! * 7, 30)),
                           ),
                         ),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CheckOutPage()));
-                        },
+                        onTap: cartModelList.isEmpty
+                            ? null
+                            : () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CheckOutPage()));
+                              },
                       )
                     ],
                   ),
