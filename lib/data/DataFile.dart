@@ -402,6 +402,8 @@ class DataFile {
         profile_img: "dog1.jpg",
         weight: "2.5 kg",
         description: "hello",
+        type: "Dog",
+        long_description: "There",
         user_id: "13",
         created_at: "2023-10-02 12:02:23",
         updated_at: "2023-10-02 12:02:23"));
@@ -414,6 +416,8 @@ class DataFile {
         profile_img: "dog2.jpg",
         weight: "2.5 kg",
         description: "hello",
+        type: "Cat",
+        long_description: "Random text",
         user_id: "13",
         created_at: "2023-10-02 12:02:23",
         updated_at: "2023-10-02 12:02:23"));
@@ -426,6 +430,8 @@ class DataFile {
         profile_img: "dog3.jpg",
         weight: "3.1 kg",
         description: "hello",
+        type: "Dog",
+        long_description: "Great pet",
         user_id: "13",
         created_at: "2023-10-02 12:02:23",
         updated_at: "2023-10-02 12:02:23"));

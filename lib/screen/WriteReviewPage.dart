@@ -231,6 +231,7 @@ class _WriteReviewPage extends State<WriteReviewPage> {
           var data = getdata['data'];
 
           setSnackbar(msg!, context);
+          Navigator.pop(context);
         } else {
           setSnackbar(msg!, context);
         }

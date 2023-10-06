@@ -374,6 +374,8 @@ const String REJECTEd = 'Rejected';
 const String GENDER = 'gender';
 const String AGE = 'age';
 const String BREED = 'breed';
+const String WEIGHT = 'weight';
+const String LONG_DESC = 'long_description';
 const String PROFILEIMG = 'profile_img';
 
 String ISDARK = '';

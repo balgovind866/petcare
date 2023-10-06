@@ -137,22 +137,42 @@ class _TabPets extends State<TabPets> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      getCustomText(
-                                          _modelAdoption.name,
-                                          textColor,
-                                          1,
-                                          TextAlign.start,
-                                          FontWeight.bold,
-                                          Constants.getPercentSize1(
-                                              containerHeight, 13)),
-                                      getCustomText(
-                                          _modelAdoption.description,
-                                          primaryTextColor,
-                                          1,
-                                          TextAlign.start,
-                                          FontWeight.w400,
-                                          Constants.getPercentSize1(
-                                              containerHeight, 10)),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              getCustomText(
+                                                  _modelAdoption.name,
+                                                  textColor,
+                                                  1,
+                                                  TextAlign.start,
+                                                  FontWeight.bold,
+                                                  Constants.getPercentSize1(
+                                                      containerHeight, 13)),
+                                              getCustomText(
+                                                  _modelAdoption.description,
+                                                  primaryTextColor,
+                                                  1,
+                                                  TextAlign.start,
+                                                  FontWeight.w400,
+                                                  Constants.getPercentSize1(
+                                                      containerHeight, 10)),
+                                            ],
+                                          ),
+                                          IconButton(
+                                              iconSize: 20,
+                                              onPressed: () =>
+                                                  deletePet(_modelAdoption.id),
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ))
+                                        ],
+                                      ),
                                       getSpace(Constants.getPercentSize1(
                                           containerHeight, 2)),
                                       Container(
@@ -341,9 +361,27 @@ class _TabPets extends State<TabPets> {
     );
   }
 
+  Future<void> deletePet(String id) async {
+    Map parameter = {ID: id};
+    apiBaseHelper.postAPICall(deletePetApi, parameter).then(
+      (getdata) {
+        bool error = getdata['error'];
+        String? msg = getdata['message'];
+        if (!error) {
+          setSnackbar(msg!, context);
+          getPets();
+        } else {
+          setSnackbar(msg!, context);
+        }
+      },
+      onError: (error) {
+        setSnackbar(error.toString(), context);
+      },
+    );
+  }
+
   Future<void> getPets() async {
     Map parameter = {USER_ID: CUR_USERID};
-    // print("HELLO $CUR_USERID");
     apiBaseHelper.postAPICall(getPetsApi, parameter).then(
       (getdata) {
         bool error = getdata['error'];

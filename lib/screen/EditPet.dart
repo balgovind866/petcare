@@ -13,16 +13,36 @@ import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/generated/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:petcare/helper/Constant.dart';
 import 'package:petcare/helper/Session.dart';
 import 'package:petcare/helper/String.dart';
 import 'package:http/http.dart' as http;
+import 'package:petcare/model/ModelAdoption.dart';
+import 'package:petcare/tab/TabPets.dart';
 
-class AddNewPet extends StatefulWidget {
+class EditPet extends StatefulWidget {
+  final bool isEdit;
+  final ModelAdoption petDetails;
+  EditPet({super.key, required this.isEdit, required this.petDetails});
+
   @override
-  State<StatefulWidget> createState() => _AddNewPet();
+  State<StatefulWidget> createState() => _EditPet();
 }
 
-class _AddNewPet extends State<AddNewPet> {
+class _EditPet extends State<EditPet> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // dropdownValue = widget.petDetails.type;
+    nameCtrl.text = widget.petDetails.name;
+    breedCtrl.text = widget.petDetails.breed;
+    ageCtrl.text = widget.petDetails.age;
+    descCtrl.text = widget.petDetails.description;
+    longDescCtrl.text = widget.petDetails.long_description;
+    weightCtrl.text = widget.petDetails.weight;
+  }
+
   Widget getTopTitle(String string) {
     return getCustomText(
         string,
@@ -148,7 +168,7 @@ class _AddNewPet extends State<AddNewPet> {
           child: ListView(
             children: [
               getCustomText(
-                  S.of(context).newPet,
+                  S.of(context).editPet,
                   textColor,
                   1,
                   TextAlign.start,
@@ -196,29 +216,43 @@ class _AddNewPet extends State<AddNewPet> {
                               ),
                             ),
                           )
-                        : Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.camera_alt,
-                                  size: Constants.getPercentSize1(
-                                      imageHeight, 20),
-                                  color: textColor,
+                        : widget.petDetails.profile_img != null
+                            ? ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                child: Image(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                    imgBaseUrl + widget.petDetails.profile_img,
+                                  ),
                                 ),
-                                getHorizonSpace(
-                                    Constants.getPercentSize1(screenWidth, 4)),
-                                getCustomText(
-                                    "Add Photo",
-                                    textColor,
-                                    1,
-                                    TextAlign.start,
-                                    FontWeight.w500,
-                                    Constants.getPercentSize1(imageHeight, 15))
-                              ],
-                            ),
-                          ),
+                              )
+                            : Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.camera_alt,
+                                      size: Constants.getPercentSize1(
+                                          imageHeight, 20),
+                                      color: textColor,
+                                    ),
+                                    getHorizonSpace(Constants.getPercentSize1(
+                                        screenWidth, 4)),
+                                    getCustomText(
+                                        "Add Photo",
+                                        textColor,
+                                        1,
+                                        TextAlign.start,
+                                        FontWeight.w500,
+                                        Constants.getPercentSize1(
+                                            imageHeight, 15))
+                                  ],
+                                ),
+                              ),
                   ),
                 ),
               ),
@@ -494,8 +528,8 @@ class _AddNewPet extends State<AddNewPet> {
                   accentColors,
                   Constants.getPercentSize1(screenHeight, 1.5),
                   Constants.getPercentSize1(screenHeight, 2.5), () async {
-                await addPet();
-                finish();
+                await editPet();
+                // finish();
               }),
               getSpace(Constants.getPercentSize1(screenHeight, 2))
             ],
@@ -503,14 +537,15 @@ class _AddNewPet extends State<AddNewPet> {
         ),
       ),
       onWillPop: () async {
-        finish();
+        // finish();
         return false;
       },
     );
   }
 
   void finish() {
-    Navigator.of(context).pop();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (_) => TabPets()));
   }
 
   getPadding() {
@@ -519,10 +554,11 @@ class _AddNewPet extends State<AddNewPet> {
             SizeConfig.safeBlockHorizontal! * 100, 2));
   }
 
-  Future<void> addPet() async {
+  Future<void> editPet() async {
     try {
-      var request = http.MultipartRequest('POST', (addPetApi));
+      var request = http.MultipartRequest('POST', (editPetApi));
       request.headers.addAll(headers);
+      request.fields[ID] = widget.petDetails.id;
       request.fields[USER_ID] = CUR_USERID!;
       request.fields[NAME] = nameCtrl.text.toString();
       request.fields[DESC] = descCtrl.text.toString();
@@ -554,6 +590,7 @@ class _AddNewPet extends State<AddNewPet> {
 
       if (!error) {
         setSnackbar("Successfully Added pet", context);
+        finish();
       } else {
         setSnackbar(msg!, context);
       }

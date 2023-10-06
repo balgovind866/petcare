@@ -42,7 +42,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
 
   int currentStep = 0;
   TextEditingController _couponEditingController = TextEditingController();
-
+  bool isLoading = false;
   double subTotal = 0;
   double shippingFee = 0;
   double totalTax = 0;
@@ -631,7 +631,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                             margin: EdgeInsets.only(top: 20),
                             height: 50,
                             decoration: BoxDecoration(
-                                color: primaryColor,
+                                color: isLoading ? Colors.grey : primaryColor,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(8))),
                             child: InkWell(
@@ -645,10 +645,12 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                                     15),
                               ),
                             )),
-                        onTap: () async {
-                          placeOrder("tranId" +
-                              (Random().nextInt(999) + 1000).toString());
-                        },
+                        onTap: isLoading
+                            ? null
+                            : () async {
+                                placeOrder("tranId" +
+                                    (Random().nextInt(999) + 1000).toString());
+                              },
                       ),
                     ],
                   ),
@@ -707,6 +709,9 @@ class _ConfirmationPage extends State<ConfirmationPage> {
   }
 
   Future<void> placeOrder(String tranId) async {
+    setState(() {
+      isLoading = true;
+    });
     SettingProvider settingsProvider =
         Provider.of<SettingProvider>(context, listen: false);
 
@@ -809,14 +814,19 @@ class _ConfirmationPage extends State<ConfirmationPage> {
 
           taxTotal = 0;
           shippingFee = 0;
-
+          isLoading = false;
+          setState(() {});
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => AdoptionThankYouPage()));
         }
       } else {
         setSnackbar(msg1!, context);
+        isLoading = false;
+        setState(() {});
       }
     } on TimeoutException catch (_) {
+      isLoading = false;
+      setState(() {});
       setSnackbar(getTranslated(context, 'somethingMSg')!, context);
     }
   }

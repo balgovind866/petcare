@@ -11,7 +11,10 @@ class ModelAdoption {
   String gender;
   String profile_img;
   String breed;
-  String? weight;
+  String weight;
+  String type;
+  String long_description;
+
   String user_id;
   String created_at;
   String updated_at;
@@ -23,7 +26,9 @@ class ModelAdoption {
     required this.gender,
     required this.profile_img,
     required this.breed,
-    this.weight,
+    required this.weight,
+    required this.type,
+    required this.long_description,
     required this.user_id,
     required this.created_at,
     required this.updated_at,
@@ -38,6 +43,8 @@ class ModelAdoption {
     String? profile_img,
     String? breed,
     String? weight,
+    String? type,
+    String? long_description,
     String? user_id,
     String? created_at,
     String? updated_at,
@@ -51,6 +58,8 @@ class ModelAdoption {
       profile_img: profile_img ?? this.profile_img,
       breed: breed ?? this.breed,
       weight: weight ?? this.weight,
+      type: type ?? this.type,
+      long_description: long_description ?? this.long_description,
       user_id: user_id ?? this.user_id,
       created_at: created_at ?? this.created_at,
       updated_at: updated_at ?? this.updated_at,
@@ -67,6 +76,8 @@ class ModelAdoption {
       'profile_img': profile_img,
       'breed': breed,
       'weight': weight,
+      'type': type,
+      'long_description': long_description,
       'user_id': user_id,
       'created_at': created_at,
       'updated_at': updated_at,
@@ -82,7 +93,9 @@ class ModelAdoption {
       gender: map['gender'] as String,
       profile_img: map['profile_img'] as String,
       breed: map['breed'] as String,
-      weight: map['weight'] != null ? map['weight'] as String : null,
+      weight: map['weight'] as String,
+      type: map['type'] as String,
+      long_description: map['long_description'] as String,
       user_id: map['user_id'] as String,
       created_at: map['created_at'] as String,
       updated_at: map['updated_at'] as String,
@@ -99,7 +112,9 @@ class ModelAdoption {
         gender: source['gender'] as String,
         profile_img: source['profile_img'] as String,
         breed: source['breed'] as String,
-        weight: source['weight'] != null ? source['weight'] as String : null,
+        weight: source['weight'] as String,
+        type: source['type'] as String,
+        long_description: source['long_description'] as String,
         user_id: source['user_id'] as String,
         created_at: source['created_at'] as String,
         updated_at: source['updated_at'] as String,
@@ -107,7 +122,7 @@ class ModelAdoption {
 
   @override
   String toString() {
-    return 'ModelAdoption(id: $id, name: $name, description: $description, age: $age, gender: $gender, profile_img: $profile_img, breed: $breed, weight: $weight, user_id: $user_id, created_at: $created_at, updated_at: $updated_at)';
+    return 'ModelAdoption(id: $id, name: $name, description: $description, age: $age, gender: $gender, profile_img: $profile_img, breed: $breed, weight: $weight, type: $type, long_description: $long_description, user_id: $user_id, created_at: $created_at, updated_at: $updated_at)';
   }
 
   @override
@@ -122,6 +137,8 @@ class ModelAdoption {
         other.profile_img == profile_img &&
         other.breed == breed &&
         other.weight == weight &&
+        other.type == type &&
+        other.long_description == long_description &&
         other.user_id == user_id &&
         other.created_at == created_at &&
         other.updated_at == updated_at;
@@ -137,6 +154,8 @@ class ModelAdoption {
         profile_img.hashCode ^
         breed.hashCode ^
         weight.hashCode ^
+        type.hashCode ^
+        long_description.hashCode ^
         user_id.hashCode ^
         created_at.hashCode ^
         updated_at.hashCode;

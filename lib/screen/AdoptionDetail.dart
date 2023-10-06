@@ -13,6 +13,8 @@ import 'package:petcare/generated/l10n.dart';
 import 'package:petcare/helper/Constant.dart';
 import 'package:petcare/model/ModelAdoption.dart';
 import 'package:petcare/model/ReviewModel.dart';
+import 'package:petcare/screen/AddNewPet.dart';
+import 'package:petcare/screen/EditPet.dart';
 import 'package:petcare/screen/SubmitAdoptionForm.dart';
 // import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart'; // import this
 
@@ -315,14 +317,32 @@ class _AdoptionDetail extends State<AdoptionDetail>
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              getCustomText(
-                                  _modelProduct!.name,
-                                  textColor,
-                                  1,
-                                  TextAlign.start,
-                                  FontWeight.w500,
-                                  Constants.getPercentSize(
-                                      bottomRemainHeight, 6)),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  getCustomText(
+                                      _modelProduct!.name,
+                                      textColor,
+                                      1,
+                                      TextAlign.start,
+                                      FontWeight.w500,
+                                      Constants.getPercentSize(
+                                          bottomRemainHeight, 6)),
+                                  IconButton(
+                                      onPressed: () {
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => EditPet(
+                                                isEdit: true,
+                                                petDetails: _modelProduct!,
+                                              ),
+                                            ));
+                                      },
+                                      icon: Icon(Icons.edit))
+                                ],
+                              ),
                               getCustomText(
                                   _modelProduct!.breed,
                                   primaryTextColor,
@@ -334,7 +354,7 @@ class _AdoptionDetail extends State<AdoptionDetail>
                               getSpace(Constants.getPercentSize1(
                                   bottomRemainHeight, 2)),
                               getCustomText(
-                                  S.of(context).lorem_text,
+                                  _modelProduct?.description ?? "",
                                   Colors.grey,
                                   2,
                                   TextAlign.start,
@@ -523,7 +543,8 @@ class _AdoptionDetail extends State<AdoptionDetail>
                                     child: Container(
                                         padding: EdgeInsets.all(7),
                                         child: getCustomTextWithoutMax(
-                                            S.of(context).lorem_text,
+                                            _modelProduct?.long_description ??
+                                                "",
                                             textColor,
                                             TextAlign.start,
                                             FontWeight.w400,

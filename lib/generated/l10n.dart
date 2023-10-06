@@ -831,6 +831,16 @@ class S {
     );
   }
 
+  /// `Long Description`
+  String get longDescription {
+    return Intl.message(
+      'Long Description',
+      name: 'longDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Adopt Now`
   String get services {
     return Intl.message(
@@ -1226,6 +1236,16 @@ class S {
     return Intl.message(
       'New Pet',
       name: 'newPet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Pet`
+  String get editPet {
+    return Intl.message(
+      'Edit Pet',
+      name: 'editPet',
       desc: '',
       args: [],
     );
