@@ -14,14 +14,14 @@ import 'package:petcare/screen/AddNewAddressPage.dart';
 import 'package:petcare/screen/PaymentPage.dart';
 import 'package:provider/provider.dart';
 
-class CheckOutPage extends StatefulWidget {
+class CheckOutPageBestSelling extends StatefulWidget {
   @override
   _CheckOutPage createState() {
     return _CheckOutPage();
   }
 }
 
-class _CheckOutPage extends State<CheckOutPage> {
+class _CheckOutPage extends State<CheckOutPageBestSelling> {
   List<User> addressList = [];
 
   int _selectedPosition = 0;
@@ -139,33 +139,33 @@ class _CheckOutPage extends State<CheckOutPage> {
                                   children: [
                                     Container(
                                       height:
-                                          MediaQuery.of(context).size.width *
-                                              0.2,
+                                      MediaQuery.of(context).size.width *
+                                          0.2,
                                       margin:
-                                          EdgeInsets.only(top: 10, bottom: 10),
+                                      EdgeInsets.only(top: 10, bottom: 10),
                                       child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        MainAxisAlignment.center,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        CrossAxisAlignment.center,
                                         children: [
                                           Row(
                                             children: [
                                               Expanded(
                                                 child: Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                                  MainAxisAlignment.start,
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
+                                                  CrossAxisAlignment.center,
                                                   children: [
                                                     Expanded(
                                                       child: Column(
                                                         mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                        MainAxisAlignment
+                                                            .start,
                                                         crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                         children: [
                                                           getCustomText(
                                                               addressList[index].name ??
@@ -177,11 +177,11 @@ class _CheckOutPage extends State<CheckOutPage> {
                                                               15),
                                                           Padding(
                                                             padding:
-                                                                EdgeInsets.only(
-                                                                    top: 5),
+                                                            EdgeInsets.only(
+                                                                top: 5),
                                                             child: getCustomText(
                                                                 addressList[index]
-                                                                        .address ??
+                                                                    .address ??
                                                                     "",
                                                                 primaryTextColor,
                                                                 1,
@@ -191,8 +191,8 @@ class _CheckOutPage extends State<CheckOutPage> {
                                                           ),
                                                           Padding(
                                                             padding:
-                                                                EdgeInsets.only(
-                                                                    top: 5),
+                                                            EdgeInsets.only(
+                                                                top: 5),
                                                             child: getCustomText(
                                                                 "${addressList[index].area} ${addressList[index].city}",
                                                                 primaryTextColor,
@@ -208,20 +208,20 @@ class _CheckOutPage extends State<CheckOutPage> {
                                                     // new Spacer(),
                                                     Align(
                                                       alignment:
-                                                          Alignment.centerRight,
+                                                      Alignment.centerRight,
                                                       child: Padding(
                                                         padding:
-                                                            EdgeInsets.only(
-                                                                right: 3),
+                                                        EdgeInsets.only(
+                                                            right: 3),
                                                         child: Icon(
                                                           (index ==
-                                                                  _selectedPosition)
+                                                              _selectedPosition)
                                                               ? Icons
-                                                                  .radio_button_checked
+                                                              .radio_button_checked
                                                               : Icons
-                                                                  .radio_button_unchecked,
+                                                              .radio_button_unchecked,
                                                           color: (index ==
-                                                                  _selectedPosition)
+                                                              _selectedPosition)
                                                               ? textColor
                                                               : disableIconColor,
                                                           size: 20,
@@ -291,7 +291,7 @@ class _CheckOutPage extends State<CheckOutPage> {
     };
     // print("USER_ID: {CUR_USERID}");
     apiBaseHelper.postAPICall(getAddressApi, parameter).then(
-      (getdata) {
+          (getdata) {
         bool error = getdata['error'];
         String? msg = getdata['message'];
         if (!error) {

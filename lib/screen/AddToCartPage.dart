@@ -16,6 +16,8 @@ import 'package:petcare/helper/String.dart';
 import 'package:petcare/screen/CheckOutPage.dart';
 import 'package:provider/provider.dart';
 
+import 'checkOutPageSelling.dart';
+
 class AddToCartPage extends StatefulWidget {
   // final bool isCheckout;
 
@@ -483,7 +485,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => CheckOutPage()));
+                                        builder: (context) => CheckOutPageBestSelling()));
                               },
                       )
                     ],

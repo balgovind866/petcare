@@ -753,9 +753,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
         parameter[PROMO_DIS] = promoCodeDiscount.toString();
       }
 
-      Response response =
-          await post(placeOrderApi, body: parameter, headers: headers)
-              .timeout(const Duration(seconds: timeOut));
+      Response response = await post(placeOrderApi, body: parameter, headers: headers).timeout(const Duration(seconds: timeOut));
 
       if (response.statusCode == 200) {
         var getdata = json.decode(response.body.toString());
