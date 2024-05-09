@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:petcare/Provider/new_card_provider.dart';
 import 'package:petcare/constants/ConstantColors.dart';
 import 'package:petcare/constants/ConstantWidgets.dart';
 import 'package:petcare/constants/Constants.dart';
 import 'package:petcare/constants/SizeConfig.dart';
 import 'package:petcare/customwidget/ReviewSlider.dart';
 import 'package:petcare/generated/l10n.dart';
+import 'package:provider/provider.dart';
+
+import '../data/DataFile.dart';
+import '../model/CardModel.dart';
 
 class AddNewCardPage extends StatefulWidget {
   @override
@@ -14,6 +19,10 @@ class AddNewCardPage extends StatefulWidget {
 }
 
 class _AddNewCardPage extends State<AddNewCardPage> {
+  TextEditingController CardNoController=TextEditingController();
+  TextEditingController CardHolderName=TextEditingController();
+  TextEditingController CardExpData=TextEditingController();
+  TextEditingController CardCVV=TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -23,6 +32,15 @@ class _AddNewCardPage extends State<AddNewCardPage> {
   Future<bool> _requestPop() {
     Navigator.of(context).pop();
     return new Future.value(true);
+  }
+  @override
+  void dispose() {
+    CardHolderName.dispose();
+    CardExpData.dispose();
+    CardCVV.dispose();
+    CardNoController.dispose();
+    CardExpData.dispose();
+    super.dispose();
   }
 
   @override
@@ -105,6 +123,8 @@ class _AddNewCardPage extends State<AddNewCardPage> {
                         margin: EdgeInsets.only(bottom: 10),
                         height: editTextHeight,
                         child: TextField(
+
+                          controller: CardNoController,
                           maxLines: 1,
                           style: TextStyle(
                               fontFamily: Constants.fontsFamily,
@@ -139,6 +159,7 @@ class _AddNewCardPage extends State<AddNewCardPage> {
                         margin: EdgeInsets.only(bottom: 10),
                         height: editTextHeight,
                         child: TextField(
+                          controller: CardHolderName,
                           maxLines: 1,
                           style: TextStyle(
                               fontFamily: Constants.fontsFamily,
@@ -159,6 +180,7 @@ class _AddNewCardPage extends State<AddNewCardPage> {
                       Row(
                         children: [
                           Expanded(
+
                             child: Column(
                               children: [
                                 Padding(
@@ -178,6 +200,8 @@ class _AddNewCardPage extends State<AddNewCardPage> {
                                   margin: EdgeInsets.only(bottom: 10),
                                   height: editTextHeight,
                                   child: TextField(
+
+                                    controller: CardExpData,
                                     maxLines: 1,
                                     style: TextStyle(
                                         fontFamily: Constants.fontsFamily,
@@ -221,6 +245,8 @@ class _AddNewCardPage extends State<AddNewCardPage> {
                                   margin: EdgeInsets.only(bottom: 10, left: 8),
                                   height: editTextHeight,
                                   child: TextField(
+
+                                  controller: CardCVV,
                                     maxLines: 1,
                                     style: TextStyle(
                                         fontFamily: Constants.fontsFamily,
@@ -251,7 +277,9 @@ class _AddNewCardPage extends State<AddNewCardPage> {
                   ),
                   flex: 1,
                 ),
-                InkWell(
+                Consumer<ProductCardModel>(
+  builder: (context, provider, child) {
+  return InkWell(
                   child: Container(
                       margin: EdgeInsets.only(top: 10, bottom: leftMargin),
                       height: 50,
@@ -260,9 +288,7 @@ class _AddNewCardPage extends State<AddNewCardPage> {
                           borderRadius: BorderRadius.all(Radius.circular(8))),
                       child: InkWell(
                         child: Center(
-                          child: getCustomText(
-                              S.of(context).saveTheCards,
-                              Colors.white,
+                          child: getCustomText(S.of(context).saveTheCards, Colors.white,
                               1,
                               TextAlign.start,
                               FontWeight.w900,
@@ -270,9 +296,24 @@ class _AddNewCardPage extends State<AddNewCardPage> {
                         ),
                       )),
                   onTap: () {
+                    CardModel newCard = CardModel();
+                    newCard.id = DataFile.getCardList().length + 1;
+                    newCard.email = "new_email@example.com";
+                    newCard.cardNo = CardNoController.text.toString()??'';
+                    newCard.cVV = CardCVV.text.toString()??'';
+                    newCard.expDate = CardExpData.text.toString()??'';
+                    newCard.name = CardHolderName.text.toString()??'';
+                    newCard.image = "new_card_image.png";
+
+                    provider.NewCardAdd(newCard);
+
+
                     Navigator.of(context).pop(true);
+
                   },
-                ),
+                );
+  },
+),
               ],
             ),
           ),

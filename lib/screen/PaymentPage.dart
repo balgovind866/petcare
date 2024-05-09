@@ -14,6 +14,9 @@ import 'package:petcare/screen/AddNewCardPage.dart';
 import 'package:petcare/screen/ConfirmationPage.dart';
 import 'package:petcare/screen/HotelConfirmationPage.dart';
 import 'package:petcare/screen/TreatmentConfirmationPage.dart';
+import 'package:provider/provider.dart';
+
+import '../Provider/new_card_provider.dart';
 
 class PaymentPage extends StatefulWidget {
   @override
@@ -42,6 +45,15 @@ class _PaymentPage extends State<PaymentPage> {
     Navigator.of(context).pop();
     return new Future.value(true);
   }
+
+  final List<Bank> banks = [
+    Bank(name: 'State Bank of India', imageUrl: 'assets/images/sbi.png'),
+    Bank(name: 'HDFC Bank', imageUrl: 'assets/images/hdfc.png'),
+    Bank(name: 'ICICI Bank', imageUrl: 'assets/images/icici.png'),
+    Bank(name: 'Axis Bank', imageUrl: 'assets/images/axis.png'),
+
+    // Add more banks as needed
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -119,16 +131,9 @@ class _PaymentPage extends State<PaymentPage> {
                             return InkWell(
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: (index == _paymentPosition)
-                                      ? primaryColor
-                                      : Colors.transparent,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8)),
-                                  border: Border.all(
-                                      color: (index == _paymentPosition)
-                                          ? primaryColor
-                                          : disableIconColor,
-                                      width: 1),
+                                  color: (index == _paymentPosition) ? primaryColor : Colors.transparent,
+                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  border: Border.all(color: (index == _paymentPosition) ? primaryColor : disableIconColor, width: 1),
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -161,12 +166,7 @@ class _PaymentPage extends State<PaymentPage> {
                                       // ),
 
                                       child: getCustomText(
-                                          paymentList[index]
-                                              .name!
-                                              .toUpperCase(),
-                                          (index == _paymentPosition)
-                                              ? whiteColor
-                                              : textColor,
+                                          paymentList[index].name!.toUpperCase(), (index == _paymentPosition) ? whiteColor : textColor,
                                           1,
                                           TextAlign.start,
                                           FontWeight.w500,
@@ -177,6 +177,7 @@ class _PaymentPage extends State<PaymentPage> {
                               ),
                               onTap: () {
                                 _paymentPosition = index;
+
                                 setState(() {});
                               },
                             );
@@ -216,14 +217,17 @@ class _PaymentPage extends State<PaymentPage> {
                           ],
                         ),
                       ),
-                      Container(
+                    if(_paymentPosition==1)  Container(
                         margin: EdgeInsets.only(
                             bottom: MediaQuery.of(context).size.width * 0.01),
-                        child: ListView.builder(
+                        child: Consumer<ProductCardModel>(
+  builder: (context, provider, child) {
+  return ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            itemCount: cardList.length,
+                            itemCount: provider.subCatList.length,
                             itemBuilder: (context, index) {
+                             final data=provider.subCatList[index];
                               return InkWell(
                                 child: Container(
                                   margin: EdgeInsets.only(top: 10, bottom: 10),
@@ -244,8 +248,7 @@ class _PaymentPage extends State<PaymentPage> {
                                         children: [
                                           InkWell(
                                               child: Icon(
-                                                CupertinoIcons
-                                                    .checkmark_alt_circle_fill,
+                                                CupertinoIcons.checkmark_alt_circle_fill,
                                                 color: (_cardPosition == index)
                                                     ? accentColors
                                                     : Colors.grey.shade400,
@@ -258,7 +261,7 @@ class _PaymentPage extends State<PaymentPage> {
                                           Padding(
                                             padding: EdgeInsets.only(left: 10),
                                             child: Text(
-                                              "XXXX XXXX XXXX 1234",
+                                              data.cardNo.toString()??"XXXX XXXX XXXX 1234",
                                               style: TextStyle(
                                                   fontFamily:
                                                       Constants.fontsFamily,
@@ -272,7 +275,7 @@ class _PaymentPage extends State<PaymentPage> {
                                           new Spacer(),
                                           Image.asset(
                                             Constants.assetsImagePath +
-                                                cardList[index].image!,
+                                                cardList[1].image!,
                                             width: 25,
                                             height: 25,
                                           ),
@@ -283,8 +286,7 @@ class _PaymentPage extends State<PaymentPage> {
                                         child: Row(
                                           children: [
                                             Image.asset(
-                                              Constants.assetsImagePath +
-                                                  "credit_card.png",
+                                              Constants.assetsImagePath + "credit_card.png",
                                               width: 30,
                                               height: 20,
                                               color: accentColors,
@@ -293,10 +295,7 @@ class _PaymentPage extends State<PaymentPage> {
                                               padding:
                                                   EdgeInsets.only(left: 10),
                                               child: Text(
-                                                S
-                                                    .of(context)
-                                                    .validFrom
-                                                    .toUpperCase(),
+                                                S.of(context).validFrom.toUpperCase(),
                                                 style: TextStyle(
                                                     fontFamily:
                                                         Constants.fontsFamily,
@@ -311,7 +310,7 @@ class _PaymentPage extends State<PaymentPage> {
                                               padding:
                                                   EdgeInsets.only(left: 10),
                                               child: Text(
-                                                cardList[index].expDate ?? "",
+                                                data.expDate ?? "",
                                                 style: TextStyle(
                                                     fontFamily:
                                                         Constants.fontsFamily,
@@ -331,9 +330,7 @@ class _PaymentPage extends State<PaymentPage> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              cardList[index]
-                                                  .name!
-                                                  .toUpperCase(),
+                                              data.name!.toUpperCase(),
                                               style: TextStyle(
                                                   fontFamily:
                                                       Constants.fontsFamily,
@@ -345,7 +342,7 @@ class _PaymentPage extends State<PaymentPage> {
                                             ),
                                             new Spacer(),
                                             Text(
-                                              S.of(context).cvv,
+                                              data.cVV.toString(),
                                               style: TextStyle(
                                                   fontFamily:
                                                       Constants.fontsFamily,
@@ -385,6 +382,66 @@ class _PaymentPage extends State<PaymentPage> {
                                       )
                                     ],
                                   ),
+                                ),
+                                onTap: () {},
+                              );
+                            });
+  },
+),
+                      ),
+                      if(_paymentPosition==2)  Container(
+                        margin: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.width * 0.01),
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: banks.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10, bottom: 10),
+                                  padding: EdgeInsets.all(8),
+                                  decoration: new BoxDecoration(
+                                      color: cardColor,
+                                      // boxShadow: [
+                                      //   BoxShadow(
+                                      //     color: Colors.grey.shade200,
+                                      //     blurRadius: 10,
+                                      //   )
+                                      // ],
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0))),
+                                  child:Row(
+                                    children: [
+                                      InkWell(
+                                          child: Icon(
+                                            CupertinoIcons
+                                                .checkmark_alt_circle_fill,
+                                            color: (_cardPosition == index)
+                                                ? accentColors
+                                                : Colors.grey.shade400,
+                                            size: 25,
+                                          ),
+                                          onTap: () {
+                                            _cardPosition = index;
+                                            setState(() {});
+                                          }),
+                                      SizedBox(width: 15,),
+                                      Center(
+                                        child: Image.asset(
+                                          Constants.assetsImagePath +
+                                              paymentList[2].image!,
+                                          height: 25,
+                                          width: 25,
+
+                                        ),
+                                        // Image.asset("assets/images/sofa_category.png",height: 20,width: 20),
+                                      ),
+                                      SizedBox(width: 40,),
+                                       Text(banks[index].name),
+
+                                    ],
+                                  )
                                 ),
                                 onTap: () {},
                               );
@@ -447,4 +504,10 @@ class _PaymentPage extends State<PaymentPage> {
         ),
         onWillPop: _requestPop);
   }
+}
+class Bank {
+  final String name;
+  final String imageUrl;
+
+  Bank({required this.name, required this.imageUrl});
 }

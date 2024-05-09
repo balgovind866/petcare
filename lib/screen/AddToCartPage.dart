@@ -126,9 +126,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                                         ),
                                         image: DecorationImage(
                                             image: NetworkImage(
-                                                cartModelList[index]
-                                                    .productList![0]
-                                                    .image!),
+                                                cartModelList[index].productList![0].image!),
                                             fit: BoxFit.cover)),
                                     // child: Image.asset(
                                     //     Constants.assetsImagePath + subCategoryModel.image,height: double.infinity,width: double.infinity,),

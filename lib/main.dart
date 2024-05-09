@@ -21,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Provider/SettingProvider.dart';
 import 'Provider/UserProvider.dart';
+import 'Provider/new_card_provider.dart';
 import 'helper/Demo_Localization.dart';
 import 'helper/Session.dart';
 
@@ -92,6 +93,8 @@ class _MyAppState extends State<MyApp> {
             create: (context) => CategoryProvider()),
         ChangeNotifierProvider<AddressProvider>(
             create: (context) => AddressProvider()),
+        ChangeNotifierProvider<ProductCardModel>(
+            create: (context) => ProductCardModel()),
       ],
       child: MaterialApp(
         locale: _locale,

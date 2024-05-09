@@ -1,14 +1,20 @@
 
-class CardModel{
-
+class CardModel {
   int? id;
-
-  String? name;
   String? email;
   String? cardNo;
-  String? expDate;
   String? cVV;
+  String? expDate;
+  String? name;
   String? image;
 
-
+  CardModel({
+     this.id,
+     this.email,
+     this.cardNo,
+     this.cVV,
+     this.expDate,
+     this.name,
+    this.image,
+  });
 }

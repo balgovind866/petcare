@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -32,20 +34,22 @@ class _TabOrder extends State<TabOrder> {
     Navigator.of(context).pop();
   }
 
-  List<String> selectionList = ["Shopping", "Services",'Card'];
+  List<String> selectionList = ["Shopping", "Services",'Cart'];
   int selectedPos = 0;
   // List<OrderModel> allOrderList = DataFile.getOrderList();
   List<OrderModel> allOrderList = [];
   List<OrderModel> allShoppingList = [];
   List<OrderModel> allServicesList = [];
   List<SectionModel> cartModelList = [];
-
+  double totalPrice = 0, oriPrice = 0, delCharge = 0, taxPer = 0, taxTotal = 0;
+  List<Promo> promoList = [];
   int expandPosition = -1;
   bool visiblity=true;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _getCart('0');
     getOrders();
   }
 
@@ -804,4 +808,81 @@ class _TabOrder extends State<TabOrder> {
       },
     );
   }
+  bool _isNetworkAvail = true;
+  bool isLoader = false;
+  Future<void> _getCart(String save) async {
+    _isNetworkAvail = await isNetworkAvailable();
+    setState(() {
+      isLoader = true;
+    });
+
+    if (_isNetworkAvail) {
+      try {
+        var parameter = {USER_ID: CUR_USERID, SAVE_LATER: save};
+
+        apiBaseHelper.postAPICall(getCartApi, parameter).then((getdata) {
+          bool error = getdata['error'];
+          String? msg = getdata['message'];
+          if (!error) {
+            var data = getdata['data'];
+
+            oriPrice = double.parse(getdata[SUB_TOTAL]);
+
+            taxPer = double.parse(getdata[TAX_PER]);
+            taxTotal = double.parse(getdata["tax_amount"]);
+
+            delCharge = double.parse(getdata["delivery_charge"]);
+
+            totalPrice = delCharge + oriPrice;
+            isLoader = false;
+
+            List<SectionModel> cartList = (data as List)
+                .map((data) => SectionModel.fromCart(data))
+                .toList();
+
+            context.read<CartProvider>().setCartlist(cartList);
+
+            if (getdata.containsKey(PROMO_CODES)) {
+              var promo = getdata[PROMO_CODES];
+              promoList = (promo as List).map((e) => Promo.fromJson(e)).toList();
+            }
+
+            for (int i = 0; i < cartList.length; i++) {
+              //_controller.add(TextEditingController());
+            }
+            setState(() {});
+          } else {
+            setState(() {
+              oriPrice = 0;
+              taxPer = 0;
+              taxTotal = 0;
+
+              delCharge = 0;
+
+              totalPrice = delCharge + oriPrice;
+              isLoader = false;
+            });
+            if (msg != 'Cart Is Empty !') setSnackbar(msg!, context);
+          }
+          if (mounted) {
+            setState(() {
+              //_isCartLoad = false;
+            });
+          }
+        }, onError: (error) {
+          setSnackbar(error.toString(), context);
+        });
+      } on TimeoutException catch (_) {
+        setSnackbar(getTranslated(context, 'somethingMSg')!, context);
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          _isNetworkAvail = false;
+        });
+      }
+    }
+  }
 }
+
+

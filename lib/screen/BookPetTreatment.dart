@@ -765,12 +765,7 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                                           ),
                                                           Visibility(
                                                             child: IconButton(
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .check_circle,
-                                                                  color:
-                                                                      accentColors,
-                                                                ),
+                                                                icon: Icon(Icons.check_circle, color: accentColors,),
                                                                 onPressed:
                                                                     () {}),
                                                             visible:
@@ -814,10 +809,7 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                             width: imageSize,
                             height: imageSize,
                             color: lightPrimaryColors,
-                            child: Image.asset(
-                              Constants.assetsImagePath +
-                                  treatmentList[selectedPetTreatmentPos].image,
-                              fit: BoxFit.cover,
+                            child: Image.asset(Constants.assetsImagePath + treatmentList[selectedPetTreatmentPos].image, fit: BoxFit.cover,
                             ),
                           ),
                         ),
@@ -831,12 +823,7 @@ class _BookPetTreatment extends State<BookPetTreatment> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    getCustomText(
-                                        treatmentList[selectedPetTreatmentPos]
-                                            .title,
-                                        textColor,
-                                        1,
-                                        TextAlign.start,
+                                    getCustomText(treatmentList[selectedPetTreatmentPos].title, textColor, 1, TextAlign.start,
                                         FontWeight.bold,
                                         Constants.getPercentSize1(
                                             containerHeight, 14)),
