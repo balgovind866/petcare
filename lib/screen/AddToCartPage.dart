@@ -294,11 +294,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                                                                 ),
                                                               ),
                                                               onTap: () {
-                                                                updateCart(
-                                                                        cartModelList[index]
-                                                                            .varientId!,
-                                                                        int.parse(cartModelList[index].qty!) +
-                                                                            1)
+                                                                updateCart(cartModelList[index].varientId!, int.parse(cartModelList[index].qty!) + 1)
                                                                     .then(
                                                                         (val) {
                                                                   _getCart('0');
